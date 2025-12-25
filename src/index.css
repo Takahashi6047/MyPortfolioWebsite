@@ -4,19 +4,19 @@
 
 @layer base {
   :root {
-    /* Light Mode Values */
-    --background: #DFD0B8;
-    --foreground: #222831;
-    --card: #948979;
-    --accent: #393E46;
+    /* Light Mode - Minimalist White */
+    --background: #FAFAFA;
+    --foreground: #1A1A1A;
+    --card: #F0F0F0;
+    --accent: #E5E5E5;
   }
 
-  /* When 'dark' class is present on <html> */
+  /* Dark Mode - Soft Black (not pitch black) */
   .dark {
-    --background: #222831;
-    --foreground: #DFD0B8;
-    --card: #393E46;
-    --accent: #948979;
+    --background: #1A1A1A;
+    --foreground: #FAFAFA;
+    --card: #2A2A2A;
+    --accent: #3A3A3A;
   }
 
   body {
