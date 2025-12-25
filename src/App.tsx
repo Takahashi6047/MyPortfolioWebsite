@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Layout } from './components/Layout'
+import { Hero } from './sections/Hero'
 
 function App() {
   useEffect(() => {
@@ -16,10 +17,7 @@ function App() {
 
   return (
     <Layout>
-      <section id="home" className="py-20">
-        <h1 className="text-5xl font-bold text-foreground mb-4">Welcome</h1>
-        <p className="text-xl text-foreground/70">Your portfolio content goes here</p>
-      </section>
+      <Hero />
     </Layout>
   )
 }
