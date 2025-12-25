@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    /* Light Mode Values */
+    --background: #DFD0B8;
+    --foreground: #222831;
+    --card: #948979;
+    --accent: #393E46;
+  }
+
+  /* When 'dark' class is present on <html> */
+  .dark {
+    --background: #222831;
+    --foreground: #DFD0B8;
+    --card: #393E46;
+    --accent: #948979;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
