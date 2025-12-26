@@ -2,6 +2,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface RippleContextType {
   triggerRipple: (x: number, y: number, isDarkMode: boolean) => void;
+  isAnimating: boolean;
 }
 
 const RippleContext = createContext<RippleContextType | undefined>(undefined);
@@ -25,8 +26,15 @@ export function RippleProvider({ children }: RippleProviderProps) {
     centerY: 0,
     isDarkMode: false,
   });
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const triggerRipple = (x: number, y: number, isDarkMode: boolean) => {
+    // Prevent new ripples if one is already animating
+    if (isAnimating) {
+      return;
+    }
+
+    setIsAnimating(true);
     setRippleState({
       isActive: true,
       centerX: x,
@@ -37,10 +45,11 @@ export function RippleProvider({ children }: RippleProviderProps) {
 
   const handleRippleComplete = () => {
     setRippleState(prev => ({ ...prev, isActive: false }));
+    setIsAnimating(false);
   };
 
   return (
-    <RippleContext.Provider value={{ triggerRipple }}>
+    <RippleContext.Provider value={{ triggerRipple, isAnimating }}>
       {children}
       <RippleOverlay
         isActive={rippleState.isActive}
