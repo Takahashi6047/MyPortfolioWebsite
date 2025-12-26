@@ -19,19 +19,21 @@ export function LogosSection() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
-      className="relative flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8"
+      className="relative flex flex-row items-center gap-4 sm:gap-6 md:gap-8"
     >
       {/* Logos Container */}
-      <div className="relative overflow-hidden flex-1">
+      <div className="relative overflow-hidden flex-1 min-w-0">
         <motion.div
-          animate={{ x: -1000 }}
+          animate={{ 
+            x: [0, -50] 
+          }}
           transition={{
-            duration: 30,
+            duration: 18,
             repeat: Infinity,
             ease: 'linear',
             repeatType: 'loop'
           }}
-          className="flex items-center gap-12 sm:gap-16 md:gap-20 lg:gap-24 w-max"
+          className="flex items-center gap-4 sm:gap-6 md:gap-10 lg:gap-16 w-max"
         >
           {/* First set of logos */}
           {logos.map((logo, index) => (
@@ -40,18 +42,15 @@ export function LogosSection() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 + index * 0.05, duration: 0.4 }}
-              className={`flex-shrink-0 ${logo.name === 'Clip Studio' ? 'relative' : ''}`}
+              className="flex-shrink-0"
             >
               <img
                 src={logo.src}
                 alt={logo.name}
                 className={`object-contain grayscale opacity-60 hover:opacity-80 transition-opacity duration-300 ${
-                  logo.name === 'Tailwind' ? 'h-32 w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-24 w-24 dark:invert dark:brightness-200' : 'h-12 w-12'
+                  logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
                 }`}
               />
-              {logo.name === 'Clip Studio' && (
-                <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, transparent 0%, var(--background) 70%)' }}></div>
-              )}
             </motion.div>
           ))}
           
@@ -62,18 +61,15 @@ export function LogosSection() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 + index * 0.05, duration: 0.4 }}
-              className={`flex-shrink-0 ${logo.name === 'Clip Studio' ? 'relative' : ''}`}
+              className="flex-shrink-0"
             >
               <img
                 src={logo.src}
                 alt={logo.name}
                 className={`object-contain grayscale opacity-60 hover:opacity-80 transition-opacity duration-300 ${
-                  logo.name === 'Tailwind' ? 'h-32 w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-24 w-24 dark:invert dark:brightness-200' : 'h-12 w-12'
+                  logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
                 }`}
               />
-              {logo.name === 'Clip Studio' && (
-                <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to right, transparent 0%, var(--background) 70%)' }}></div>
-              )}
             </motion.div>
           ))}
         </motion.div>
@@ -84,19 +80,39 @@ export function LogosSection() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.8, duration: 0.6 }}
-        className="text-left flex-shrink-0"
+        className="text-right flex-shrink-0"
       >
-        <div className="flex items-center gap-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} className="text-black dark:text-white">●</span>
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
+          <div className="flex gap-0.5">
+            {/* 4 full stars */}
+            {[...Array(4)].map((_, i) => (
+              <span key={i} className="text-yellow-400 dark:text-yellow-300 text-xs sm:text-sm">★</span>
             ))}
+            {/* 1 partial star (90% filled for 4.9 rating) */}
+            <div className="relative inline-block text-xs sm:text-sm">
+              <span className="text-neutral-300 dark:text-neutral-600">★</span>
+              <div className="absolute inset-0 overflow-hidden" style={{ width: '90%' }}>
+                <span className="text-yellow-400 dark:text-yellow-300">★</span>
+              </div>
+            </div>
           </div>
           <span className="font-medium">4.9/5</span>
         </div>
-        <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-500 mt-1">
-          Trusted by <span className="font-medium text-neutral-700 dark:text-neutral-300">100+</span> businesses
-        </p>
+        <div className="relative mt-2">
+          <div className="text-xs sm:text-sm lg:text-base text-neutral-600 dark:text-neutral-400 whitespace-nowrap tracking-wide font-light">
+            Trusted by{' '}
+            <span className="relative inline-block">
+              <span className="font-semibold bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-600 dark:from-neutral-100 dark:via-neutral-200 dark:to-neutral-300 bg-clip-text text-transparent">
+                100+
+              </span>
+              <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-400 dark:via-neutral-500 to-transparent opacity-40"></span>
+            </span>{' '}
+            <span className="text-neutral-700 dark:text-neutral-300 font-medium tracking-wider">
+              businesses worldwide
+            </span>
+          </div>
+          <span className="absolute -top-1 -left-2 w-1 h-1 bg-gradient-to-br from-neutral-400 to-neutral-600 dark:from-neutral-500 dark:to-neutral-300 rounded-full opacity-60 animate-pulse"></span>
+        </div>
       </motion.div>
     </motion.div>
   );

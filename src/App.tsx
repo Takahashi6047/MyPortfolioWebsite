@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Layout } from './components/Layout'
 import { Hero } from './sections/Hero'
+import { RippleProvider } from './global/RippleContext'
 
 function App() {
   useEffect(() => {
@@ -16,9 +17,11 @@ function App() {
   }, [])
 
   return (
-    <Layout>
-      <Hero />
-    </Layout>
+    <RippleProvider>
+      <Layout>
+        <Hero />
+      </Layout>
+    </RippleProvider>
   )
 }
 
