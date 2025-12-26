@@ -1,4 +1,5 @@
 import { HeroCard } from '../components/Hero/HeroCard';
+import { LogosSection } from '../components/LogosSection';
 
 export function Hero() {
   return (
@@ -71,6 +72,9 @@ export function Hero() {
           </div>
         </div>
       </div>
+      
+      {/* Logos section */}
+      <LogosSection />
     </section>
   );
 }
