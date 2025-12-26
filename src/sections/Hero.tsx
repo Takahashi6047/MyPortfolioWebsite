@@ -1,5 +1,5 @@
 import { HeroCard } from '../components/Hero/HeroCard';
-import { LogosSection } from '../components/LogosSection';
+import { LogosSection } from '../components/Hero/LogosSection';
 
 export function Hero() {
   return (

@@ -205,8 +205,7 @@ export function Navigation() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                whileHover={{ x: -8 }}
-                whileHoverTransition={{ duration: 0.2 }}
+                whileHover={{ x: -8, transition: { duration: 0.2 } }}
                 className={`px-4 py-2 rounded-full border backdrop-blur-md shadow-lg transition-all duration-200 font-medium text-sm whitespace-nowrap bg-card/90 border-border ${textColor} hover:bg-accent/20`}
                 style={{ fontFamily: '"Quicksand", sans-serif' }}
               >
