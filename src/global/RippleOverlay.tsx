@@ -17,8 +17,22 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
     if (isActive) {
       setIsVisible(true);
       setAnimationPhase('expanding');
+      
+      // Trigger theme change midway through the ripple expansion
+      const themeTimeout = setTimeout(() => {
+        const html = document.documentElement;
+        if (isDarkMode) {
+          html.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          html.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        }
+      }, 400); // Trigger at 50% of the 800ms expansion
+      
+      return () => clearTimeout(themeTimeout);
     }
-  }, [isActive]);
+  }, [isActive, isDarkMode]);
 
   const handleExpandComplete = () => {
     // Start the explosion phase after a brief pause
@@ -44,14 +58,14 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed inset-0 pointer-events-none z-[9999]"
+          className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
           {/* Main ripple circle - covers the screen */}
           <motion.div
-            className={`absolute rounded-full ${
+            className={`absolute rounded-full will-change-transform ${
               isDarkMode 
                 ? 'bg-neutral-900' 
                 : 'bg-white'
@@ -60,18 +74,18 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
               left: centerX,
               top: centerY,
               transform: 'translate(-50%, -50%)',
+              backfaceVisibility: 'hidden',
+              opacity: 0.95,
             }}
             initial={{
               width: 0,
               height: 0,
-              opacity: 0.9,
             }}
             animate={
               animationPhase === 'expanding'
                 ? {
                     width: maxDistance * 2,
                     height: maxDistance * 2,
-                    opacity: 1,
                   }
                 : {
                     width: maxDistance * 2,
@@ -97,7 +111,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
           
           {/* Secondary ripple */}
           <motion.div
-            className={`absolute rounded-full ${
+            className={`absolute rounded-full will-change-transform ${
               isDarkMode 
                 ? 'bg-neutral-800' 
                 : 'bg-neutral-50'
@@ -106,18 +120,18 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
               left: centerX,
               top: centerY,
               transform: 'translate(-50%, -50%)',
+              backfaceVisibility: 'hidden',
+              opacity: 0.7,
             }}
             initial={{
               width: 0,
               height: 0,
-              opacity: 0.6,
             }}
             animate={
               animationPhase === 'expanding'
                 ? {
                     width: maxDistance * 2.2,
                     height: maxDistance * 2.2,
-                    opacity: 0.8,
                   }
                 : {
                     width: maxDistance * 2.2,
@@ -143,10 +157,10 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
           {/* Explosion ripples - multiple rings expanding outward */}
           {animationPhase === 'exploding' && (
             <>
-              {[...Array(6)].map((_, i) => (
+              {[...Array(4)].map((_, i) => (
                 <motion.div
                   key={`explosion-ring-${i}`}
-                  className={`absolute rounded-full border-2 ${
+                  className={`absolute rounded-full border will-change-transform ${
                     isDarkMode 
                       ? 'border-neutral-600' 
                       : 'border-neutral-400'
@@ -155,91 +169,26 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
                     left: centerX,
                     top: centerY,
                     transform: 'translate(-50%, -50%)',
+                    backfaceVisibility: 'hidden',
                   }}
                   initial={{
                     width: 20,
                     height: 20,
-                    opacity: 0.8,
+                    opacity: 0.6,
                   }}
                   animate={{
-                    width: maxDistance * (1.5 + i * 0.3),
-                    height: maxDistance * (1.5 + i * 0.3),
+                    width: maxDistance * (1.2 + i * 0.2),
+                    height: maxDistance * (1.2 + i * 0.2),
                     opacity: 0,
                   }}
                   transition={{
-                    duration: 0.8 + i * 0.1,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                    delay: i * 0.08,
+                    duration: 0.6 + i * 0.1,
+                    ease: 'easeOut',
+                    delay: i * 0.05,
                   }}
                   onAnimationComplete={i === 0 ? handleExplosionComplete : undefined}
                 />
               ))}
-
-              {/* Fast expanding rings */}
-              {[...Array(4)].map((_, i) => (
-                <motion.div
-                  key={`fast-ring-${i}`}
-                  className={`absolute rounded-full border ${
-                    isDarkMode 
-                      ? 'border-neutral-500' 
-                      : 'border-neutral-300'
-                  }`}
-                  style={{
-                    left: centerX,
-                    top: centerY,
-                    transform: 'translate(-50%, -50%)',
-                  }}
-                  initial={{
-                    width: 10,
-                    height: 10,
-                    opacity: 0.6,
-                  }}
-                  animate={{
-                    width: maxDistance * (2 + i * 0.4),
-                    height: maxDistance * (2 + i * 0.4),
-                    opacity: 0,
-                  }}
-                  transition={{
-                    duration: 0.6 + i * 0.05,
-                    ease: 'easeOut',
-                    delay: i * 0.04,
-                  }}
-                />
-              ))}
-
-              {/* Particle burst effect */}
-              {[...Array(12)].map((_, i) => {
-                const angle = (i * Math.PI * 2) / 12;
-                const distance = 80 + Math.random() * 40;
-                return (
-                  <motion.div
-                    key={`particle-${i}`}
-                    className={`absolute w-1 h-1 rounded-full ${
-                      isDarkMode ? 'bg-neutral-500' : 'bg-neutral-400'
-                    }`}
-                    style={{
-                      left: centerX,
-                      top: centerY,
-                      transform: 'translate(-50%, -50%)',
-                    }}
-                    initial={{
-                      opacity: 0.8,
-                      scale: 1,
-                    }}
-                    animate={{
-                      x: Math.cos(angle) * distance,
-                      y: Math.sin(angle) * distance,
-                      opacity: 0,
-                      scale: 0.3,
-                    }}
-                    transition={{
-                      duration: 0.5 + Math.random() * 0.3,
-                      ease: 'easeOut',
-                      delay: i * 0.02,
-                    }}
-                  />
-                );
-              })}
             </>
           )}
         </motion.div>

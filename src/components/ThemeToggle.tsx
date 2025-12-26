@@ -24,22 +24,12 @@ export function ThemeToggle() {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    // Trigger ripple effect
-    triggerRipple(centerX, centerY, !isDark);
+    // Update local state immediately for button icon
+    const newTheme = !isDark;
+    setIsDark(newTheme);
     
-    // Delay theme change to sync with ripple animation
-    setTimeout(() => {
-      const html = document.documentElement;
-      if (isDark) {
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-        setIsDark(false);
-      } else {
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-        setIsDark(true);
-      }
-    }, 400); // Sync with ripple animation timing
+    // Trigger ripple effect (theme change happens inside the ripple animation)
+    triggerRipple(centerX, centerY, newTheme);
   };
 
   return (
