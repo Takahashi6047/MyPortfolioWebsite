@@ -1,16 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
-import { Menu, X } from 'lucide-react';
+import { MobileNavOverlay } from '../../global/overlay/navigation/MobileNavOverlay';
 import { useState, useEffect } from 'react';
 
 export function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSideNav, setShowSideNav] = useState(false);
   const [textColor, setTextColor] = useState('text-foreground');
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -102,85 +97,21 @@ export function Navigation() {
             </span>
           </motion.div>
           
-          <motion.ul
-            initial={{ x: 20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="hidden md:flex gap-12 items-center text-foreground text-[1.05em] font-medium flex-1 justify-center"
-            style={{ fontFamily: '"Quicksand", sans-serif' }}
-          >
-            <li><a href="#home" className="hover:text-accent transition-colors duration-200">Home</a></li>
-            <li><a href="#about" className="hover:text-accent transition-colors duration-200">About Me</a></li>
-            <li><a href="#work" className="hover:text-accent transition-colors duration-200">Work</a></li>
-            <li><a href="#contact" className="hover:text-accent transition-colors duration-200">Contact</a></li>
-          </motion.ul>
+          {/* Centered on desktop only */}
+          <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
+            <MobileNavOverlay />
+          </div>
           
           <div className="flex items-center gap-3">
-            {/* Hamburger menu for mobile */}
-            <button
-              onClick={toggleMenu}
-              className="md:hidden p-2 rounded-lg bg-card hover:bg-accent transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <X size={20} className="text-foreground" />
-              ) : (
-                <Menu size={20} className="text-foreground" />
-              )}
-            </button>
-            
+            {/* Show beside theme toggle on mobile */}
+            <div className="md:hidden">
+              <MobileNavOverlay />
+            </div>
             <ThemeToggle />
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden bg-card/95 backdrop-blur-md border-t border-border"
-          >
-            <ul className="px-8 py-6 space-y-4" style={{ fontFamily: '"Quicksand", sans-serif' }}>
-              <li>
-                <a 
-                  href="#home" 
-                  className="block text-foreground hover:text-accent transition-colors duration-200 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#about" 
-                  className="block text-foreground hover:text-accent transition-colors duration-200 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  About Me
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#work" 
-                  className="block text-foreground hover:text-accent transition-colors duration-200 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Work
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#contact" 
-                  className="block text-foreground hover:text-accent transition-colors duration-200 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </motion.div>
-        )}
+
       </nav>
 
       {/* Sticky side navigation */}
