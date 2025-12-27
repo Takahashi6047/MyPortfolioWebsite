@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Moon, Sun } from 'lucide-react';
-import { useRipple } from '../global/RippleContext';
+import { useRipple } from '../../global/RippleContext';
 
 export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);

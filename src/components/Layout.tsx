@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
-import { Navigation } from './Navigation'
+import { Navigation } from './Navigation/Navigation'
 
 interface LayoutProps {
   children: ReactNode
