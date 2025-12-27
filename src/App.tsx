@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { Layout } from './components/Layout'
 import { Hero } from './sections/Hero'
+import { Works } from './sections/Works'
+import { DigitalArtistry } from './sections/DigitalArtistry'
 import { RippleProvider } from './global/overlay/themeOverlay/RippleContext'
 import { CustomCursor, CursorProvider } from './global/cursor'
 
@@ -23,6 +25,8 @@ function App() {
         <CustomCursor />
         <Layout>
           <Hero />
+          <Works />
+          <DigitalArtistry />
         </Layout>
       </RippleProvider>
     </CursorProvider>
