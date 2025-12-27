@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
+import { RippleOverlay } from './RippleOverlay';
 
 interface RippleContextType {
   triggerRipple: (x: number, y: number, isDarkMode: boolean) => void;
@@ -61,6 +62,3 @@ export function RippleProvider({ children }: RippleProviderProps) {
     </RippleContext.Provider>
   );
 }
-
-// Import the RippleOverlay component
-import { RippleOverlay } from './RippleOverlay';
