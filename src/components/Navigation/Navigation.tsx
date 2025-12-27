@@ -139,8 +139,9 @@ export function Navigation() {
           >
             {[
               { label: 'Home', href: '#home', onClick: handleHomeClick },
+              { label: 'Works', href: '#work' },
               { label: 'About Me', href: '#about' },
-              { label: 'Work', href: '#work' },
+              { label: 'Services', href: '#services' },
               { label: 'Contact Me', href: '#contact' }
             ].map((item, index) => (
               <motion.a

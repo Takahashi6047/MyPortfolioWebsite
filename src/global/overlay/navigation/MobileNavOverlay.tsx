@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
@@ -6,6 +6,7 @@ import { useCursor } from '../../cursor';
 
 export function MobileNavOverlay() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const { setCursorText, setCursorVariant } = useCursor();
 
   const handleMouseEnter = (text: string) => {
@@ -22,31 +23,40 @@ export function MobileNavOverlay() {
     { label: 'HOME', href: '#home' },
     { label: 'WORKS', href: '#work' },
     { label: 'ABOUT ME', href: '#about' },
+    { label: 'SERVICES', href: '#services' },
     { label: 'CONTACT', href: '#contact' }
   ];
 
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 1200); // Increased timeout to allow overlay animation to complete
+  };
+
   const handleNavClick = (href: string) => {
-    setIsOpen(false);
+    handleClose();
     setTimeout(() => {
       const element = document.querySelector(href);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
-    }, 300);
+    }, 1300);
   };
 
   const overlay = (
-    <AnimatePresence>
-      {isOpen && (
+    <>
+      {(isOpen || isClosing) && (
         <motion.div
           initial={{ y: '100%' }}
-          animate={{ y: 0 }}
-          exit={{ y: '100%' }}
+          animate={{ y: isClosing ? '100%' : 0 }}
           transition={{ 
             type: 'spring',
-            stiffness: 100,
-            damping: 20,
-            mass: 1.2
+            stiffness: isClosing ? 80 : 100,
+            damping: isClosing ? 25 : 20,
+            mass: isClosing ? 1.5 : 1.2,
+            delay: isClosing ? 0.6 : 0
           }}
           className="fixed top-0 left-0 w-screen h-screen z-[9999999] bg-background"
           style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100vw', height: '100vh' }}
@@ -55,14 +65,14 @@ export function MobileNavOverlay() {
           <motion.div 
             className="flex justify-between items-center px-4 sm:px-8 py-6"
             initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            animate={{ opacity: isClosing ? 0 : 1, y: isClosing ? -20 : 0 }}
+            transition={{ delay: isClosing ? 0.25 : 0.2, duration: 0.3 }}
           >
             <motion.div 
               className="flex items-center gap-3"
               initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+              animate={{ opacity: isClosing ? 0 : 1, x: isClosing ? -20 : 0 }}
+              transition={{ delay: isClosing ? 0.25 : 0.3, duration: 0.3 }}
             >
               <img 
                 src="/logo.png" 
@@ -76,11 +86,11 @@ export function MobileNavOverlay() {
             
             {/* Close Button - Right on mobile, Centered on desktop */}
             <motion.button
-              onClick={() => setIsOpen(false)}
-              initial={{ opacity: 0, scale: 0, rotate: 0 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              onClick={handleClose}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: isClosing ? 0 : 1, scale: isClosing ? 0 : 1 }}
               whileHover={{ rotate: 90 }}
-              transition={{ delay: 0.3, duration: 0.4, type: 'spring', stiffness: 200 }}
+              transition={{ delay: isClosing ? 0.2 : 0.3, duration: 0.3, type: 'spring', stiffness: 200 }}
               className="md:absolute md:left-1/2 md:-translate-x-1/2 md:top-6 w-10 h-10 flex items-center justify-center rounded-full bg-foreground transition-colors"
               aria-label="Close navigation"
             >
@@ -91,8 +101,8 @@ export function MobileNavOverlay() {
             <motion.button 
               className="hidden md:flex px-6 py-2 border border-foreground/20 rounded-full text-sm text-foreground hover:bg-foreground/10 transition-colors items-center gap-2"
               initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
+              animate={{ opacity: isClosing ? 0 : 1, x: isClosing ? 20 : 0 }}
+              transition={{ delay: isClosing ? 0.25 : 0.3, duration: 0.3 }}
             >
               LET'S TALK
               <span>→</span>
@@ -107,17 +117,24 @@ export function MobileNavOverlay() {
                   key={item.href}
                   onClick={() => handleNavClick(item.href)}
                   initial={{ opacity: 0, y: 60, scale: 0.8 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.9 }}
+                  animate={{ 
+                    opacity: isClosing ? 0 : 1, 
+                    y: isClosing ? 0 : 0, 
+                    scale: 1,
+                    scaleX: isClosing ? 0 : 1
+                  }}
                   transition={{ 
-                    delay: 0.3 + index * 0.1,
-                    duration: 0.6,
-                    type: 'spring',
+                    delay: isClosing 
+                      ? (navItems.length - index - 1) * 0.05
+                      : 0.3 + index * 0.1,
+                    duration: isClosing ? 0.12 : 0.6,
+                    type: isClosing ? 'tween' : 'spring',
+                    ease: isClosing ? [0.4, 0, 1, 1] : undefined,
                     stiffness: 100,
                     damping: 15
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="relative text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-foreground tracking-tight group flex items-center"
+                  className="relative text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-foreground tracking-tight group flex items-center origin-left"
                   style={{ fontFamily: '"Orbitron", sans-serif' }}
                 >
                   {/* Left Bracket with Glow */}
@@ -163,25 +180,27 @@ export function MobileNavOverlay() {
           <motion.div 
             className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+            animate={{ opacity: isClosing ? 0 : 1, y: isClosing ? 20 : 0 }}
+            transition={{ delay: isClosing ? 0 : 0.6, duration: 0.3 }}
           >
             <motion.p 
               className="text-xs sm:text-sm text-foreground/60 order-2 sm:order-1"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
+              animate={{ opacity: isClosing ? 0 : 1 }}
+              transition={{ delay: isClosing ? 0 : 0.7, duration: 0.3 }}
             >
               ©2025 ALL RIGHTS RESERVED
             </motion.p>
             <motion.div 
               className="flex gap-4 sm:gap-6 text-xs sm:text-sm order-1 sm:order-2"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
+              animate={{ opacity: isClosing ? 0 : 1 }}
+              transition={{ delay: isClosing ? 0 : 0.7, duration: 0.3 }}
             >
               <motion.a 
-                href="#" 
+                href="https://www.instagram.com/artcodedddd/" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-foreground transition-colors"
                 whileHover={{ y: -2 }}
               >
@@ -195,17 +214,19 @@ export function MobileNavOverlay() {
                 LINKEDIN ↗
               </motion.a>
               <motion.a 
-                href="#" 
+                href="https://www.facebook.com/profile.php?id=61583906544347" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-foreground transition-colors"
                 whileHover={{ y: -2 }}
               >
-                BEHANCE ↗
+                FACEBOOK ↗
               </motion.a>
             </motion.div>
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </>
   );
 
   return (

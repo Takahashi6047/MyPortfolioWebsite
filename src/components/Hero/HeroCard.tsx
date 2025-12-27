@@ -49,7 +49,7 @@ export function HeroCard() {
           <div className="flex justify-between items-center">
             <span className="text-xs sm:text-sm text-white/80">© 2025</span>
             <button className="text-xs sm:text-sm bg-white text-black px-4 sm:px-5 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition">
-              Let's chat
+              Let's talk
             </button>
           </div>
         </div>
