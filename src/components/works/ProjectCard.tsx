@@ -12,8 +12,7 @@ interface ProjectCardProps {
 export const ProjectCard: React.FC<ProjectCardProps> = ({ title, category, image, description, tags }) => {
   return (
     <div
-      className="group relative w-full h-[400px] rounded-2xl overflow-hidden cursor-pointer transform-gpu"
-      style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
+      className="group relative w-full h-[400px] rounded-2xl overflow-hidden cursor-pointer"
     >
       {/* Background Image */}
       <div

@@ -102,25 +102,28 @@ export function Works() {
             </div>
 
             {/* Desktop View (Split Sticky Layout) */}
-            <div className="hidden lg:flex flex-row w-full">
+            <div className="hidden lg:flex flex-row w-full relative">
+                {/* Full-width grid background */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div
+                        className="absolute inset-0 opacity-[0.08]"
+                        style={{
+                            backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
+                            backgroundSize: '40px 40px',
+                        }}
+                    />
+                    {/* Faded edges - top, bottom, left, right */}
+                    <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+                    <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent" />
+                    <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-background to-transparent" />
+                </div>
+
                 {/* Left Column - Sticky Content */}
-                <div className="w-1/2 h-screen sticky top-0 flex flex-col justify-center px-12 md:px-20 py-20 bg-background z-10 transition-colors duration-300">
+                <div className="w-1/2 h-screen sticky top-0 flex flex-col justify-center px-12 md:px-20 py-20 bg-transparent z-10 transition-colors duration-300">
 
                     {/* Background Decorative Elements */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-                        <div
-                            className="absolute inset-0 transition-opacity duration-300"
-                            style={{
-                                background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, var(--accent), transparent 40%)`
-                            }}
-                        />
-                        <div
-                            className="absolute inset-0 opacity-[0.08]"
-                            style={{
-                                backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
-                                backgroundSize: '40px 40px',
-                            }}
-                        />
                         <div
                             className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-accent/30 blur-[80px] transition-transform duration-1000 ease-out"
                             style={{
@@ -129,7 +132,7 @@ export function Works() {
                         />
                     </div>
 
-                    <div className="max-w-xl">
+                    <div className="max-w-xl ml-auto mr-8">
                         <span className="text-sm font-bold tracking-widest text-foreground/50 uppercase mb-12 block font-sans">Selected Works</span>
 
                         {/* Counter */}
@@ -138,20 +141,26 @@ export function Works() {
                         </div>
 
                         {/* Title Wrapper */}
-                        <div className="relative h-32 mb-6 pointer-events-none">
-                            {projects.map((project, idx) => (
-                                <h1
-                                    key={idx}
-                                    className={`absolute top-0 left-0 text-7xl font-bold tracking-tight transition-all duration-700 ease-out transform font-sans ${activeIndex === idx
-                                        ? 'opacity-100 translate-y-0'
-                                        : activeIndex > idx ? 'opacity-0 -translate-y-full' : 'opacity-0 translate-y-full'
-                                        }`}
-                                >
-                                    {project.title.split(' ').map((word, i) => (
-                                        <span key={i} className="block">{word}</span>
-                                    ))}
-                                </h1>
-                            ))}
+                        <div className="relative mb-6 pointer-events-none">
+                            {projects.map((project, idx) => {
+                                const wordCount = project.title.split(' ').length;
+                                const heightClass = wordCount <= 2 ? 'min-h-[10rem]' : wordCount === 3 ? 'min-h-[14rem]' : 'min-h-[18rem]';
+                                return (
+                                    <div
+                                        key={idx}
+                                        className={`${activeIndex === idx ? 'relative' : 'absolute top-0 left-0'} ${heightClass} transition-opacity duration-700 ease-out ${activeIndex === idx
+                                            ? 'opacity-100'
+                                            : 'opacity-0 pointer-events-none'
+                                            }`}
+                                    >
+                                        <h1 className="text-6xl xl:text-7xl font-bold tracking-tight font-sans leading-[1.1]">
+                                            {project.title.split(' ').map((word, i) => (
+                                                <span key={i} className="block">{word}</span>
+                                            ))}
+                                        </h1>
+                                    </div>
+                                );
+                            })}
                         </div>
 
                         {/* Category & Year */}
@@ -178,14 +187,14 @@ export function Works() {
                 </div>
 
                 {/* Right Column - Scrolling Images */}
-                <div className="w-full lg:w-1/2 bg-background transition-colors duration-300" ref={rightColumnRef}>
+                <div className="w-full lg:w-1/2 bg-transparent transition-colors duration-300 relative z-10" ref={rightColumnRef}>
                     {projects.map((project, index) => (
                         <div
                             key={index}
                             data-index={index}
                             className="project-item min-h-screen w-full flex items-center justify-center p-20"
                         >
-                            <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group cursor-pointer transition-transform duration-500 hover:scale-[1.02]">
+                            <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group cursor-pointer">
                                 <img
                                     src={project.image}
                                     alt={project.title}
