@@ -30,6 +30,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  cursor: none !important; /* Hide default cursor */
 }
 
 html {
@@ -42,4 +43,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  cursor: none !important; /* Hide default cursor */
+}
+
+/* Hide cursor on all interactive elements */
+a, button, input, textarea, select, [role="button"] {
+  cursor: none !important;
 }

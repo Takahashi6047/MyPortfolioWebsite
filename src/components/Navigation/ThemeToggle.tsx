@@ -1,17 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { useRipple } from '../../global/overlay/themeOverlay/RippleContext';
+import { useCursor } from '../../global/cursor';
 
 export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const { triggerRipple, isAnimating } = useRipple();
+  const { setCursorText, setCursorVariant } = useCursor();
 
   useEffect(() => {
     // Check if dark mode is already set
     const isDarkMode = document.documentElement.classList.contains('dark');
     setIsDark(isDarkMode);
   }, []);
+
+  // Update cursor text when theme changes while hovering
+  useEffect(() => {
+    if (isHovering) {
+      setCursorText(isDark ? 'Light Mode' : 'Dark Mode');
+    }
+  }, [isDark, isHovering, setCursorText]);
 
   const toggleTheme = () => {
     // Prevent multiple clicks during animation
@@ -32,16 +42,30 @@ export function ThemeToggle() {
     triggerRipple(centerX, centerY, newTheme);
   };
 
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+    setCursorText(isDark ? 'Light Mode' : 'Dark Mode');
+    setCursorVariant('text');
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    setCursorText('');
+    setCursorVariant('default');
+  };
+
   return (
     <button
       ref={buttonRef}
       onClick={toggleTheme}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       disabled={isAnimating}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 z-[999999] ${
         !isDark 
           ? 'bg-blue-600 hover:bg-blue-700' 
           : 'bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
-      } ${isAnimating ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'}`}
+      } ${isAnimating ? 'opacity-75' : ''}`}
       aria-label="Toggle theme"
     >
       {/* Toggle circle */}

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Layout } from './components/Layout'
 import { Hero } from './sections/Hero'
 import { RippleProvider } from './global/overlay/themeOverlay/RippleContext'
+import { CustomCursor, CursorProvider } from './global/cursor'
 
 function App() {
   useEffect(() => {
@@ -17,11 +18,14 @@ function App() {
   }, [])
 
   return (
-    <RippleProvider>
-      <Layout>
-        <Hero />
-      </Layout>
-    </RippleProvider>
+    <CursorProvider>
+      <RippleProvider>
+        <CustomCursor />
+        <Layout>
+          <Hero />
+        </Layout>
+      </RippleProvider>
+    </CursorProvider>
   )
 }
 
