@@ -2,13 +2,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { useCursor } from '../../cursor';
 
 export function MobileNavOverlay() {
   const [isOpen, setIsOpen] = useState(false);
+  const { setCursorText, setCursorVariant } = useCursor();
+
+  const handleMouseEnter = (text: string) => {
+    setCursorText(text);
+    setCursorVariant('text');
+  };
+
+  const handleMouseLeave = () => {
+    setCursorText('');
+    setCursorVariant('default');
+  };
 
   const navItems = [
     { label: 'HOME', href: '#home' },
-    { label: 'WORK', href: '#work' },
+    { label: 'WORKS', href: '#work' },
     { label: 'ABOUT ME', href: '#about' },
     { label: 'CONTACT', href: '#contact' }
   ];
@@ -201,6 +213,8 @@ export function MobileNavOverlay() {
       {/* Menu Button - 4 dots */}
       <motion.button
         onClick={() => setIsOpen(true)}
+        onMouseEnter={() => handleMouseEnter('Menu')}
+        onMouseLeave={handleMouseLeave}
         whileHover={{ rotate: 90 }}
         transition={{ duration: 0.3 }}
         className="p-2 rounded-full hover:bg-foreground/10 transition-colors"

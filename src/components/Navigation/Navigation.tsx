@@ -2,10 +2,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
 import { MobileNavOverlay } from '../../global/overlay/navigation/MobileNavOverlay';
 import { useState, useEffect } from 'react';
+import { useCursor } from '../../global/cursor';
 
 export function Navigation() {
   const [showSideNav, setShowSideNav] = useState(false);
   const [textColor, setTextColor] = useState('text-foreground');
+  const { setCursorText, setCursorVariant } = useCursor();
+
+  const handleMouseEnter = (text: string) => {
+    setCursorText(text);
+    setCursorVariant('text');
+  };
+
+  const handleMouseLeave = () => {
+    setCursorText('');
+    setCursorVariant('default');
+  };
 
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -86,6 +98,8 @@ export function Navigation() {
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
             className="flex items-center gap-3"
+            onMouseEnter={() => handleMouseEnter("That's me!")}
+            onMouseLeave={handleMouseLeave}
           >
             <img 
               src="/logo.png" 

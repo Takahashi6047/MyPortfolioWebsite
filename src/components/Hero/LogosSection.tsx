@@ -47,7 +47,7 @@ export function LogosSection() {
               <img
                 src={logo.src}
                 alt={logo.name}
-                className={`object-contain grayscale opacity-60 hover:opacity-80 transition-all duration-500 ${
+                className={`object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-500 ${
                   logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
                 }`}
               />
@@ -66,7 +66,7 @@ export function LogosSection() {
               <img
                 src={logo.src}
                 alt={logo.name}
-                className={`object-contain grayscale opacity-60 hover:opacity-80 transition-all duration-500 ${
+                className={`object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-500 ${
                   logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
                 }`}
               />
