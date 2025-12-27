@@ -36,7 +36,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section id="home" className="relative min-h-screen px-4 sm:px-6 md:px-8 flex flex-col justify-center">
+    <section id="home" className="relative px-4 sm:px-6 md:px-8 flex flex-col pt-4 sm:pt-8 md:min-h-screen md:justify-center md:pt-0">
       {/* Main container with rounded corners */}
       <div
         className={`relative w-full rounded-2xl sm:rounded-3xl bg-neutral-300 dark:bg-neutral-800 overflow-hidden bg-cover bg-center bg-no-repeat transition-all duration-700 ease-out transform-gpu ${isContainerVisible
