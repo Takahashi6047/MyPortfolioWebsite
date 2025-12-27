@@ -37,20 +37,32 @@ export function ThemeToggle() {
       ref={buttonRef}
       onClick={toggleTheme}
       disabled={isAnimating}
-      className={`p-2 rounded-lg bg-card hover:bg-accent transition-colors relative overflow-hidden ${
-        isAnimating ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'
-      }`}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 z-[999999] ${
+        !isDark 
+          ? 'bg-blue-600 hover:bg-blue-700' 
+          : 'bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
+      } ${isAnimating ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'}`}
       aria-label="Toggle theme"
     >
-      {isDark ? (
-        <Sun size={20} className="text-foreground" />
-      ) : (
-        <Moon size={20} className="text-foreground" />
-      )}
+      {/* Toggle circle */}
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${
+          !isDark ? 'translate-x-6' : 'translate-x-1'
+        }`}
+      >
+        {/* Icon inside the circle */}
+        <span className="flex h-full w-full items-center justify-center">
+          {isDark ? (
+            <Moon size={10} className="text-neutral-600" />
+          ) : (
+            <Sun size={10} className="text-blue-600" />
+          )}
+        </span>
+      </span>
       
       {/* Visual indicator when disabled */}
       {isAnimating && (
-        <div className="absolute inset-0 bg-neutral-500/10 rounded-lg" />
+        <div className="absolute inset-0 bg-neutral-500/10 rounded-full" />
       )}
     </button>
   );

@@ -58,7 +58,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden"
+          className="fixed inset-0 pointer-events-none z-[99999] overflow-hidden"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}

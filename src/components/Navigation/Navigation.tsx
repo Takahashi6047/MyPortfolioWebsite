@@ -84,7 +84,7 @@ export function Navigation() {
 
   return (
     <>
-      <nav className="relative z-50 backdrop-blur-md bg-card/80">
+      <nav className="relative z-[999999] backdrop-blur-md bg-card/80">
         <div className="mx-auto px-8 py-4 flex justify-between items-center">
           <motion.div
             initial={{ x: -20, opacity: 0 }}
@@ -190,7 +190,7 @@ export function Navigation() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3"
+            className="fixed right-4 top-1/2 -translate-y-1/2 z-[999999] flex flex-col gap-3"
           >
             {[
               { label: 'Home', href: '#home', onClick: handleHomeClick },

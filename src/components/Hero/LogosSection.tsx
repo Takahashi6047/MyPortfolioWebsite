@@ -86,13 +86,13 @@ export function LogosSection() {
           <div className="flex gap-0.5">
             {/* 4 full stars */}
             {[...Array(4)].map((_, i) => (
-              <span key={i} className="text-yellow-400 dark:text-yellow-300 text-xs sm:text-sm">★</span>
+              <span key={i} className="text-neutral-400 dark:text-neutral-500 text-xs sm:text-sm">★</span>
             ))}
             {/* 1 partial star (90% filled for 4.9 rating) */}
             <div className="relative inline-block text-xs sm:text-sm">
               <span className="text-neutral-300 dark:text-neutral-600">★</span>
               <div className="absolute inset-0 overflow-hidden" style={{ width: '90%' }}>
-                <span className="text-yellow-400 dark:text-yellow-300">★</span>
+                <span className="text-neutral-400 dark:text-neutral-500">★</span>
               </div>
             </div>
           </div>
