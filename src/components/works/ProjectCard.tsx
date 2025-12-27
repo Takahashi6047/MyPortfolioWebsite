@@ -7,13 +7,22 @@ interface ProjectCardProps {
   image: string;
   description: string;
   tags: string[];
+  index?: number;
+  total?: number;
 }
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ title, category, image, description, tags }) => {
+export const ProjectCard: React.FC<ProjectCardProps> = ({ title, category, image, description, tags, index, total }) => {
   return (
-    <div
-      className="group relative w-full h-[400px] rounded-2xl overflow-hidden cursor-pointer"
-    >
+    <div className="relative">
+      {/* Counter for mobile */}
+      {typeof index === 'number' && typeof total === 'number' && (
+        <div className="text-sm font-mono mb-3 text-foreground/60 lg:hidden">
+          0{index + 1} / 0{total}
+        </div>
+      )}
+      <div
+        className="group relative w-full h-[300px] sm:h-[400px] rounded-2xl overflow-hidden cursor-pointer"
+      >
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
@@ -55,6 +64,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ title, category, image
 
       {/* Hover Border/Glow Effect */}
       <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/20 rounded-2xl transition-colors duration-500 pointer-events-none" />
+      </div>
     </div>
   );
 };

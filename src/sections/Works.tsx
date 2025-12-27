@@ -84,18 +84,30 @@ export function Works() {
             className="relative bg-background text-foreground"
         >
             {/* Mobile View (Original Grid Layout) */}
-            <div className="lg:hidden py-20 px-4 sm:px-6">
-                <div className="mb-12">
-                    <h2 className="text-4xl font-light mb-6 text-foreground font-sans">Selected Works</h2>
-                    <div className="w-24 h-1 bg-foreground/20 mb-6" />
-                    <p className="text-lg text-foreground/70 font-light font-sans">
-                        A curation of digital products and experiences.
-                    </p>
+            <div className="block lg:hidden py-16 px-4 sm:px-6 relative">
+                {/* Grid background for mobile */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div
+                        className="absolute inset-0 opacity-[0.08]"
+                        style={{
+                            backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
+                            backgroundSize: '30px 30px',
+                        }}
+                    />
+                    {/* Faded edges */}
+                    <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-background to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
+                    <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent" />
+                    <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div className="mb-10 relative z-10">
+                    <span className="text-xs font-bold tracking-widest text-foreground/50 uppercase block font-sans">Selected Works</span>
+                </div>
+                <div className="grid grid-cols-1 gap-6 relative z-10">
                     {projects.map((project, index) => (
                         <div key={index}>
-                            <ProjectCard {...project} />
+                            <ProjectCard {...project} index={index} total={projects.length} />
                         </div>
                     ))}
                 </div>
