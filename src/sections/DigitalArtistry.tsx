@@ -97,7 +97,7 @@ export function DigitalArtistry() {
             id="artistry"
             ref={sectionRef}
             onMouseMove={handleMouseMove}
-            className="relative h-screen py-20 px-4 sm:px-6 md:px-8 bg-neutral-100 dark:bg-neutral-900 overflow-hidden flex flex-col justify-center"
+            className="relative min-h-screen lg:h-screen py-20 px-4 sm:px-6 md:px-8 bg-neutral-100 dark:bg-neutral-900 overflow-hidden flex flex-col justify-center"
             style={{ backgroundColor: 'var(--background, #f5f5f5)' }}
         >
             {/* Background Decorative Elements (Matching Works Section) */}

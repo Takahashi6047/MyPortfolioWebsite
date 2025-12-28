@@ -98,7 +98,6 @@ export function Navigation() {
             {[
               { label: 'Home', href: '#home', onClick: handleHomeClick },
               { label: 'Works', href: '#works' },
-              { label: 'About Me', href: '#about' },
               { label: 'Services', href: '#services' },
               { label: 'Contact Me', href: '#contact' }
             ].map((item, index) => (

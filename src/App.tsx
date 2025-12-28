@@ -7,11 +7,11 @@ import { RippleProvider } from './global/overlay/themeOverlay/RippleContext'
 import { CustomCursor, CursorProvider } from './global/cursor'
 
 function App() {
-  const parallaxContainerRef = useRef<HTMLDivElement>(null)
-  const worksEndRef = useRef<HTMLDivElement>(null)
-  const worksRef = useRef<HTMLDivElement>(null)
+  const parallaxTriggerRef = useRef<HTMLDivElement>(null)
+  const worksWrapperRef = useRef<HTMLDivElement>(null)
   const [slideProgress, setSlideProgress] = useState(0)
-  const [worksFixed, setWorksFixed] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(false)
+  const [isWorksSticky, setIsWorksSticky] = useState(false)
 
   useEffect(() => {
     // Initialize theme from localStorage or system preference
@@ -25,38 +25,50 @@ function App() {
     }
   }, [])
 
+  // Check if we're on desktop (lg breakpoint = 1024px)
   useEffect(() => {
-    const handleScroll = () => {
-      if (!worksEndRef.current || !worksRef.current) return
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 1024)
+    }
+    
+    checkDesktop()
+    window.addEventListener('resize', checkDesktop)
+    return () => window.removeEventListener('resize', checkDesktop)
+  }, [])
 
-      const worksEndRect = worksEndRef.current.getBoundingClientRect()
+  useEffect(() => {
+    // Only apply parallax effect on desktop
+    if (!isDesktop) {
+      setSlideProgress(0)
+      setIsWorksSticky(false)
+      return
+    }
+
+    const handleScroll = () => {
+      if (!parallaxTriggerRef.current || !worksWrapperRef.current) return
+
+      const triggerRect = parallaxTriggerRef.current.getBoundingClientRect()
+      const wrapperRect = worksWrapperRef.current.getBoundingClientRect()
       const viewportHeight = window.innerHeight
 
-      // When the works-end marker enters the viewport, start the slide
-      // worksEndRect.top will be < viewportHeight when it's visible
-      const distanceFromBottom = worksEndRect.top - viewportHeight
+      // Check if we've scrolled past the Works section (wrapper bottom is at or above viewport top)
+      const worksEnded = wrapperRect.bottom <= viewportHeight
 
-      if (distanceFromBottom < 0) {
-        // The marker has passed the bottom of the viewport
-        // Calculate progress based on how far past it is
-        const slideDistance = viewportHeight // Scroll distance to complete the slide
-        const progress = Math.min(Math.max(-distanceFromBottom / slideDistance, 0), 1)
+      if (worksEnded) {
+        setIsWorksSticky(true)
+        // Calculate slide progress based on trigger position
+        const progress = Math.min(Math.max(1 - triggerRect.top / viewportHeight, 0), 1)
         setSlideProgress(progress)
-        
-        // Fix Works in place when parallax starts
-        if (!worksFixed) {
-          setWorksFixed(true)
-        }
       } else {
+        setIsWorksSticky(false)
         setSlideProgress(0)
-        setWorksFixed(false)
       }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll() // Initial check
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [worksFixed])
+  }, [isDesktop])
 
   return (
     <CursorProvider>
@@ -64,28 +76,71 @@ function App() {
         <CustomCursor />
         <Layout>
           <Hero />
-          {/* Parallax Container for Works + DigitalArtistry */}
-          <div ref={parallaxContainerRef} className="relative">
-            {/* Works Section - becomes fixed at top when parallax starts */}
-            <div 
-              ref={worksRef}
-              className={worksFixed ? 'fixed top-0 left-0 w-full z-10' : 'relative'}
-            >
+          
+          {/* Mobile View - Simple stacked layout without parallax */}
+          <div className="lg:hidden">
+            <Works />
+            <DigitalArtistry />
+          </div>
+          
+          {/* Desktop View - Parallax effect */}
+          <div className="hidden lg:block relative">
+            {/* Works wrapper - contains Works and provides the sticky context */}
+            <div ref={worksWrapperRef} className="relative">
               <Works />
             </div>
             
-            {/* Placeholder to maintain scroll height when Works is fixed */}
-            {worksFixed && <div style={{ height: worksRef.current?.offsetHeight || 0 }} />}
+            {/* Sticky Works clone that appears when original scrolls away */}
+            {isWorksSticky && (
+              <div className="fixed top-0 left-0 w-full h-screen z-10 overflow-hidden">
+                {/* Show only the last project view */}
+                <div className="w-full h-full bg-background flex">
+                  {/* Recreate the Works layout showing last project */}
+                  <div className="w-1/2 h-screen flex flex-col justify-center px-12 md:px-20 py-20 bg-background">
+                    <div className="max-w-xl ml-auto mr-8">
+                      <span className="text-sm font-bold tracking-widest text-foreground/50 uppercase mb-12 block font-sans">Selected Works</span>
+                      <div className="text-xl font-mono mb-4 text-foreground/80">04 / 04</div>
+                      <h1 className="text-6xl xl:text-7xl font-bold tracking-tight font-sans leading-[1.1] mb-6">
+                        <span className="block">Smart</span>
+                        <span className="block">City</span>
+                        <span className="block">Grid</span>
+                      </h1>
+                      <div className="flex items-center gap-4 mb-8 text-foreground/60 text-lg uppercase tracking-widest border-b border-foreground/10 pb-4 font-sans">
+                        <span>Infrastructure</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-foreground/40" />
+                        <span>2022</span>
+                      </div>
+                      <p className="text-xl text-foreground/80 font-light leading-relaxed mb-8 font-sans">
+                        IoT connectivity platform for managing smart city infrastructure and energy consumption.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {["Go", "GraphQL", "PostgreSQL", "Flutter"].map((tag, i) => (
+                          <span key={i} className="px-4 py-2 text-sm bg-accent/50 text-foreground/90 rounded-full font-sans border border-transparent">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-1/2 h-screen flex items-center justify-center p-20">
+                    <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
+                      <img
+                        src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=2669&auto=format&fit=crop"
+                        alt="Smart City Grid"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             
-            {/* Marker for end of Works - triggers the slide */}
-            <div ref={worksEndRef} className="h-0" />
-            
-            {/* Spacer for the slide-in scroll distance */}
-            <div style={{ height: '100vh' }} />
+            {/* Parallax trigger zone */}
+            <div ref={parallaxTriggerRef} style={{ height: '100vh' }} />
             
             {/* DigitalArtistry - Fixed and slides in from right */}
             <div 
-              className="fixed top-0 left-0 w-full h-screen z-30 transition-transform duration-100 ease-out overflow-hidden"
+              className="fixed top-0 left-0 w-full h-screen z-30 overflow-hidden"
               style={{
                 transform: `translateX(${100 - slideProgress * 100}%)`,
                 visibility: slideProgress > 0 ? 'visible' : 'hidden',

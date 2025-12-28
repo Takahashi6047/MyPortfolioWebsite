@@ -22,7 +22,6 @@ export function MobileNavOverlay() {
   const navItems = [
     { label: 'HOME', href: '#home' },
     { label: 'WORKS', href: '#work' },
-    { label: 'ABOUT ME', href: '#about' },
     { label: 'SERVICES', href: '#services' },
     { label: 'CONTACT', href: '#contact' }
   ];
