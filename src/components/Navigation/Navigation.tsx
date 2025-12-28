@@ -1,13 +1,14 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { ThemeToggle } from './ThemeToggle';
 import { MobileNavOverlay } from '../../global/overlay/navigation/MobileNavOverlay';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCursor } from '../../global/cursor';
 
 export function Navigation() {
   const [showSideNav, setShowSideNav] = useState(false);
-  const [textColor, setTextColor] = useState('text-foreground');
   const { setCursorText, setCursorVariant } = useCursor();
+  const dragControls = useDragControls();
+  const constraintsRef = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (text: string) => {
     setCursorText(text);
@@ -25,58 +26,6 @@ export function Navigation() {
       top: 0,
       behavior: 'smooth'
     });
-  };
-
-  // Detect background luminance and adjust text color
-  useEffect(() => {
-    const detectBackgroundColor = () => {
-      if (!showSideNav) return;
-
-      // Get multiple points around the nav area to sample the background
-      const navX = window.innerWidth - 60;
-      const navY = window.innerHeight / 2;
-
-      // Temporarily hide the nav to get the background element
-      const navElements = document.querySelectorAll('[class*="fixed right-4"]');
-      const originalDisplay = Array.from(navElements).map(el => (el as HTMLElement).style.display);
-
-      navElements.forEach(el => {
-        (el as HTMLElement).style.display = 'none';
-      });
-
-      const bgElement = document.elementFromPoint(navX, navY);
-      const bgColor = window.getComputedStyle(bgElement || document.body).backgroundColor;
-
-      // Restore nav visibility
-      navElements.forEach((el, i) => {
-        (el as HTMLElement).style.display = originalDisplay[i];
-      });
-
-      const luminance = getColorLuminance(bgColor);
-
-      // If background is dark (luminance < 128), use light text; otherwise use dark text
-      setTextColor(luminance < 128 ? 'text-white' : 'text-gray-900');
-    };
-
-    const handleScroll = () => {
-      detectBackgroundColor();
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Also detect on initial load
-    setTimeout(detectBackgroundColor, 100);
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [showSideNav]);
-
-  // Helper function to calculate color luminance
-  const getColorLuminance = (rgbColor: string): number => {
-    const match = rgbColor.match(/\d+/g);
-    if (!match || match.length < 3) return 128;
-
-    const [r, g, b] = match.map(Number);
-    // Standard luminance formula
-    return (0.299 * r + 0.587 * g + 0.114 * b);
   };
 
   useEffect(() => {
@@ -128,14 +77,23 @@ export function Navigation() {
 
       </nav>
 
-      {/* Minimalist Vertical Side Navigation */}
+      {/* Drag constraints container - full viewport height */}
+      <div ref={constraintsRef} className="fixed right-6 top-0 bottom-0 w-12 pointer-events-none z-[999998]" />
+
+      {/* Minimalist Vertical Side Navigation - Draggable on Y axis */}
       <AnimatePresence>
         {showSideNav && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="fixed right-6 top-1/2 -translate-y-1/2 z-[999999] py-6 px-3 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col gap-6 items-center"
+            drag="y"
+            dragControls={dragControls}
+            dragConstraints={constraintsRef}
+            dragElastic={0.1}
+            dragMomentum={false}
+            whileDrag={{ scale: 1.05 }}
+            className="fixed right-6 top-1/3 -translate-y-1/2 z-[999999] py-6 px-3 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col gap-6 items-center cursor-grab active:cursor-grabbing"
           >
             {[
               { label: 'Home', href: '#home', onClick: handleHomeClick },
@@ -153,9 +111,9 @@ export function Navigation() {
                 transition={{ delay: index * 0.1 }}
                 className="relative group flex items-center justify-center p-1"
               >
-                {/* Dot Indicator */}
+                {/* Dot Indicator - black in light mode, white in dark mode */}
                 <div
-                  className={`w-2 h-2 rounded-full transition-all duration-300 group-hover:bg-blue-400 group-hover:scale-150 ${textColor === 'text-white' ? 'bg-white/60' : 'bg-black/40'}`}
+                  className="w-2 h-2 rounded-full transition-all duration-300 group-hover:bg-blue-400 group-hover:scale-150 bg-black dark:bg-white"
                 />
 
                 {/* Hover Label */}

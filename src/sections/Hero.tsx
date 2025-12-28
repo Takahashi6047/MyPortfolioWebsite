@@ -40,8 +40,8 @@ export function Hero() {
       {/* Main container with rounded corners */}
       <div
         className={`relative w-full rounded-2xl sm:rounded-3xl bg-neutral-300 dark:bg-neutral-800 overflow-hidden bg-cover bg-center bg-no-repeat transition-all duration-700 ease-out transform-gpu ${isContainerVisible
-            ? 'h-[70vh] sm:h-[75vh] md:h-[80vh] opacity-100 scale-y-100'
-            : 'h-0 opacity-0 scale-y-0'
+          ? 'h-[70vh] sm:h-[75vh] md:h-[80vh] opacity-100 scale-y-100'
+          : 'h-0 opacity-0 scale-y-0'
           }`}
         style={{
           backgroundImage: 'url(/hero/hero.png)',
