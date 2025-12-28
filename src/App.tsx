@@ -94,9 +94,30 @@ function App() {
             {isWorksSticky && (
               <div className="fixed top-0 left-0 w-full h-screen z-10 overflow-hidden">
                 {/* Show only the last project view */}
-                <div className="w-full h-full bg-background flex">
+                <div className="w-full h-full bg-background flex relative">
+                  {/* Grid background */}
+                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div
+                      className="absolute inset-0 opacity-[0.08]"
+                      style={{
+                        backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
+                        backgroundSize: '40px 40px',
+                      }}
+                    />
+                    {/* Faded edges - top, bottom, left, right */}
+                    <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
+                    <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent" />
+                    <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-background to-transparent" />
+                  </div>
+                  
                   {/* Recreate the Works layout showing last project */}
-                  <div className="w-1/2 h-screen flex flex-col justify-center px-12 md:px-20 py-20 bg-background">
+                  <div className="w-1/2 h-screen flex flex-col justify-center px-12 md:px-20 py-20 bg-transparent relative z-10">
+                    {/* Background Decorative Elements */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+                      <div className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-accent/30 blur-[80px]" />
+                    </div>
+                    
                     <div className="max-w-xl ml-auto mr-8">
                       <span className="text-sm font-bold tracking-widest text-foreground/50 uppercase mb-12 block font-sans">Selected Works</span>
                       <div className="text-xl font-mono mb-4 text-foreground/80">04 / 04</div>
@@ -122,7 +143,7 @@ function App() {
                       </div>
                     </div>
                   </div>
-                  <div className="w-1/2 h-screen flex items-center justify-center p-20">
+                  <div className="w-1/2 h-screen flex items-center justify-center p-20 relative z-10">
                     <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                       <img
                         src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=2669&auto=format&fit=crop"
