@@ -10,13 +10,25 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Reset scroll position to top immediately when loader mounts
+    window.scrollTo(0, 0);
+    
+    // Also prevent scrolling during loading
+    document.body.style.overflow = 'hidden';
+    
     // Simulate loading time - adjust as needed
     const timer = setTimeout(() => {
       setIsLoading(false);
+      // Re-enable scrolling when loader completes
+      document.body.style.overflow = 'unset';
       onLoadingComplete?.();
     }, 2500);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      // Cleanup: ensure scrolling is re-enabled if component unmounts
+      document.body.style.overflow = 'unset';
+    };
   }, [onLoadingComplete]);
 
   const loader = (

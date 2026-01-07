@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion';
 
-export function LogosSection() {
+export interface LogosSectionProps {
+  isLoadingComplete?: boolean;
+}
+
+export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
   const logos = [
     { name: 'React', src: '/hero/otherLogos/react.png' },
     { name: 'Vue', src: '/hero/otherLogos/vue.png' },
@@ -17,8 +21,8 @@ export function LogosSection() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.5, duration: 0.6 }}
+      animate={isLoadingComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ delay: isLoadingComplete ? 2.2 : 0, duration: 0.6 }}
       className="relative flex flex-row items-center gap-4 sm:gap-6 md:gap-8"
     >
       {/* Logos Container */}
@@ -40,8 +44,8 @@ export function LogosSection() {
             <motion.div
               key={`${logo.name}-1`}
               initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6 + index * 0.05, duration: 0.4 }}
+              animate={isLoadingComplete ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ delay: isLoadingComplete ? 2.4 + index * 0.05 : 0, duration: 0.4 }}
               className="flex-shrink-0"
             >
               <img
@@ -59,8 +63,8 @@ export function LogosSection() {
             <motion.div
               key={`${logo.name}-2`}
               initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6 + index * 0.05, duration: 0.4 }}
+              animate={isLoadingComplete ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ delay: isLoadingComplete ? 2.4 + index * 0.05 : 0, duration: 0.4 }}
               className="flex-shrink-0"
             >
               <img
@@ -78,8 +82,8 @@ export function LogosSection() {
       {/* Text - Side by side with logos */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.8, duration: 0.6 }}
+        animate={isLoadingComplete ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+        transition={{ delay: isLoadingComplete ? 2.6 : 0, duration: 0.6 }}
         className="text-right flex-shrink-0"
       >
         <div className="flex items-center justify-end gap-1.5 sm:gap-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">

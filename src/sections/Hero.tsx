@@ -2,7 +2,11 @@ import { HeroCard } from '../components/Hero/HeroCard';
 import { LogosSection } from '../components/Hero/LogosSection';
 import { useState, useEffect } from 'react';
 
-export function Hero() {
+interface HeroProps {
+  isLoadingComplete?: boolean;
+}
+
+export function Hero({ isLoadingComplete = false }: HeroProps) {
   const [isContainerVisible, setIsContainerVisible] = useState(false);
   const [visibleElements, setVisibleElements] = useState({
     corners: false,
@@ -14,7 +18,10 @@ export function Hero() {
   });
 
   useEffect(() => {
-    // Start container animation immediately
+    // Only start animations after loading is complete
+    if (!isLoadingComplete) return;
+
+    // Start container animation immediately after loading
     const containerTimer = setTimeout(() => {
       setIsContainerVisible(true);
     }, 100);
@@ -33,7 +40,7 @@ export function Hero() {
       clearTimeout(containerTimer);
       timers.forEach(timer => clearTimeout(timer));
     };
-  }, []);
+  }, [isLoadingComplete]);
 
   return (
     <section id="home" className="relative px-4 sm:px-6 md:px-8 flex flex-col pt-2 sm:pt-4 md:min-h-screen md:justify-center md:pt-0 md:-mt-8">
@@ -131,7 +138,7 @@ export function Hero() {
       </div>
 
       {/* Logos section */}
-      <LogosSection />
+      <LogosSection isLoadingComplete={isLoadingComplete} />
     </section>
   );
 }
