@@ -5,17 +5,15 @@ interface Particle {
   y: number;
   baseX: number;
   baseY: number;
-  vx: number;
-  vy: number;
   size: number;
   alpha: number;
   isShapeParticle: boolean;
   targetX: number;
   targetY: number;
-  // Organic movement properties
-  phase: number;        // Unique phase offset for each particle
-  wanderAngle: number;  // Current wander direction
-  wanderSpeed: number;  // How fast it wanders
+  // Twinkling/rotation properties
+  phase: number;           // Unique phase offset
+  rotationSpeed: number;   // How fast it rotates
+  orbitRadius: number;     // Tiny orbit radius for twinkling effect
 }
 
 interface ParticleBackgroundProps {
@@ -30,28 +28,28 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
   const dimensionsRef = useRef({ width: 0, height: 0 });
   const timeRef = useRef(0);
 
-  const PARTICLE_SIZE = 2; // Uniform size for all particles
+  const PARTICLE_SIZE = 1.2; // Small, refined particles
 
   const initParticles = useCallback((width: number, height: number) => {
     const particles: Particle[] = [];
-    const particleCount = Math.floor((width * height) / 3000);
+    const particleCount = Math.floor((width * height) / 2500); // More particles
     
     for (let i = 0; i < particleCount; i++) {
+      const x = Math.random() * width;
+      const y = Math.random() * height;
       particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        baseX: Math.random() * width,
-        baseY: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
+        x,
+        y,
+        baseX: x,
+        baseY: y,
         size: PARTICLE_SIZE,
-        alpha: Math.random() * 0.3 + 0.3,
+        alpha: Math.random() * 0.4 + 0.2,
         isShapeParticle: false,
         targetX: 0,
         targetY: 0,
         phase: Math.random() * Math.PI * 2,
-        wanderAngle: Math.random() * Math.PI * 2,
-        wanderSpeed: Math.random() * 0.3 + 0.1,
+        rotationSpeed: (Math.random() - 0.5) * 4, // Random rotation speed and direction
+        orbitRadius: Math.random() * 1.5 + 0.5,   // Tiny orbit for twinkling
       });
     }
 
@@ -62,31 +60,29 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
     
     // Helper to add shape particle - biased toward edges
     const addShapeParticle = (targetX: number, targetY: number, perpX: number, perpY: number, isEdge: boolean) => {
-      // Bias offset toward edges - use squared random for edge concentration
       let offset: number;
       if (isEdge) {
-        // Edge particles - placed at the outer boundaries
         offset = (Math.random() > 0.5 ? 1 : -1) * (strokeWidth * 0.4 + Math.random() * strokeWidth * 0.1);
       } else {
-        // Inner particles - sparse, random distribution inside
         offset = (Math.random() - 0.5) * strokeWidth * 0.6;
       }
+      
+      const finalX = targetX + perpX * offset;
+      const finalY = targetY + perpY * offset;
       
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        baseX: Math.random() * width,
-        baseY: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        baseX: finalX,
+        baseY: finalY,
         size: PARTICLE_SIZE,
         alpha: isEdge ? Math.random() * 0.3 + 0.6 : Math.random() * 0.2 + 0.3,
         isShapeParticle: true,
-        targetX: targetX + perpX * offset,
-        targetY: targetY + perpY * offset,
+        targetX: finalX,
+        targetY: finalY,
         phase: Math.random() * Math.PI * 2,
-        wanderAngle: Math.random() * Math.PI * 2,
-        wanderSpeed: Math.random() * 0.5 + 0.2,
+        rotationSpeed: (Math.random() - 0.5) * 5,
+        orbitRadius: Math.random() * 2 + 0.8,
       });
     };
 
@@ -123,21 +119,21 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
       for (let i = 0; i < edgeCount; i++) {
         const angle = startAngle + Math.random() * (endAngle - startAngle);
         const r = radius * 0.85 + Math.random() * radius * 0.15;
+        const tx = cx + Math.cos(angle) * r;
+        const ty = cy + Math.sin(angle) * r;
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          baseX: Math.random() * width,
-          baseY: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
+          baseX: tx,
+          baseY: ty,
           size: PARTICLE_SIZE,
           alpha: Math.random() * 0.3 + 0.6,
           isShapeParticle: true,
-          targetX: cx + Math.cos(angle) * r,
-          targetY: cy + Math.sin(angle) * r,
+          targetX: tx,
+          targetY: ty,
           phase: Math.random() * Math.PI * 2,
-          wanderAngle: Math.random() * Math.PI * 2,
-          wanderSpeed: Math.random() * 0.5 + 0.2,
+          rotationSpeed: (Math.random() - 0.5) * 5,
+          orbitRadius: Math.random() * 2 + 0.8,
         });
       }
       
@@ -145,21 +141,21 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
       for (let i = 0; i < innerCount; i++) {
         const angle = startAngle + Math.random() * (endAngle - startAngle);
         const r = Math.random() * radius * 0.7;
+        const tx = cx + Math.cos(angle) * r;
+        const ty = cy + Math.sin(angle) * r;
         particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          baseX: Math.random() * width,
-          baseY: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
+          baseX: tx,
+          baseY: ty,
           size: PARTICLE_SIZE,
           alpha: Math.random() * 0.2 + 0.3,
           isShapeParticle: true,
-          targetX: cx + Math.cos(angle) * r,
-          targetY: cy + Math.sin(angle) * r,
+          targetX: tx,
+          targetY: ty,
           phase: Math.random() * Math.PI * 2,
-          wanderAngle: Math.random() * Math.PI * 2,
-          wanderSpeed: Math.random() * 0.5 + 0.2,
+          rotationSpeed: (Math.random() - 0.5) * 5,
+          orbitRadius: Math.random() * 2 + 0.8,
         });
       }
     };
@@ -263,71 +259,63 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
     }
 
     ctx.clearRect(0, 0, width, height);
-    timeRef.current += 0.016; // ~60fps time increment
+    timeRef.current += 0.016;
 
     const mouse = mouseRef.current;
     const isMouseInCanvas = mouse.x > 0 && mouse.x < width && mouse.y > 0 && mouse.y < height;
-    const interactionRadius = 150;
+    const interactionRadius = 120;
+    const time = timeRef.current;
 
     particlesRef.current.forEach((particle) => {
-      const dx = mouse.x - particle.x;
-      const dy = mouse.y - particle.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      // Organic wandering - slowly change direction
-      particle.wanderAngle += (Math.random() - 0.5) * 0.1;
+      // Calculate rotation angle for twinkling effect
+      const rotationAngle = time * particle.rotationSpeed + particle.phase;
       
-      // Calculate organic offset based on time and particle's unique phase
-      const time = timeRef.current;
-      const organicX = Math.sin(time * 0.8 + particle.phase) * 3;
-      const organicY = Math.cos(time * 0.6 + particle.phase * 1.3) * 3;
+      // Tiny circular orbit creates twinkling illusion
+      const orbitX = Math.cos(rotationAngle) * particle.orbitRadius;
+      const orbitY = Math.sin(rotationAngle) * particle.orbitRadius;
 
-      if (particle.isShapeParticle && isMouseInCanvas) {
-        // Move toward target with organic wobble
-        const targetDx = (particle.targetX + organicX) - particle.x;
-        const targetDy = (particle.targetY + organicY) - particle.y;
-        particle.x += targetDx * 0.06;
-        particle.y += targetDy * 0.06;
-      } else if (particle.isShapeParticle) {
-        // Wander freely with organic movement
-        particle.x += Math.cos(particle.wanderAngle) * particle.wanderSpeed + organicX * 0.02;
-        particle.y += Math.sin(particle.wanderAngle) * particle.wanderSpeed + organicY * 0.02;
-        
-        // Soft bounce off edges
-        if (particle.x < 20) particle.wanderAngle = Math.random() * Math.PI - Math.PI / 2;
-        if (particle.x > width - 20) particle.wanderAngle = Math.random() * Math.PI + Math.PI / 2;
-        if (particle.y < 20) particle.wanderAngle = Math.random() * Math.PI;
-        if (particle.y > height - 20) particle.wanderAngle = -Math.random() * Math.PI;
+      if (particle.isShapeParticle) {
+        if (isMouseInCanvas) {
+          // Move toward target position with twinkling orbit
+          const targetDx = (particle.targetX + orbitX) - particle.x;
+          const targetDy = (particle.targetY + orbitY) - particle.y;
+          particle.x += targetDx * 0.08;
+          particle.y += targetDy * 0.08;
+        } else {
+          // Stay at base position with twinkling
+          particle.x = particle.baseX + orbitX;
+          particle.y = particle.baseY + orbitY;
+        }
       } else {
-        // Background particles - gentle floating with mouse repulsion
+        // Background particles - stay in place with twinkling rotation
+        const dx = mouse.x - particle.baseX;
+        const dy = mouse.y - particle.baseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
         if (distance < interactionRadius && isMouseInCanvas) {
+          // Subtle push away from cursor
           const force = (interactionRadius - distance) / interactionRadius;
           const angle = Math.atan2(dy, dx);
-          particle.x -= Math.cos(angle) * force * 2;
-          particle.y -= Math.sin(angle) * force * 2;
+          particle.x = particle.baseX - Math.cos(angle) * force * 15 + orbitX;
+          particle.y = particle.baseY - Math.sin(angle) * force * 15 + orbitY;
+        } else {
+          // Just twinkle in place
+          particle.x = particle.baseX + orbitX;
+          particle.y = particle.baseY + orbitY;
         }
-        
-        // Organic floating movement
-        particle.x += Math.cos(particle.wanderAngle) * particle.wanderSpeed * 0.3 + organicX * 0.01;
-        particle.y += Math.sin(particle.wanderAngle) * particle.wanderSpeed * 0.3 + organicY * 0.01;
-        particle.wanderAngle += (Math.random() - 0.5) * 0.05;
-        
-        // Wrap around edges
-        if (particle.x < 0) particle.x = width;
-        if (particle.x > width) particle.x = 0;
-        if (particle.y < 0) particle.y = height;
-        if (particle.y > height) particle.y = 0;
       }
 
-      // Draw particle with subtle alpha pulsing
-      const alphaPulse = Math.sin(time * 2 + particle.phase) * 0.1;
+      // Alpha twinkling - subtle brightness variation
+      const alphaPulse = Math.sin(time * 3 + particle.phase * 2) * 0.15;
+      const finalAlpha = Math.max(0.1, particle.alpha + alphaPulse);
+      
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
       
       if (particle.isShapeParticle && isMouseInCanvas) {
-        ctx.fillStyle = `rgba(59, 130, 246, ${particle.alpha + alphaPulse})`;
+        ctx.fillStyle = `rgba(59, 130, 246, ${finalAlpha})`;
       } else {
-        ctx.fillStyle = `rgba(0, 0, 0, ${(particle.alpha + alphaPulse) * 0.6})`;
+        ctx.fillStyle = `rgba(0, 0, 0, ${finalAlpha * 0.5})`;
       }
       ctx.fill();
     });
