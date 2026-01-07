@@ -1,5 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 
+type ParticleType = 'shape' | 'background' | 'flow';
+
 interface Particle {
     x: number;
     y: number;
@@ -9,7 +11,7 @@ interface Particle {
     vy: number;
     size: number;
     alpha: number;
-    isShapeParticle: boolean;
+    type: ParticleType;
     targetX: number;
     targetY: number;
     // Twinkling/rotation properties
@@ -71,11 +73,12 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
     const dimensionsRef = useRef({ width: 0, height: 0 });
     const timeRef = useRef(0);
 
-    const PARTICLE_SIZE = 1.2; // Small, refined particles
+    const PARTICLE_SIZE = 1.2;
+    // Larger gap to create the distinct "empty space" halo
+    const EXCLUSION_RADIUS = 150;
 
     const initParticles = useCallback((width: number, height: number) => {
-        const shapeParticles: Particle[] = [];
-        const backgroundParticles: Particle[] = [];
+        const particles: Particle[] = [];
         const newAttractors: Attractor[] = [];
 
         const centerX = width / 2;
@@ -83,7 +86,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const size = Math.min(width, height) * 0.35;
         const strokeWidth = size * 0.18;
 
-        // Helper to add shape particle - biased toward edges
+        // --- 1. SHAPE GENERATION ---
         const addShapeParticle = (targetX: number, targetY: number, perpX: number, perpY: number, isEdge: boolean) => {
             let offset: number;
             if (isEdge) {
@@ -95,7 +98,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             const finalX = targetX + perpX * offset;
             const finalY = targetY + perpY * offset;
 
-            shapeParticles.push({
+            particles.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 baseX: finalX,
@@ -104,7 +107,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 vy: 0,
                 size: PARTICLE_SIZE,
                 alpha: isEdge ? Math.random() * 0.3 + 0.6 : Math.random() * 0.2 + 0.3,
-                isShapeParticle: true,
+                type: 'shape',
                 targetX: finalX,
                 targetY: finalY,
                 phase: Math.random() * Math.PI * 2,
@@ -113,7 +116,6 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             });
         };
 
-        // Add particles along a thick line - more on edges, fewer inside
         const addThickLine = (x1: number, y1: number, x2: number, y2: number, edgeCount: number, innerCount: number) => {
             newAttractors.push({ x1, y1, x2, y2 });
 
@@ -123,69 +125,53 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             const perpX = -dy / len;
             const perpY = dx / len;
 
-            // Edge particles (dense)
             for (let i = 0; i < edgeCount; i++) {
                 const t = Math.random();
-                const targetX = x1 + dx * t;
-                const targetY = y1 + dy * t;
-                addShapeParticle(targetX, targetY, perpX, perpY, true);
+                addShapeParticle(x1 + dx * t, y1 + dy * t, perpX, perpY, true);
             }
-
-            // Inner particles (sparse)
             for (let i = 0; i < innerCount; i++) {
                 const t = Math.random();
-                const targetX = x1 + dx * t;
-                const targetY = y1 + dy * t;
-                addShapeParticle(targetX, targetY, perpX, perpY, false);
+                addShapeParticle(x1 + dx * t, y1 + dy * t, perpX, perpY, false);
             }
         };
 
-        // Add rounded corner particles - edge-biased
         const addRoundedCorner = (cx: number, cy: number, startAngle: number, endAngle: number, edgeCount: number, innerCount: number) => {
             const radius = strokeWidth * 0.5;
-
-            // Edge particles at outer radius
             for (let i = 0; i < edgeCount; i++) {
                 const angle = startAngle + Math.random() * (endAngle - startAngle);
                 const r = radius * 0.85 + Math.random() * radius * 0.15;
                 const tx = cx + Math.cos(angle) * r;
                 const ty = cy + Math.sin(angle) * r;
-                shapeParticles.push({
+                particles.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
                     baseX: tx,
                     baseY: ty,
-                    vx: 0,
-                    vy: 0,
+                    vx: 0, vy: 0,
                     size: PARTICLE_SIZE,
                     alpha: Math.random() * 0.3 + 0.6,
-                    isShapeParticle: true,
-                    targetX: tx,
-                    targetY: ty,
+                    type: 'shape',
+                    targetX: tx, targetY: ty,
                     phase: Math.random() * Math.PI * 2,
                     rotationSpeed: (Math.random() - 0.5) * 5,
                     orbitRadius: Math.random() * 2 + 0.8,
                 });
             }
-
-            // Inner particles (sparse)
             for (let i = 0; i < innerCount; i++) {
                 const angle = startAngle + Math.random() * (endAngle - startAngle);
                 const r = Math.random() * radius * 0.7;
                 const tx = cx + Math.cos(angle) * r;
                 const ty = cy + Math.sin(angle) * r;
-                shapeParticles.push({
+                particles.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
                     baseX: tx,
                     baseY: ty,
-                    vx: 0,
-                    vy: 0,
+                    vx: 0, vy: 0,
                     size: PARTICLE_SIZE,
                     alpha: Math.random() * 0.2 + 0.3,
-                    isShapeParticle: true,
-                    targetX: tx,
-                    targetY: ty,
+                    type: 'shape',
+                    targetX: tx, targetY: ty,
                     phase: Math.random() * Math.PI * 2,
                     rotationSpeed: (Math.random() - 0.5) * 5,
                     orbitRadius: Math.random() * 2 + 0.8,
@@ -196,65 +182,52 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const spacing = size * 0.55;
         const bracketHeight = size * 0.5;
         const bracketWidth = size * 0.35;
-
-        // Left bracket < 
         const leftCenterX = centerX - spacing;
         const leftTipX = leftCenterX - bracketWidth;
         const leftBackX = leftCenterX + bracketWidth * 0.3;
 
-        // Top arm of <
         addThickLine(leftBackX, centerY - bracketHeight, leftTipX, centerY, 100, 30);
-        // Bottom arm of <
         addThickLine(leftTipX, centerY, leftBackX, centerY + bracketHeight, 100, 30);
-        // Rounded tip
         addRoundedCorner(leftTipX, centerY, Math.PI * 0.5, Math.PI * 1.5, 30, 10);
-        // Rounded ends
         addRoundedCorner(leftBackX, centerY - bracketHeight, -Math.PI * 0.5, Math.PI * 0.5, 20, 8);
         addRoundedCorner(leftBackX, centerY + bracketHeight, -Math.PI * 0.5, Math.PI * 0.5, 20, 8);
 
-        // Forward slash /
         const slashWidth = size * 0.12;
         const slashHeight = size * 0.55;
         addThickLine(centerX + slashWidth, centerY - slashHeight, centerX - slashWidth, centerY + slashHeight, 80, 25);
-        // Rounded ends for slash
         addRoundedCorner(centerX + slashWidth, centerY - slashHeight, 0, Math.PI * 2, 18, 6);
         addRoundedCorner(centerX - slashWidth, centerY + slashHeight, 0, Math.PI * 2, 18, 6);
 
-        // Right bracket >
         const rightCenterX = centerX + spacing;
         const rightTipX = rightCenterX + bracketWidth;
         const rightBackX = rightCenterX - bracketWidth * 0.3;
 
-        // Top arm of >
         addThickLine(rightBackX, centerY - bracketHeight, rightTipX, centerY, 100, 30);
-        // Bottom arm of >
         addThickLine(rightTipX, centerY, rightBackX, centerY + bracketHeight, 100, 30);
-        // Rounded tip
         addRoundedCorner(rightTipX, centerY, -Math.PI * 0.5, Math.PI * 0.5, 30, 10);
-        // Rounded ends
         addRoundedCorner(rightBackX, centerY - bracketHeight, Math.PI * 0.5, Math.PI * 1.5, 20, 8);
         addRoundedCorner(rightBackX, centerY + bracketHeight, Math.PI * 0.5, Math.PI * 1.5, 20, 8);
 
         attractorsRef.current = newAttractors;
 
-        // Generate Background Particles (with exclusion zone)
-        const particleCount = Math.floor((width * height) / 2500);
-        const exclusionRadius = 60; // Clean area around shape
+        // --- 2. BACKGROUND PARTICLES (Static/Drifting) ---
+        // Calculate total layout area to distribute background particles
+        const particleCount = Math.floor((width * height) / 3000);
 
         for (let i = 0; i < particleCount; i++) {
             let x = 0, y = 0;
             let safe = false;
             let attempts = 0;
 
-            // Try to place particles away from the shape initially so they don't start clumped
-            while (!safe && attempts < 15) {
+            // Ensure they start OUTSIDE the exclusion zone
+            while (!safe && attempts < 50) {
                 x = Math.random() * width;
                 y = Math.random() * height;
                 safe = true;
 
                 for (const attr of newAttractors) {
                     const { dist } = getDistanceToLineSegment(x, y, attr.x1, attr.y1, attr.x2, attr.y2);
-                    if (dist < exclusionRadius) {
+                    if (dist < EXCLUSION_RADIUS + 20) { // Add buffer
                         safe = false;
                         break;
                     }
@@ -263,16 +236,17 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             }
 
             if (safe) {
-                backgroundParticles.push({
+                particles.push({
                     x,
                     y,
                     baseX: x,
                     baseY: y,
-                    vx: (Math.random() - 0.5) * 0.2,
-                    vy: (Math.random() - 0.5) * 0.2,
+                    vx: (Math.random() - 0.5) * 0.1,
+                    vy: (Math.random() - 0.5) * 0.1,
                     size: PARTICLE_SIZE,
-                    alpha: Math.random() * 0.4 + 0.2,
-                    isShapeParticle: false,
+                    // High visibility background
+                    alpha: Math.random() * 0.5 + 0.4,
+                    type: 'background',
                     targetX: 0,
                     targetY: 0,
                     phase: Math.random() * Math.PI * 2,
@@ -282,7 +256,29 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             }
         }
 
-        return [...backgroundParticles, ...shapeParticles];
+        // --- 3. FLOW PARTICLES (Magnet Illusion) ---
+        const flowCount = Math.floor(particleCount * 0.4); // Plenty of flow particles
+
+        for (let i = 0; i < flowCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                baseX: 0,
+                baseY: 0,
+                vx: 0,
+                vy: 0,
+                size: PARTICLE_SIZE * 0.8,
+                alpha: 0,
+                type: 'flow',
+                targetX: 0,
+                targetY: 0,
+                phase: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 6,
+                orbitRadius: Math.random() * 1 + 0.5,
+            });
+        }
+
+        return particles;
     }, []);
 
     const setupCanvas = useCallback(() => {
@@ -341,15 +337,16 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const isMouseInCanvas = mouse.x > 0 && mouse.x < width && mouse.y > 0 && mouse.y < height;
         const time = timeRef.current;
 
+        const EXCLUSION_RADIUS = 150; // Keep visually consistent with init
+
         particlesRef.current.forEach((particle) => {
             // Rotation / Twinkle
             const rotationAngle = time * particle.rotationSpeed + particle.phase;
             const orbitX = Math.cos(rotationAngle) * particle.orbitRadius;
             const orbitY = Math.sin(rotationAngle) * particle.orbitRadius;
 
-            if (particle.isShapeParticle) {
-                // Shape particles stay roughly in place (or move slightly to target)
-                // We keep the original logic here as requested to "not mess that up"
+            // ---------------- SHAPE PARTICLES ----------------
+            if (particle.type === 'shape') {
                 if (isMouseInCanvas) {
                     const targetDx = (particle.targetX + orbitX) - particle.x;
                     const targetDy = (particle.targetY + orbitY) - particle.y;
@@ -367,87 +364,125 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(59, 130, 246, ${finalAlpha})`; // Blueish for shape
                 ctx.fill();
+                return;
+            }
 
-            } else {
-                // Background particles - Gravity Flow
+            // Calculate distance to nearest shape segment
+            let minKeepDist = 100000;
+            let targetVecX = 0;
+            let targetVecY = 0;
 
-                let minKeepDist = 100000;
-                let targetVecX = 0;
-                let targetVecY = 0;
+            for (const attr of attractorsRef.current) {
+                const { dist, dx, dy } = getDistanceToLineSegment(particle.x, particle.y, attr.x1, attr.y1, attr.x2, attr.y2);
+                if (dist < minKeepDist) {
+                    minKeepDist = dist;
+                    targetVecX = -dx;
+                    targetVecY = -dy;
+                }
+            }
 
-                // Find nearest point on the shape (invisible gravity field)
-                for (const attr of attractorsRef.current) {
-                    const { dist, dx, dy } = getDistanceToLineSegment(particle.x, particle.y, attr.x1, attr.y1, attr.x2, attr.y2);
-                    if (dist < minKeepDist) {
-                        minKeepDist = dist;
-                        targetVecX = -dx;
-                        targetVecY = -dy;
-                    }
+            // ---------------- BACKGROUND PARTICLES ----------------
+            if (particle.type === 'background') {
+                // Standard random drift
+                particle.vx += (Math.random() - 0.5) * 0.01;
+                particle.vy += (Math.random() - 0.5) * 0.01;
+
+                // Repulsion from the exclusion zone - stronger repulsion
+                if (minKeepDist < EXCLUSION_RADIUS) {
+                    const force = (EXCLUSION_RADIUS - minKeepDist) / EXCLUSION_RADIUS;
+                    // Strong push away
+                    particle.vx -= targetVecX * force * 0.1;
+                    particle.vy -= targetVecY * force * 0.1;
                 }
 
-                // Apply Magnetic Pull
-                // The closer they are, the stronger the pull, but cap it so they don't fly too fast
-                const gravityRange = 500; // Large range to pull from far away
-                if (minKeepDist < gravityRange) {
-                    // Normalized vector * force
-                    // force increases as distance decreases
-                    const force = 2.0 / (minKeepDist + 20);
-                    particle.vx += targetVecX * force * 0.02;
-                    particle.vy += targetVecY * force * 0.02;
-                } else {
-                    // Slight random drift if far away
-                    particle.vx += (Math.random() - 0.5) * 0.005;
-                    particle.vy += (Math.random() - 0.5) * 0.005;
-                }
-
-                // Apply velocity
+                // Apply and damp
                 particle.x += particle.vx;
                 particle.y += particle.vy;
+                particle.vx *= 0.95;
+                particle.vy *= 0.95;
 
-                // Damping
-                particle.vx *= 0.96;
-                particle.vy *= 0.96;
+                // Wrap around screen edges
+                if (particle.x < 0) particle.x = width;
+                if (particle.x > width) particle.x = 0;
+                if (particle.y < 0) particle.y = height;
+                if (particle.y > height) particle.y = 0;
 
-                // Consumed by the "Black Hole" Shape
-                // If particle touches the shape, it vanishes and respawns elsewhere to keep the loop going
-                if (minKeepDist < 15) {
-                    // Respawn far away
+                const alphaPulse = Math.sin(time * 2 + particle.phase) * 0.1;
+                const finalAlpha = Math.max(0.05, particle.alpha + alphaPulse);
+
+                ctx.beginPath();
+                ctx.arc(particle.x + orbitX, particle.y + orbitY, particle.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 0, 0, ${finalAlpha})`;
+                ctx.fill();
+                return;
+            }
+
+            // ---------------- FLOW PARTICLES ----------------
+            if (particle.type === 'flow') {
+                // SPAWN LOGIC: If invisible/reset, spawn AT THE EDGE of the exclusion zone
+                if (particle.alpha <= 0.01) {
                     let safe = false;
                     let attempts = 0;
-                    while (!safe && attempts < 5) {
-                        particle.x = Math.random() * width;
-                        particle.y = Math.random() * height;
+                    while (!safe && attempts < 10) {
+                        // Spawn exactly on a ring roughly at EXCLUSION_RADIUS + padding
+                        const angle = Math.random() * Math.PI * 2;
+                        // Spawn just outside the empty zone
+                        const r = EXCLUSION_RADIUS + 10 + Math.random() * 40;
 
-                        // Ensure we don't respawn right next to the shape again
+                        // Note: Ideally we want ring around shape center. 
+                        // Since shape is roughly centered...
+                        const cx = width / 2;
+                        const cy = height / 2;
+
+                        particle.x = cx + Math.cos(angle) * r;
+                        particle.y = cy + Math.sin(angle) * r;
+
+                        // Check closest attractor to confirm we are in the "sweet spot"
                         let minDist = 10000;
                         for (const attr of attractorsRef.current) {
                             const { dist } = getDistanceToLineSegment(particle.x, particle.y, attr.x1, attr.y1, attr.x2, attr.y2);
                             if (dist < minDist) minDist = dist;
                         }
 
-                        if (minDist > 100) safe = true;
+                        // If we are too close (inside shape), retry. If too far, retry.
+                        // We want strictly falling from the gap edge.
+                        if (minDist > EXCLUSION_RADIUS && minDist < EXCLUSION_RADIUS + 100) safe = true;
                         attempts++;
                     }
                     particle.vx = 0;
                     particle.vy = 0;
-                    particle.alpha = 0; // Fade in nicely
+                    particle.alpha = 0.02;
                 }
 
-                // Fade in logic if needed
-                if (particle.alpha < 0.2) particle.alpha += 0.01;
+                // Attraction logic - Accelerate INWARD
+                // We know where the nearest shape part is (targetVec)
+                if (minKeepDist > 0) {
+                    const force = 3.0; // Constant pull
+                    particle.vx += targetVecX * 0.001 * force;
+                    particle.vy += targetVecY * 0.001 * force;
+                }
 
-                // Visual Rendering
-                const finalX = particle.x + orbitX;
-                const finalY = particle.y + orbitY;
+                // Move
+                particle.x += particle.vx;
+                particle.y += particle.vy;
 
-                const alphaPulse = Math.sin(time * 3 + particle.phase * 2) * 0.15;
-                const finalAlpha = Math.max(0.1, particle.alpha + alphaPulse);
+                // Fade in as it accelerates
+                if (particle.alpha < 0.3) particle.alpha += 0.01;
 
+                // "Landing" logic - if it hits the shape
+                if (minKeepDist < 6) {
+                    particle.vx = 0;
+                    particle.vy = 0;
+                    particle.alpha = 0; // Reset
+                }
+
+                // Render Flow
                 ctx.beginPath();
-                ctx.arc(finalX, finalY, particle.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 0, 0, ${finalAlpha * 0.5})`;
+                ctx.arc(particle.x + orbitX, particle.y + orbitY, particle.size * 0.8, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 0, 0, ${particle.alpha})`;
                 ctx.fill();
             }
+
         });
 
         animationRef.current = requestAnimationFrame(animate);
