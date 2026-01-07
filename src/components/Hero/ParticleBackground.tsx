@@ -8,6 +8,8 @@ interface Particle {
     y: number;
     baseX: number;
     baseY: number;
+    startX: number; // For entrance animation
+    startY: number; // For entrance animation
     vx: number;
     vy: number;
     size: number;
@@ -71,6 +73,11 @@ function getDistanceToLineSegment(x: number, y: number, x1: number, y1: number, 
     return { dist: Math.sqrt(dx * dx + dy * dy), dx, dy };
 }
 
+// Easing function for smooth entrance
+function easeOutExpo(x: number): number {
+    return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+}
+
 export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const particlesRef = useRef<Particle[]>([]);
@@ -79,14 +86,16 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
     const animationRef = useRef<number>(0);
     const dimensionsRef = useRef({ width: 0, height: 0 });
     const timeRef = useRef(0);
+    const entranceTimeRef = useRef<number>(0); // Track when entrance starts
     const isDarkModeRef = useRef(false);
-    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const resizeTimeoutRef = useRef<number | null>(null);
 
     // Dynamic landing distance based on shape thickness
     const landingDistanceRef = useRef(20);
 
     const PARTICLE_SIZE = 1.2;
     const EXCLUSION_RADIUS = 150;
+    const MOUSE_RADIUS = 150; // Cursor repulsion radius
 
     const initParticles = useCallback((width: number, height: number) => {
         const particles: Particle[] = [];
@@ -100,6 +109,12 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         // Set the collision boundary to be slightly outside the visual stroke
         landingDistanceRef.current = strokeWidth * 0.6;
 
+        // Entrance Start Position: Center of screen with slight scatter
+        const getEntrancePos = () => ({
+            x: centerX + (Math.random() - 0.5) * 50,
+            y: centerY + (Math.random() - 0.5) * 50
+        });
+
         // --- 1. SHAPE GENERATION ---
         const addShapeParticle = (targetX: number, targetY: number, perpX: number, perpY: number, isEdge: boolean) => {
             let offset: number;
@@ -111,12 +126,15 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
 
             const finalX = targetX + perpX * offset;
             const finalY = targetY + perpY * offset;
+            const start = getEntrancePos();
 
             particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
+                x: start.x,
+                y: start.y,
                 baseX: finalX,
                 baseY: finalY,
+                startX: start.x,
+                startY: start.y,
                 vx: 0,
                 vy: 0,
                 size: PARTICLE_SIZE,
@@ -158,11 +176,15 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 const r = radius * 0.85 + Math.random() * radius * 0.15;
                 const tx = cx + Math.cos(angle) * r;
                 const ty = cy + Math.sin(angle) * r;
+                const start = getEntrancePos();
+
                 particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
+                    x: start.x,
+                    y: start.y,
                     baseX: tx,
                     baseY: ty,
+                    startX: start.x,
+                    startY: start.y,
                     vx: 0, vy: 0,
                     size: PARTICLE_SIZE,
                     alpha: Math.random() * 0.3 + 0.6,
@@ -180,11 +202,15 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 const r = Math.random() * radius * 0.7;
                 const tx = cx + Math.cos(angle) * r;
                 const ty = cy + Math.sin(angle) * r;
+                const start = getEntrancePos();
+
                 particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
+                    x: start.x,
+                    y: start.y,
                     baseX: tx,
                     baseY: ty,
+                    startX: start.x,
+                    startY: start.y,
                     vx: 0, vy: 0,
                     size: PARTICLE_SIZE,
                     alpha: Math.random() * 0.2 + 0.3,
@@ -259,6 +285,8 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     y,
                     baseX: x,
                     baseY: y,
+                    startX: x, // Start where they are, but handled by fade-in
+                    startY: y,
                     vx: (Math.random() - 0.5) * 0.1,
                     vy: (Math.random() - 0.5) * 0.1,
                     size: PARTICLE_SIZE,
@@ -324,6 +352,8 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const { width, height } = dimensionsRef.current;
         if (width === 0 || height === 0) {
             if (setupCanvas()) {
+                // Initialize entrance start time
+                entranceTimeRef.current = Date.now();
                 animationRef.current = requestAnimationFrame(animate);
             }
             return;
@@ -340,11 +370,18 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const EXCLUSION_RADIUS = 150;
         const LANDING_DIST = landingDistanceRef.current;
 
+        // Entrance Animation Progress
+        const ENTRANCE_DURATION = 1500;
+        const entranceElapsed = now - entranceTimeRef.current;
+        const entranceProgress = Math.min(1, entranceElapsed / ENTRANCE_DURATION);
+        const easedEntrance = easeOutExpo(entranceProgress);
+        const isEntrancePhase = entranceProgress < 1;
+
         // Colors
         const isDark = isDarkModeRef.current;
-        const baseR = isDark ? 255 : 0;
-        const baseG = isDark ? 255 : 0;
-        const baseB = isDark ? 255 : 0;
+        const baseR = isDark ? 0 : 255;
+        const baseG = isDark ? 0 : 255;
+        const baseB = isDark ? 0 : 255;
 
         const targetR = 59;
         const targetG = 130;
@@ -359,16 +396,55 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             // Reset style settings
             ctx.shadowBlur = 0;
 
+            // Mouse Repulsion Force Calculation
+            let repulsionVx = 0;
+            let repulsionVy = 0;
+
+            if (isMouseInCanvas && !isEntrancePhase) {
+                const dx = particle.x - mouse.x;
+                const dy = particle.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < MOUSE_RADIUS && dist > 0) {
+                    const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+                    const angle = Math.atan2(dy, dx);
+                    const power = 10; // Increased repulsion strength
+                    repulsionVx = Math.cos(angle) * force * power;
+                    repulsionVy = Math.sin(angle) * force * power;
+                }
+            }
+
             // ---------------- SHAPE PARTICLES ----------------
             if (particle.type === 'shape') {
-                if (isMouseInCanvas) {
-                    const targetDx = (particle.targetX + orbitX) - particle.x;
-                    const targetDy = (particle.targetY + orbitY) - particle.y;
-                    particle.x += targetDx * 0.08;
-                    particle.y += targetDy * 0.08;
+                if (isEntrancePhase) {
+                    // Fly in from center
+                    const curBaseX = particle.startX + (particle.baseX - particle.startX) * easedEntrance;
+                    const curBaseY = particle.startY + (particle.baseY - particle.startY) * easedEntrance;
+                    particle.x = curBaseX + orbitX;
+                    particle.y = curBaseY + orbitY;
                 } else {
-                    particle.x = particle.baseX + orbitX;
-                    particle.y = particle.baseY + orbitY;
+                    // Spring physics: pull back to base position
+                    const homeX = particle.baseX + orbitX;
+                    const homeY = particle.baseY + orbitY;
+                    const springDx = homeX - particle.x;
+                    const springDy = homeY - particle.y;
+                    const springStrength = 0.05;
+
+                    // Apply spring force
+                    particle.vx += springDx * springStrength;
+                    particle.vy += springDy * springStrength;
+
+                    // Apply mouse repulsion
+                    particle.vx += repulsionVx;
+                    particle.vy += repulsionVy;
+
+                    // Damping/friction
+                    particle.vx *= 0.85;
+                    particle.vy *= 0.85;
+
+                    // Update position
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
                 }
 
                 const alphaPulse = Math.sin(time * 3 + particle.phase * 2) * 0.15;
@@ -431,7 +507,11 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     particle.vx += (Math.random() - 0.5) * 0.01;
                     particle.vy += (Math.random() - 0.5) * 0.01;
 
-                    // Repulsion
+                    // Mouse repulsion for ambient particles
+                    particle.vx += repulsionVx * 0.5;
+                    particle.vy += repulsionVy * 0.5;
+
+                    // Repulsion from shape
                     if (minKeepDist < EXCLUSION_RADIUS) {
                         const force = (EXCLUSION_RADIUS - minKeepDist) / EXCLUSION_RADIUS;
                         particle.vx -= targetVecX * force * 0.1;
@@ -458,6 +538,10 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 }
                 // 3. MAGNETIZED STATE
                 else if (particle.state === 'magnetized') {
+                    // Mouse repulsion (weaker during magnetized state)
+                    particle.vx += repulsionVx * 0.3;
+                    particle.vy += repulsionVy * 0.3;
+
                     if (minKeepDist > 0) {
                         const speedFactor = 0.0001 + (3000 / (minKeepDist + 20)) * 0.0001;
                         particle.vx += targetVecX * speedFactor;
@@ -496,7 +580,12 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 // Render with colors
                 const alphaPulse = Math.sin(time * 2 + particle.phase) * 0.1;
                 const currentAlpha = Math.min(1, Math.max(0, particle.alpha));
-                const finalAlpha = Math.max(0, currentAlpha + alphaPulse);
+                let finalAlpha = Math.max(0, currentAlpha + alphaPulse);
+
+                // ENTRANCE: Fade in ambient
+                if (isEntrancePhase) {
+                    finalAlpha *= easedEntrance;
+                }
 
                 let r = baseR, g = baseG, b = baseB;
                 let shadowBlur = 0;
@@ -571,6 +660,8 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         // Initial setup
         const initTimer = setTimeout(() => {
             setupCanvas();
+            // Start Animation and Set Entrance Time
+            entranceTimeRef.current = Date.now();
             animationRef.current = requestAnimationFrame(animate);
         }, 800);
 
