@@ -20,10 +20,10 @@ export function MobileNavOverlay() {
   };
 
   const navItems = [
-    { label: 'HOME', href: '#home' },
-    { label: 'WORKS', href: '#work' },
-    { label: 'SERVICES', href: '#services' },
-    { label: 'CONTACT', href: '#contact' }
+    { label: 'HOME', href: '#home', cursorText: 'Take me home! ' },
+    { label: 'WORKS', href: '#work', cursorText: 'Ooh, the good stuff ' },
+    { label: 'SERVICES', href: '#services', cursorText: 'What can I do for ya? ' },
+    { label: 'CONTACT', href: '#contact', cursorText: 'Let\'s chat! ' }
   ];
 
   const handleClose = () => {
@@ -86,6 +86,8 @@ export function MobileNavOverlay() {
             {/* Close Button - Right on mobile, Centered on desktop */}
             <motion.button
               onClick={handleClose}
+              onMouseEnter={() => handleMouseEnter('Close')}
+              onMouseLeave={handleMouseLeave}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: isClosing ? 0 : 1, scale: isClosing ? 0 : 1 }}
               whileHover={{ rotate: 90 }}
@@ -115,6 +117,8 @@ export function MobileNavOverlay() {
                 <motion.button
                   key={item.href}
                   onClick={() => handleNavClick(item.href)}
+                  onMouseEnter={() => handleMouseEnter(item.cursorText)}
+                  onMouseLeave={handleMouseLeave}
                   initial={{ opacity: 0, y: 60, scale: 0.8 }}
                   animate={{ 
                     opacity: isClosing ? 0 : 1, 
