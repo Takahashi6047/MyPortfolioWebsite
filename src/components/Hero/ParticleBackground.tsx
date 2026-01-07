@@ -80,6 +80,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
     const dimensionsRef = useRef({ width: 0, height: 0 });
     const timeRef = useRef(0);
     const isDarkModeRef = useRef(false);
+    const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Dynamic landing distance based on shape thickness
     const landingDistanceRef = useRef(20);
@@ -97,8 +98,6 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const strokeWidth = size * 0.18;
 
         // Set the collision boundary to be slightly outside the visual stroke
-        // The shape particles are scattered up to ~0.5 * strokeWidth from center
-        // We set landing to 0.6 * strokeWidth to hit the outer "shell"
         landingDistanceRef.current = strokeWidth * 0.6;
 
         // --- 1. SHAPE GENERATION ---
@@ -347,7 +346,6 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const baseG = isDark ? 255 : 0;
         const baseB = isDark ? 255 : 0;
 
-        // Target Blue: 59, 130, 246
         const targetR = 59;
         const targetG = 130;
         const targetB = 246;
@@ -378,7 +376,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
 
                 ctx.beginPath();
                 ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(59, 130, 246, ${finalAlpha})`; // Blueish for shape
+                ctx.fillStyle = `rgba(59, 130, 246, ${finalAlpha})`;
                 ctx.fill();
                 return;
             }
@@ -433,13 +431,12 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     particle.vx += (Math.random() - 0.5) * 0.01;
                     particle.vy += (Math.random() - 0.5) * 0.01;
 
-                    // Repulsion (Gap enforcement)
+                    // Repulsion
                     if (minKeepDist < EXCLUSION_RADIUS) {
                         const force = (EXCLUSION_RADIUS - minKeepDist) / EXCLUSION_RADIUS;
                         particle.vx -= targetVecX * force * 0.1;
                         particle.vy -= targetVecY * force * 0.1;
 
-                        // CHANCE TO MAGNETIZE
                         if (Math.random() < 0.02) {
                             particle.state = 'magnetized';
                             particle.vx *= 0.1;
@@ -447,24 +444,20 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                         }
                     }
 
-                    // Random chance to magnetize even if far away 
                     if (Math.random() < 0.001) {
                         particle.state = 'magnetized';
                     }
 
-                    // Apply velocity
                     particle.x += particle.vx;
                     particle.y += particle.vy;
                     particle.vx *= 0.95;
                     particle.vy *= 0.95;
 
-                    // Fade in
                     if (particle.alpha < 0.5) particle.alpha += 0.01;
 
                 }
-                // 3. MAGNETIZED STATE (Accelerating Step)
+                // 3. MAGNETIZED STATE
                 else if (particle.state === 'magnetized') {
-                    // Attraction - GRADUAL ACCELERATION
                     if (minKeepDist > 0) {
                         const speedFactor = 0.0001 + (3000 / (minKeepDist + 20)) * 0.0001;
                         particle.vx += targetVecX * speedFactor;
@@ -474,33 +467,25 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     particle.x += particle.vx;
                     particle.y += particle.vy;
 
-                    // Less drag to allow acceleration
                     particle.vx *= 0.98;
                     particle.vy *= 0.98;
 
-                    // Check collision with DYNAMIC landing (outline)
                     if (minKeepDist < LANDING_DIST) {
                         particle.state = 'landing';
-                        // Stop momentum immediately to stick
                         particle.vx = 0;
                         particle.vy = 0;
                     }
                 }
-                // 4. LANDING STATE (Outline Effect)
+                // 4. LANDING STATE
                 else if (particle.state === 'landing') {
-                    // Drift/Stabilize - NO INWARD MOVEMENT
-                    // Simply hold position or jitter slightly
-
-                    // Fade out while sticking
-                    particle.alpha -= 0.05; // Faster fade
-
+                    particle.alpha -= 0.05;
                     if (particle.alpha <= 0) {
                         particle.state = 'hidden';
                         particle.hiddenUntil = now + 1000;
                     }
                 }
 
-                // Screen wrapping (only for drifting)
+                // Screen wrapping
                 if (particle.state === 'drifting') {
                     if (particle.x < 0) particle.x = width;
                     if (particle.x > width) particle.x = 0;
@@ -508,19 +493,15 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     if (particle.y > height) particle.y = 0;
                 }
 
-                // Render
+                // Render with colors
                 const alphaPulse = Math.sin(time * 2 + particle.phase) * 0.1;
                 const currentAlpha = Math.min(1, Math.max(0, particle.alpha));
                 const finalAlpha = Math.max(0, currentAlpha + alphaPulse);
 
-                // Color Interpolation & Glow
-                // Transition range: 300px down to LANDING_DIST
-                // Factor 0 = far (Base Color), Factor 1 = close (Blue)
                 let r = baseR, g = baseG, b = baseB;
                 let shadowBlur = 0;
 
                 if (particle.state === 'magnetized' || particle.state === 'landing') {
-                    // Calculate interpolation factor
                     const distMax = 300;
                     const factor = Math.max(0, Math.min(1, 1 - (minKeepDist - LANDING_DIST) / (distMax - LANDING_DIST)));
 
@@ -528,9 +509,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     g = baseG + (targetG - baseG) * factor;
                     b = baseB + (targetB - baseB) * factor;
 
-                    // Glow effect
                     if (factor > 0.5) {
-                        // Apply glow as they get closer/bluer
                         shadowBlur = 10 * factor;
                     }
                 }
@@ -553,38 +532,47 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
 
 
     useEffect(() => {
-        // Observer for dark mode changes
+        // Dark mode observer
         const checkDarkMode = () => {
             isDarkModeRef.current = document.documentElement.classList.contains('dark');
         };
-
-        // Initial check
         checkDarkMode();
-
-        const observer = new MutationObserver((mutations) => {
+        const mutationObserver = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'class') {
                     checkDarkMode();
                 }
             });
         });
-
-        observer.observe(document.documentElement, { attributes: true });
+        mutationObserver.observe(document.documentElement, { attributes: true });
 
         if (!isVisible) return;
 
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        // Delay initial setup to allow container animation to complete
+        // RESIZE OBSERVER with Debounce
+        const handleResize = () => {
+            if (resizeTimeoutRef.current) {
+                clearTimeout(resizeTimeoutRef.current);
+            }
+            // Wait for layout to settle (e.g. mobile view transition)
+            resizeTimeoutRef.current = setTimeout(() => {
+                setupCanvas();
+            }, 200);
+        };
+
+        const resizeObserver = new ResizeObserver(handleResize);
+        // Observe the parent, not window, to catch container layout changes
+        if (canvas.parentElement) {
+            resizeObserver.observe(canvas.parentElement);
+        }
+
+        // Initial setup
         const initTimer = setTimeout(() => {
             setupCanvas();
             animationRef.current = requestAnimationFrame(animate);
         }, 800);
-
-        const handleResize = () => {
-            setupCanvas();
-        };
 
         const handleMouseMove = (e: MouseEvent) => {
             const rect = canvas.getBoundingClientRect();
@@ -598,14 +586,15 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             mouseRef.current = { x: -1000, y: -1000 };
         };
 
-        window.addEventListener('resize', handleResize);
         canvas.addEventListener('mousemove', handleMouseMove);
         canvas.addEventListener('mouseleave', handleMouseLeave);
 
         return () => {
-            observer.disconnect();
+            mutationObserver.disconnect();
+            resizeObserver.disconnect();
             clearTimeout(initTimer);
-            window.removeEventListener('resize', handleResize);
+            if (resizeTimeoutRef.current) clearTimeout(resizeTimeoutRef.current);
+
             canvas.removeEventListener('mousemove', handleMouseMove);
             canvas.removeEventListener('mouseleave', handleMouseLeave);
             if (animationRef.current) {
