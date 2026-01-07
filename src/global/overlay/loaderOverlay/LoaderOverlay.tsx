@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 interface LoaderOverlayProps {
@@ -8,6 +8,10 @@ interface LoaderOverlayProps {
 
 export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const onLoadingCompleteRef = useRef(onLoadingComplete);
+  
+  // Keep the ref updated
+  onLoadingCompleteRef.current = onLoadingComplete;
 
   useEffect(() => {
     // Reset scroll position to top immediately when loader mounts
@@ -21,7 +25,7 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
       setIsLoading(false);
       // Re-enable scrolling when loader completes
       document.body.style.overflow = 'unset';
-      onLoadingComplete?.();
+      onLoadingCompleteRef.current?.();
     }, 2500);
 
     return () => {
@@ -29,7 +33,7 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
       // Cleanup: ensure scrolling is re-enabled if component unmounts
       document.body.style.overflow = 'unset';
     };
-  }, [onLoadingComplete]);
+  }, []);
 
   const loader = (
     <AnimatePresence>
