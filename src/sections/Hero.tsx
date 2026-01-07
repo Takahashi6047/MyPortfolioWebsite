@@ -112,7 +112,7 @@ export function Hero() {
                 <span className="absolute -left-1 -top-2 text-2xl sm:text-3xl text-white/30 font-serif leading-none">"</span>
 
                 <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-light tracking-wide">
-                  Full-stack capabilities meet digital artistry. A portfolio of technical solutions and visual explorations by <span className="font-medium text-white">artCoded</span>.
+                  Full-stack capabilities meet digital artistry. A portfolio of technical solutions and visual explorations by <span className="font-medium text-white">ARTCODED</span>.
                 </p>
 
                 <p className="text-white/60 text-[10px] sm:text-xs mt-2 sm:mt-3 uppercase tracking-widest">

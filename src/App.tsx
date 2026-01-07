@@ -5,6 +5,7 @@ import { Works } from './sections/Works'
 import { DigitalArtistry } from './sections/DigitalArtistry'
 import { RippleProvider } from './global/overlay/themeOverlay/RippleContext'
 import { CustomCursor, CursorProvider } from './global/cursor'
+import { LoaderOverlay } from './global/overlay/loaderOverlay'
 
 function App() {
   const parallaxTriggerRef = useRef<HTMLDivElement>(null)
@@ -73,6 +74,7 @@ function App() {
   return (
     <CursorProvider>
       <RippleProvider>
+        <LoaderOverlay />
         <CustomCursor />
         <Layout>
           <Hero />
