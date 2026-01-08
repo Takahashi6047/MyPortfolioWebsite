@@ -4,16 +4,12 @@ import { useRipple } from '../../global/overlay/themeOverlay/RippleContext';
 import { useCursor } from '../../global/cursor';
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const { triggerRipple, isAnimating } = useRipple();
+  const { triggerRipple, isAnimating, theme } = useRipple();
   const { setCursorText, setCursorVariant } = useCursor();
 
-  useEffect(() => {
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    setIsDark(isDarkMode);
-  }, []);
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     if (isHovering) {
@@ -30,10 +26,8 @@ export function ThemeToggle() {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-
-    triggerRipple(centerX, centerY, newTheme);
+    const newIsDark = !isDark;
+    triggerRipple(centerX, centerY, newIsDark);
   };
 
   const handleMouseEnter = () => {
@@ -56,8 +50,8 @@ export function ThemeToggle() {
       onMouseLeave={handleMouseLeave}
       disabled={isAnimating}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 z-[999999] ${!isDark
-          ? 'bg-blue-600 hover:bg-blue-700'
-          : 'bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
+        ? 'bg-blue-600 hover:bg-blue-700'
+        : 'bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-700 dark:hover:bg-neutral-600'
         } ${isAnimating ? 'opacity-75' : ''}`}
       aria-label="Toggle theme"
     >

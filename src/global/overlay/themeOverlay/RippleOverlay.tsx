@@ -7,9 +7,10 @@ interface RippleOverlayProps {
   centerY: number;
   isDarkMode: boolean;
   onComplete: () => void;
+  onThemeChange?: (theme: 'light' | 'dark') => void;
 }
 
-export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComplete }: RippleOverlayProps) {
+export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComplete, onThemeChange }: RippleOverlayProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [animationPhase, setAnimationPhase] = useState<'expanding' | 'exploding'>('expanding');
 
@@ -17,25 +18,25 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
     if (isActive) {
       setIsVisible(true);
       setAnimationPhase('expanding');
-      
-      // Trigger theme change midway through the ripple expansion
+
       const themeTimeout = setTimeout(() => {
         const html = document.documentElement;
         if (isDarkMode) {
           html.classList.add('dark');
           localStorage.setItem('theme', 'dark');
+          onThemeChange?.('dark');
         } else {
           html.classList.remove('dark');
           localStorage.setItem('theme', 'light');
+          onThemeChange?.('light');
         }
-      }, 400); // Trigger at 50% of the 800ms expansion
-      
+      }, 400);
+
       return () => clearTimeout(themeTimeout);
     }
-  }, [isActive, isDarkMode]);
+  }, [isActive, isDarkMode, onThemeChange]);
 
   const handleExpandComplete = () => {
-    // Start the explosion phase after a brief pause
     setTimeout(() => {
       setAnimationPhase('exploding');
     }, 150);
@@ -48,11 +49,12 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
     }, 300);
   };
 
-  // Calculate the maximum distance to cover the entire screen
   const maxDistance = Math.sqrt(
     Math.pow(Math.max(centerX, window.innerWidth - centerX), 2) +
     Math.pow(Math.max(centerY, window.innerHeight - centerY), 2)
   ) * 1.2;
+
+  const diameter = maxDistance * 2;
 
   return (
     <AnimatePresence>
@@ -65,128 +67,133 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
         >
           {/* Main ripple circle - covers the screen */}
           <motion.div
-            className={`absolute rounded-full will-change-transform ${
-              isDarkMode 
-                ? 'bg-neutral-900' 
-                : 'bg-white'
-            }`}
+            className={`absolute rounded-full will-change-transform shadow-2xl ${isDarkMode
+              ? 'bg-neutral-900 shadow-neutral-900/50'
+              : 'bg-white shadow-white/50'
+              }`}
             style={{
               left: centerX,
               top: centerY,
-              transform: 'translate(-50%, -50%)',
+              width: diameter,
+              height: diameter,
               backfaceVisibility: 'hidden',
-              opacity: 0.95,
             }}
             initial={{
-              width: 0,
-              height: 0,
+              scale: 0,
+              x: "-50%",
+              y: "-50%",
+              opacity: 0.95,
             }}
             animate={
               animationPhase === 'expanding'
                 ? {
-                    width: maxDistance * 2,
-                    height: maxDistance * 2,
-                  }
+                  scale: 1,
+                  x: "-50%",
+                  y: "-50%",
+                }
                 : {
-                    width: maxDistance * 2,
-                    height: maxDistance * 2,
-                    opacity: 0,
-                  }
+                  scale: 1,
+                  x: "-50%",
+                  y: "-50%",
+                  opacity: 0,
+                }
             }
             transition={
               animationPhase === 'expanding'
                 ? {
-                    duration: 0.8,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                  }
+                  scale: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+                }
                 : {
-                    duration: 0.4,
-                    ease: 'easeOut',
-                  }
+                  opacity: { duration: 0.4, ease: 'easeOut' },
+                }
             }
             onAnimationComplete={
               animationPhase === 'expanding' ? handleExpandComplete : undefined
             }
           />
-          
+
           {/* Secondary ripple */}
           <motion.div
-            className={`absolute rounded-full will-change-transform ${
-              isDarkMode 
-                ? 'bg-neutral-800' 
-                : 'bg-neutral-50'
-            }`}
+            className={`absolute rounded-full will-change-transform ${isDarkMode
+              ? 'bg-neutral-800'
+              : 'bg-neutral-50'
+              }`}
             style={{
               left: centerX,
               top: centerY,
-              transform: 'translate(-50%, -50%)',
+              width: diameter * 1.1,
+              height: diameter * 1.1,
               backfaceVisibility: 'hidden',
-              opacity: 0.7,
             }}
             initial={{
-              width: 0,
-              height: 0,
+              scale: 0,
+              x: "-50%",
+              y: "-50%",
+              opacity: 0.7,
             }}
             animate={
               animationPhase === 'expanding'
                 ? {
-                    width: maxDistance * 2.2,
-                    height: maxDistance * 2.2,
-                  }
+                  scale: 1,
+                  x: "-50%",
+                  y: "-50%",
+                }
                 : {
-                    width: maxDistance * 2.2,
-                    height: maxDistance * 2.2,
-                    opacity: 0,
-                  }
+                  scale: 1,
+                  x: "-50%",
+                  y: "-50%",
+                  opacity: 0,
+                }
             }
             transition={
               animationPhase === 'expanding'
                 ? {
-                    duration: 0.9,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                    delay: 0.1,
-                  }
+                  scale: { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.05 },
+                }
                 : {
-                    duration: 0.5,
-                    ease: 'easeOut',
-                    delay: 0.05,
-                  }
+                  opacity: { duration: 0.5, ease: 'easeOut', delay: 0.05 },
+                }
             }
           />
 
           {/* Explosion ripples - multiple rings expanding outward */}
           {animationPhase === 'exploding' && (
             <>
-              {[...Array(4)].map((_, i) => (
+              {[...Array(3)].map((_, i) => (
                 <motion.div
                   key={`explosion-ring-${i}`}
-                  className={`absolute rounded-full border will-change-transform ${
-                    isDarkMode 
-                      ? 'border-neutral-600' 
-                      : 'border-neutral-400'
-                  }`}
+                  className={`absolute rounded-full border-2 will-change-transform ${isDarkMode
+                    ? 'border-neutral-600'
+                    : 'border-neutral-400'
+                    }`}
                   style={{
                     left: centerX,
                     top: centerY,
-                    transform: 'translate(-50%, -50%)',
+                    width: diameter,
+                    height: diameter,
                     backfaceVisibility: 'hidden',
                   }}
                   initial={{
-                    width: 20,
-                    height: 20,
-                    opacity: 0.6,
+                    scale: 0,
+                    x: "-50%",
+                    y: "-50%",
+                    opacity: 0,
+                    borderWidth: '0px',
                   }}
                   animate={{
-                    width: maxDistance * (1.2 + i * 0.2),
-                    height: maxDistance * (1.2 + i * 0.2),
-                    opacity: 0,
+                    scale: 1.5 + i * 0.2,
+                    x: "-50%",
+                    y: "-50%",
+                    opacity: [0, 0.8, 0],
+                    borderWidth: ['2px', '1px', '0px'],
                   }}
                   transition={{
-                    duration: 0.6 + i * 0.1,
-                    ease: 'easeOut',
-                    delay: i * 0.05,
+                    duration: 1.2 + i * 0.2,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: i * 0.15,
+                    times: [0, 0.2, 1],
                   }}
-                  onAnimationComplete={i === 0 ? handleExplosionComplete : undefined}
+                  onAnimationComplete={i === 2 ? handleExplosionComplete : undefined}
                 />
               ))}
             </>
