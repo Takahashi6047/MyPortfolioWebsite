@@ -25,11 +25,10 @@ export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
       transition={{ delay: isLoadingComplete ? 2.2 : 0, duration: 0.6 }}
       className="relative flex flex-row items-center gap-4 sm:gap-6 md:gap-8"
     >
-      {/* Logos Container */}
       <div className="relative overflow-hidden flex-1 min-w-0">
         <motion.div
-          animate={{ 
-            x: [0, -50] 
+          animate={{
+            x: [0, -50]
           }}
           transition={{
             duration: 18,
@@ -39,7 +38,6 @@ export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
           }}
           className="flex items-center gap-4 sm:gap-6 md:gap-10 lg:gap-16 w-max"
         >
-          {/* First set of logos */}
           {logos.map((logo, index) => (
             <motion.div
               key={`${logo.name}-1`}
@@ -51,14 +49,12 @@ export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
               <img
                 src={logo.src}
                 alt={logo.name}
-                className={`object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-500 ${
-                  logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
-                }`}
+                className={`object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-500 ${logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
+                  }`}
               />
             </motion.div>
           ))}
-          
-          {/* Duplicate logos for seamless loop */}
+
           {logos.map((logo, index) => (
             <motion.div
               key={`${logo.name}-2`}
@@ -70,16 +66,14 @@ export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
               <img
                 src={logo.src}
                 alt={logo.name}
-                className={`object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-500 ${
-                  logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
-                }`}
+                className={`object-contain grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-500 ${logo.name === 'Tailwind' ? 'h-16 w-16 sm:h-24 sm:w-24 md:h-32 md:w-32 dark:invert dark:brightness-200' : logo.name === 'Astro' ? 'h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 dark:invert dark:brightness-200' : 'h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12'
+                  }`}
               />
             </motion.div>
           ))}
         </motion.div>
       </div>
 
-      {/* Text - Side by side with logos */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={isLoadingComplete ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
@@ -88,11 +82,9 @@ export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
       >
         <div className="flex items-center justify-end gap-1.5 sm:gap-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">
           <div className="flex gap-0.5">
-            {/* 4 full stars */}
             {[...Array(4)].map((_, i) => (
               <span key={i} className="text-neutral-400 dark:text-neutral-500 text-xs sm:text-sm">★</span>
             ))}
-            {/* 1 partial star (90% filled for 4.9 rating) */}
             <div className="relative inline-block text-xs sm:text-sm">
               <span className="text-neutral-300 dark:text-neutral-600">★</span>
               <div className="absolute inset-0 overflow-hidden" style={{ width: '90%' }}>

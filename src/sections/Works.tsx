@@ -69,7 +69,7 @@ export function Works() {
                 </div>
 
                 <div className="mb-10 relative z-10">
-                    <span className="text-xs font-bold tracking-widest text-foreground/50 uppercase block font-sans">Selected Works</span>
+                    <span className="text-[10px] font-bold tracking-[0.3em] text-foreground/40 uppercase block font-sans">Selected Works</span>
                 </div>
                 <div className="grid grid-cols-1 gap-6 relative z-10">
                     {projects.map((project, index) => (
@@ -112,11 +112,13 @@ export function Works() {
                     </div>
 
                     <div className="max-w-xl ml-auto mr-8">
-                        <span className="text-sm font-bold tracking-widest text-foreground/50 uppercase mb-12 block font-sans">Selected Works</span>
+                        <span className="text-xs font-bold tracking-[0.3em] text-foreground/40 uppercase mb-12 block font-sans">Selected Works</span>
 
                         {/* Counter */}
-                        <div className="text-xl font-mono mb-4 text-foreground/80">
-                            0{activeIndex + 1} / 0{projects.length}
+                        <div className="text-lg font-light font-sans mb-4 text-foreground/50 tracking-wider">
+                            <span className="text-foreground/80 font-medium">0{activeIndex + 1}</span>
+                            <span className="mx-2 text-foreground/30">/</span>
+                            <span>0{projects.length}</span>
                         </div>
 
                         {/* Title Wrapper */}
@@ -132,7 +134,7 @@ export function Works() {
                                             : 'opacity-0 pointer-events-none'
                                             }`}
                                     >
-                                        <h1 className="text-6xl xl:text-7xl font-bold tracking-tight font-sans leading-[1.1]">
+                                        <h1 className="text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-tight font-sans leading-[1.05]">
                                             {project.title.split(' ').map((word, i) => (
                                                 <span key={i} className="block">{word}</span>
                                             ))}
@@ -143,21 +145,21 @@ export function Works() {
                         </div>
 
                         {/* Category & Year */}
-                        <div className="flex items-center gap-4 mb-8 text-foreground/60 text-lg uppercase tracking-widest border-b border-foreground/10 pb-4 font-sans">
+                        <div className="flex items-center gap-4 mb-8 text-foreground/50 text-sm uppercase tracking-[0.2em] border-b border-foreground/8 pb-4 font-sans font-medium">
                             <span>{projects[activeIndex].category}</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-foreground/40" />
-                            <span>{projects[activeIndex].year}</span>
+                            <span className="w-1 h-1 rounded-full bg-foreground/30" />
+                            <span className="tabular-nums">{projects[activeIndex].year}</span>
                         </div>
 
                         {/* Description */}
-                        <p className="text-xl text-foreground/80 font-light leading-relaxed mb-8 h-24 transition-opacity duration-500 font-sans">
+                        <p className="text-lg text-foreground/70 font-light leading-relaxed mb-8 min-h-[5rem] transition-all duration-500 font-sans">
                             {projects[activeIndex].description}
                         </p>
 
                         {/* Tags */}
                         <div className="flex flex-wrap gap-2">
                             {projects[activeIndex].tags.map((tag, i) => (
-                                <span key={i} className="px-4 py-2 text-sm bg-accent/50 text-foreground/90 rounded-full font-sans border border-transparent hover:border-foreground/20 transition-colors">
+                                <span key={i} className="px-4 py-2 text-xs font-medium tracking-wider uppercase bg-accent/40 text-foreground/70 rounded-full font-sans border border-foreground/5 hover:border-foreground/15 hover:bg-accent/60 transition-all duration-300">
                                     {tag}
                                 </span>
                             ))}

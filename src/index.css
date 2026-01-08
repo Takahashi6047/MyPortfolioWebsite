@@ -9,6 +9,9 @@
     --foreground: #1A1A1A;
     --card: #F0F0F0;
     --accent: #E5E5E5;
+
+    /* Typography scale */
+    --font-display: 'Inter', system-ui, sans-serif;
   }
 
   /* Dark Mode - Soft Black (not pitch black) */
@@ -22,7 +25,11 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -30,7 +37,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  cursor: none !important; /* Hide default cursor */
+  cursor: none !important;
+  /* Hide default cursor */
 }
 
 html {
@@ -38,15 +46,135 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  cursor: none !important; /* Hide default cursor */
+  cursor: none !important;
+  /* Hide default cursor */
 }
 
 /* Hide cursor on all interactive elements */
-a, button, input, textarea, select, [role="button"] {
+a,
+button,
+input,
+textarea,
+select,
+[role="button"] {
   cursor: none !important;
+}
+
+/* Smooth section transitions */
+section {
+  position: relative;
+}
+
+/* Enhanced focus states for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
+  opacity: 0.5;
+}
+
+/* Selection styling */
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* Magical Animations for Digital Artistry */
+@keyframes sparkle {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(10px, -10px) rotate(90deg);
+  }
+
+  50% {
+    transform: translate(0, -20px) rotate(180deg);
+  }
+
+  75% {
+    transform: translate(-10px, -10px) rotate(270deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(360deg);
+  }
+}
+
+.animate-sparkle {
+  animation: sparkle 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 4s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: drift 15s ease-in-out infinite;
 }

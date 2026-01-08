@@ -30,7 +30,6 @@ export function Navigation() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show side nav after scrolling 50px
       setShowSideNav(window.scrollY > 50);
     };
 
@@ -60,13 +59,11 @@ export function Navigation() {
             </span>
           </motion.div>
 
-          {/* Centered on desktop only */}
           <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
             <MobileNavOverlay />
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Show beside theme toggle on mobile */}
             <div className="md:hidden">
               <MobileNavOverlay />
             </div>
@@ -77,10 +74,8 @@ export function Navigation() {
 
       </nav>
 
-      {/* Drag constraints container - full viewport height */}
       <div ref={constraintsRef} className="fixed right-6 top-0 bottom-0 w-12 pointer-events-none z-[999998]" />
 
-      {/* Minimalist Vertical Side Navigation - Draggable on Y axis */}
       <AnimatePresence>
         {showSideNav && (
           <motion.div
@@ -110,19 +105,15 @@ export function Navigation() {
                 transition={{ delay: index * 0.1 }}
                 className="relative group flex items-center justify-center p-1"
               >
-                {/* Dot Indicator - black in light mode, white in dark mode */}
                 <div
                   className="w-2 h-2 rounded-full transition-all duration-300 group-hover:bg-blue-400 group-hover:scale-150 bg-black dark:bg-white"
                 />
 
-                {/* Hover Label */}
                 <span className="absolute right-8 px-3 py-1 rounded-md bg-black/80 text-white text-xs font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none backdrop-blur-md">
                   {item.label}
-                  {/* Tiny arrow pointing right */}
                   <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-2 h-2 bg-black/80 rotate-45 transform" />
                 </span>
 
-                {/* Larger invisible target area for easier clicking */}
                 <div className="absolute inset-[-8px]" />
               </motion.a>
             ))}
