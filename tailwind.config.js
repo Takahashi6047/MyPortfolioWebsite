@@ -9,6 +9,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'serif'],
         orbitron: ['Orbitron', 'sans-serif'],
       },
       colors: {
