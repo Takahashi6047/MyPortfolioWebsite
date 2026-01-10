@@ -9,44 +9,6 @@ interface HeroProps {
   isLoadingComplete?: boolean;
 }
 
-// --- Typewriter Terminal Effect ---
-const TypewriterText = ({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) => {
-  const [display, setDisplay] = useState("");
-  const [showCursor, setShowCursor] = useState(true);
-
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-    let currentIndex = 0;
-
-    const startTyping = () => {
-      const typeChar = () => {
-        if (currentIndex < text.length) {
-          setDisplay(text.slice(0, currentIndex + 1));
-          currentIndex++;
-          timeout = setTimeout(typeChar, 30); // Fast typing speed
-        }
-      };
-      typeChar();
-    };
-
-    timeout = setTimeout(startTyping, delay);
-
-    // Cursor blink loop
-    const cursorInterval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 500);
-
-    return () => { clearTimeout(timeout); clearInterval(cursorInterval); };
-  }, [text, delay]);
-
-  return (
-    <span className={`font-mono ${className}`}>
-      {display}
-      <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} text-[var(--art-accent)]`}>_</span>
-    </span>
-  );
-};
-
 export function Hero({ isLoadingComplete = false }: HeroProps) {
   const [isContainerVisible, setIsContainerVisible] = useState(false);
   const { theme } = useTheme();
