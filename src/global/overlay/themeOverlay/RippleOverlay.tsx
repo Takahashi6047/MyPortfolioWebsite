@@ -26,11 +26,17 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
     if (isDarkMode) {
       html.classList.add('dark');
       localStorage.setItem('theme', 'dark');
-      onThemeChange?.('dark');
+      // Delay React updates slightly to allow DOM/Particles to settle first
+      requestAnimationFrame(() => {
+        onThemeChange?.('dark');
+      });
     } else {
       html.classList.remove('dark');
       localStorage.setItem('theme', 'light');
-      onThemeChange?.('light');
+      // Delay React updates slightly to allow DOM/Particles to settle first
+      requestAnimationFrame(() => {
+        onThemeChange?.('light');
+      });
     }
 
     setTimeout(() => {
@@ -61,7 +67,53 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
-          {/* Main ripple circle - covers the screen */}
+          {/* Secondary ripple (rendered first/behind to optimize opacity blending) */}
+          <motion.div
+            className={`absolute rounded-full will-change-transform ${isDarkMode
+              ? 'bg-neutral-800'
+              : 'bg-neutral-50'
+              }`}
+            style={{
+              left: centerX,
+              top: centerY,
+              width: diameter * 1.1,
+              height: diameter * 1.1,
+              backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              WebkitFontSmoothing: 'antialiased',
+            }}
+            initial={{
+              scale: 0,
+              x: "-50%",
+              y: "-50%",
+              opacity: 0.7,
+            }}
+            animate={
+              animationPhase === 'expanding'
+                ? {
+                  scale: 1,
+                  x: "-50%",
+                  y: "-50%",
+                }
+                : {
+                  scale: 1,
+                  x: "-50%",
+                  y: "-50%",
+                  opacity: 0,
+                }
+            }
+            transition={
+              animationPhase === 'expanding'
+                ? {
+                  scale: { duration: 1.1, ease: [0.64, 0, 0.78, 0], delay: 0.05 },
+                }
+                : {
+                  opacity: { duration: 0.5, ease: 'easeOut', delay: 0.05 },
+                }
+            }
+          />
+
+          {/* Main ripple circle - covers the screen (rendered on top) */}
           <motion.div
             className={`absolute rounded-full will-change-transform ${isDarkMode
               ? 'bg-neutral-900'
@@ -107,52 +159,6 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
             }
             onAnimationComplete={
               animationPhase === 'expanding' ? handleExpandComplete : undefined
-            }
-          />
-
-          {/* Secondary ripple */}
-          <motion.div
-            className={`absolute rounded-full will-change-transform ${isDarkMode
-              ? 'bg-neutral-800'
-              : 'bg-neutral-50'
-              }`}
-            style={{
-              left: centerX,
-              top: centerY,
-              width: diameter * 1.1,
-              height: diameter * 1.1,
-              backfaceVisibility: 'hidden',
-              transform: 'translateZ(0)',
-              WebkitFontSmoothing: 'antialiased',
-            }}
-            initial={{
-              scale: 0,
-              x: "-50%",
-              y: "-50%",
-              opacity: 0.7,
-            }}
-            animate={
-              animationPhase === 'expanding'
-                ? {
-                  scale: 1,
-                  x: "-50%",
-                  y: "-50%",
-                }
-                : {
-                  scale: 1,
-                  x: "-50%",
-                  y: "-50%",
-                  opacity: 0,
-                }
-            }
-            transition={
-              animationPhase === 'expanding'
-                ? {
-                  scale: { duration: 1.1, ease: [0.64, 0, 0.78, 0], delay: 0.05 },
-                }
-                : {
-                  opacity: { duration: 0.5, ease: 'easeOut', delay: 0.05 },
-                }
             }
           />
 
