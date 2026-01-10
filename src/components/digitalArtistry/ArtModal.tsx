@@ -11,11 +11,11 @@ interface ArtModalProps {
 const modalVariants = {
     hidden: {
         opacity: 0,
-        scale: 0.95,
-        y: 20,
+        scale: 0.9,
+        y: 40,
         transition: {
             duration: 0.3,
-            ease: "easeOut" as const
+            ease: [0.4, 0, 0.6, 1]
         }
     },
     visible: {
@@ -23,43 +23,74 @@ const modalVariants = {
         scale: 1,
         y: 0,
         transition: {
-            duration: 0.3,
-            ease: "easeOut" as const
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1]
         }
     },
     exit: {
         opacity: 0,
-        scale: 0.95,
-        y: 20,
+        scale: 0.9,
+        y: 40,
         transition: {
-            duration: 0.2,
-            ease: "easeIn" as const
+            duration: 0.25,
+            ease: [0.4, 0, 1, 1]
         }
     }
 };
 
 const backdropVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.4 } },
-    exit: { opacity: 0, transition: { duration: 0.3 } }
+    hidden: { 
+        opacity: 0,
+        transition: {
+            duration: 0.2
+        }
+    },
+    visible: { 
+        opacity: 1, 
+        transition: { 
+            duration: 0.3,
+            ease: "easeOut"
+        } 
+    },
+    exit: { 
+        opacity: 0, 
+        transition: { 
+            duration: 0.25,
+            ease: "easeIn"
+        } 
+    }
 };
 
 export function ArtModal({ isOpen, onClose, artPiece }: ArtModalProps) {
-    // Handle escape key
+    // Handle escape key and body scroll lock
     useEffect(() => {
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleEsc);
-        return () => window.removeEventListener('keydown', handleEsc);
-    }, [onClose]);
-
-    if (!artPiece) return null;
+        if (isOpen) {
+            // Lock body scroll
+            document.body.style.overflow = 'hidden';
+            
+            const handleEsc = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') onClose();
+            };
+            window.addEventListener('keydown', handleEsc);
+            
+            return () => {
+                // Unlock body scroll
+                document.body.style.overflow = 'unset';
+                window.removeEventListener('keydown', handleEsc);
+            };
+        }
+    }, [isOpen, onClose]);
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 md:p-8">
+        <AnimatePresence mode="wait">
+            {isOpen && artPiece && (
+                <motion.div 
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 md:p-8"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                >
                     {/* Backdrop */}
                     <motion.div
                         variants={backdropVariants}
@@ -243,7 +274,7 @@ export function ArtModal({ isOpen, onClose, artPiece }: ArtModalProps) {
                         </div>
 
                     </motion.div>
-                </div>
+                </motion.div>
             )}
         </AnimatePresence>
     );
