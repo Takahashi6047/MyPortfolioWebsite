@@ -96,15 +96,14 @@ export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
         </div>
         <div className="relative mt-2">
           <div className="text-xs sm:text-sm lg:text-base text-neutral-600 dark:text-neutral-400 whitespace-nowrap tracking-wide font-light">
-            Trusted by{' '}
             <span className="relative inline-block">
               <span className="font-semibold bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-600 dark:from-neutral-100 dark:via-neutral-200 dark:to-neutral-300 bg-clip-text text-transparent">
-                100+
+                Fresh
               </span>
               <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neutral-400 dark:via-neutral-500 to-transparent opacity-40"></span>
             </span>{' '}
             <span className="text-neutral-700 dark:text-neutral-300 font-medium tracking-wider">
-              businesses worldwide
+              ideas, proven skills
             </span>
           </div>
           <span className="absolute -top-1 -left-2 w-1 h-1 bg-gradient-to-br from-neutral-400 to-neutral-600 dark:from-neutral-500 dark:to-neutral-300 rounded-full opacity-60 animate-pulse"></span>

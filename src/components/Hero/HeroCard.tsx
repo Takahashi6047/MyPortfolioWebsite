@@ -13,15 +13,35 @@ export function HeroCard() {
 
   return (
     <div className="relative sm:absolute right-0 sm:right-4 md:right-6 lg:right-8 bottom-0 sm:bottom-8 md:bottom-11 lg:bottom-13 flex flex-col items-end gap-2 sm:gap-3 md:gap-4 self-end">
-      {/* Happy clients badge */}
+      {/* Skill meters */}
       <div className={`flex items-center gap-1.5 sm:gap-2 transition-all duration-500 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
         }`}>
-        <div className="flex -space-x-1.5 sm:-space-x-2">
-          <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-neutral-400 border-2 border-card"></div>
-          <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-neutral-500 border-2 border-card"></div>
-          <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-neutral-600 border-2 border-card"></div>
+        <div className="flex items-center gap-1 sm:gap-1.5">
+          {/* Frontend skill */}
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
+              <div className="w-full h-[85%] bg-blue-400 rounded-full"></div>
+            </div>
+            <span className="text-[6px] sm:text-[8px] text-white/50">FE</span>
+          </div>
+          
+          {/* Backend skill */}
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
+              <div className="w-full h-[75%] bg-white rounded-full"></div>
+            </div>
+            <span className="text-[6px] sm:text-[8px] text-white/50">BE</span>
+          </div>
+          
+          {/* Design skill */}
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
+              <div className="w-full h-[90%] bg-blue-400 rounded-full"></div>
+            </div>
+            <span className="text-[6px] sm:text-[8px] text-white/50">UI</span>
+          </div>
         </div>
-        <span className="text-[10px] sm:text-xs text-white/70 hidden sm:inline">Happy clients worldwide</span>
+        <span className="text-[10px] sm:text-xs text-white/70 hidden sm:inline">Passionate developer</span>
       </div>
 
       {/* Professional card */}

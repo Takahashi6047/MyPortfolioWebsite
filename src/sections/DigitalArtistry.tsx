@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { artPieces } from '../data/artworks';
 import { CategoryFilter, BentoGrid } from '../components/digitalArtistry';
+import { useRipple } from '../global/overlay/themeOverlay/RippleContext';
 
 // --- Typewriter Terminal Effect ---
 const TypewriterText = ({ text, className = "", delay = 0, startTyping = false }: { text: string, className?: string, delay?: number, startTyping?: boolean }) => {
@@ -46,6 +47,7 @@ export function DigitalArtistry() {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
+    const { theme } = useRipple();
     
     // Use useInView for reliable entrance detection
     const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
@@ -167,11 +169,17 @@ export function DigitalArtistry() {
 
                 {/* Footer Data */}
                 <motion.div 
-                    className="mt-8 flex justify-between text-[10px] text-[var(--art-accent)]/40 border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-widest"
+                    className="mt-8 flex justify-between text-[10px] border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-widest"
                     variants={itemVariants}
                 >
-                    <span>End Of Stream</span>
-                    <span>ARTCODED // V.2.0</span>
+                    <span className="text-[var(--art-accent)]/40">End Of Stream</span>
+                    <span className="text-[var(--art-accent)]/40">
+                        ART
+                        <span className={theme === 'light' ? '!text-[rgb(59,130,246)]' : ''}>
+                            CODED
+                        </span>
+                        {' // V.2.0'}
+                    </span>
                 </motion.div>
             </motion.div>
         </section>

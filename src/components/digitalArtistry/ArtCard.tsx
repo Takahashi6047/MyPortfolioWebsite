@@ -55,7 +55,7 @@ export function ArtCard({
             <div className="absolute inset-0 bg-black/90 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 border-[0.5px] border-[var(--art-accent)] m-1">
                 <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
                     <div className="w-full h-px bg-[var(--art-accent)] mb-3 opacity-50" />
-                    <h3 className="text-lg font-bold text-white mb-1 font-sans tracking-wide">
+                    <h3 className="text-lg font-bold text-white mb-1 font-sans tracking-wide line-clamp-2">
                         {title}
                     </h3>
                     <div className="flex justify-between items-end">
