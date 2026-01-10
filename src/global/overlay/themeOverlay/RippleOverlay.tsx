@@ -18,25 +18,22 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
     if (isActive) {
       setIsVisible(true);
       setAnimationPhase('expanding');
-
-      const themeTimeout = setTimeout(() => {
-        const html = document.documentElement;
-        if (isDarkMode) {
-          html.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
-          onThemeChange?.('dark');
-        } else {
-          html.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
-          onThemeChange?.('light');
-        }
-      }, 400);
-
-      return () => clearTimeout(themeTimeout);
     }
-  }, [isActive, isDarkMode, onThemeChange]);
+  }, [isActive]);
 
   const handleExpandComplete = () => {
+    // Trigger theme update when screen is fully covered to avoid recursion/lag during animation
+    const html = document.documentElement;
+    if (isDarkMode) {
+      html.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      onThemeChange?.('dark');
+    } else {
+      html.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      onThemeChange?.('light');
+    }
+
     setTimeout(() => {
       setAnimationPhase('exploding');
     }, 150);
@@ -67,9 +64,9 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
         >
           {/* Main ripple circle - covers the screen */}
           <motion.div
-            className={`absolute rounded-full will-change-transform shadow-2xl ${isDarkMode
-              ? 'bg-neutral-900 shadow-neutral-900/50'
-              : 'bg-white shadow-white/50'
+            className={`absolute rounded-full will-change-transform ${isDarkMode
+              ? 'bg-neutral-900'
+              : 'bg-white'
               }`}
             style={{
               left: centerX,
@@ -77,12 +74,14 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
               width: diameter,
               height: diameter,
               backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              WebkitFontSmoothing: 'antialiased',
             }}
             initial={{
               scale: 0,
               x: "-50%",
               y: "-50%",
-              opacity: 0.95,
+              opacity: 1,
             }}
             animate={
               animationPhase === 'expanding'
@@ -101,7 +100,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
             transition={
               animationPhase === 'expanding'
                 ? {
-                  scale: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+                  scale: { duration: 1.0, ease: [0.64, 0, 0.78, 0] },
                 }
                 : {
                   opacity: { duration: 0.4, ease: 'easeOut' },
@@ -124,6 +123,8 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
               width: diameter * 1.1,
               height: diameter * 1.1,
               backfaceVisibility: 'hidden',
+              transform: 'translateZ(0)',
+              WebkitFontSmoothing: 'antialiased',
             }}
             initial={{
               scale: 0,
@@ -148,7 +149,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
             transition={
               animationPhase === 'expanding'
                 ? {
-                  scale: { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.05 },
+                  scale: { duration: 1.1, ease: [0.64, 0, 0.78, 0], delay: 0.05 },
                 }
                 : {
                   opacity: { duration: 0.5, ease: 'easeOut', delay: 0.05 },
@@ -159,7 +160,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
           {/* Explosion ripples - multiple rings expanding outward */}
           {animationPhase === 'exploding' && (
             <>
-              {[...Array(3)].map((_, i) => (
+              {[...Array(2)].map((_, i) => (
                 <motion.div
                   key={`explosion-ring-${i}`}
                   className={`absolute rounded-full border-2 will-change-transform ${isDarkMode
@@ -172,6 +173,8 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
                     width: diameter,
                     height: diameter,
                     backfaceVisibility: 'hidden',
+                    transform: 'translateZ(0)',
+                    WebkitFontSmoothing: 'antialiased',
                   }}
                   initial={{
                     scale: 0,
@@ -181,7 +184,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
                     borderWidth: '0px',
                   }}
                   animate={{
-                    scale: 1.5 + i * 0.2,
+                    scale: 1.5 + i * 0.3,
                     x: "-50%",
                     y: "-50%",
                     opacity: [0, 0.8, 0],
@@ -193,7 +196,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
                     delay: i * 0.15,
                     times: [0, 0.2, 1],
                   }}
-                  onAnimationComplete={i === 2 ? handleExplosionComplete : undefined}
+                  onAnimationComplete={i === 1 ? handleExplosionComplete : undefined}
                 />
               ))}
             </>

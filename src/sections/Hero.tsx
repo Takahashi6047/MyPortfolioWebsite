@@ -2,6 +2,7 @@ import { HeroCard } from '../components/Hero/HeroCard';
 import { LogosSection } from '../components/Hero/LogosSection';
 import { ParticleBackground } from '../components/Hero/ParticleBackground';
 import { useState, useEffect } from 'react';
+import { useTheme } from '../global/overlay/themeOverlay/RippleContext';
 
 interface HeroProps {
   isLoadingComplete?: boolean;
@@ -9,6 +10,9 @@ interface HeroProps {
 
 export function Hero({ isLoadingComplete = false }: HeroProps) {
   const [isContainerVisible, setIsContainerVisible] = useState(false);
+  const { theme } = useTheme();
+  const isArtMode = theme === 'dark';
+
   const [visibleElements, setVisibleElements] = useState({
     corners: false,
     title: false,
@@ -54,39 +58,43 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
 
         {/* Corner brackets */}
         <div className={`absolute top-4 left-4 sm:top-6 sm:left-6 transition-all duration-500 ease-out ${visibleElements.corners ? 'opacity-100 translate-x-0 translate-y-0' : 'opacity-0 -translate-x-2 -translate-y-2'}`}>
-          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-l-2 border-t-2 border-neutral-600 dark:border-neutral-400 rounded-tl-md"></div>
+          <div className={`w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-l-2 border-t-2 rounded-tl-md transition-colors duration-500 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-neutral-600'}`}></div>
         </div>
         <div className={`absolute top-4 right-4 sm:top-6 sm:right-6 transition-all duration-500 ease-out ${visibleElements.corners ? 'opacity-100 translate-x-0 translate-y-0' : 'opacity-0 translate-x-2 -translate-y-2'}`}>
-          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-r-2 border-t-2 border-neutral-600 dark:border-neutral-400 rounded-tr-md"></div>
+          <div className={`w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-r-2 border-t-2 rounded-tr-md transition-colors duration-500 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-neutral-600'}`}></div>
         </div>
         <div className={`absolute bottom-4 left-4 sm:bottom-6 sm:left-6 transition-all duration-500 ease-out ${visibleElements.corners ? 'opacity-100 translate-x-0 translate-y-0' : 'opacity-0 -translate-x-2 translate-y-2'}`}>
-          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-l-2 border-b-2 border-neutral-600 dark:border-neutral-400 rounded-bl-md"></div>
+          <div className={`w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-l-2 border-b-2 rounded-bl-md transition-colors duration-500 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-neutral-600'}`}></div>
         </div>
         <div className={`absolute bottom-4 right-4 sm:bottom-6 sm:right-6 transition-all duration-500 ease-out ${visibleElements.corners ? 'opacity-100 translate-x-0 translate-y-0' : 'opacity-0 translate-x-2 translate-y-2'}`}>
-          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-r-2 border-b-2 border-neutral-600 dark:border-neutral-400 rounded-br-md"></div>
+          <div className={`w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 border-r-2 border-b-2 rounded-br-md transition-colors duration-500 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-neutral-600'}`}></div>
         </div>
 
         {/* Content overlay */}
         <div className="absolute inset-0 p-4 sm:p-6 md:p-8 flex flex-col justify-between pointer-events-none">
           <div className="pt-4 sm:pt-6 md:pt-8 ml-2 sm:ml-4 md:ml-5">
-            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-neutral-200 dark:text-neutral-800 tracking-tight transition-all duration-600 ease-out ${visibleElements.title ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-              ARTCODED
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight transition-all duration-600 ease-out ${visibleElements.title ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'} ${isArtMode ? 'text-black font-serif italic' : 'text-neutral-200'}`}>
+              {isArtMode ? 'ARTCODED' : 'ARTCODED'}
             </h1>
-            <p className={`text-xs sm:text-sm md:text-base font-light text-neutral-400 dark:text-neutral-600 mt-1 sm:mt-2 ml-0 sm:ml-20 md:ml-32 lg:ml-40 transition-all duration-600 ease-out delay-100 ${visibleElements.subtitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              visions through the variable.
+            <p className={`text-xs sm:text-sm md:text-base font-light mt-1 sm:mt-2 ml-0 sm:ml-20 md:ml-32 lg:ml-40 transition-all duration-600 ease-out delay-100 ${visibleElements.subtitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} ${isArtMode ? 'text-neutral-600 italic tracking-widest' : 'text-neutral-400'}`}>
+              {isArtMode ? 'selections from the digital atelier.' : 'full-stack engineering & ui design.'}
             </p>
           </div>
 
           {/* Bottom section */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 sm:gap-0">
             <div className={`max-w-[300px] sm:max-w-xs md:max-w-sm ml-2 sm:ml-4 md:ml-5 mb-0 sm:mb-4 md:mb-5 order-2 sm:order-1 transition-all duration-600 ease-out ${visibleElements.quote ? 'opacity-100 translate-y-0 translate-x-0' : 'opacity-0 translate-y-4 -translate-x-4'}`}>
-              <div className="relative pl-4 sm:pl-5 border-l-2 border-neutral-600 dark:border-neutral-400">
-                <span className="absolute -left-1 -top-2 text-2xl sm:text-3xl text-neutral-600 dark:text-neutral-400 font-serif leading-none">"</span>
-                <p className="text-neutral-300 dark:text-neutral-700 text-xs sm:text-sm leading-relaxed font-light tracking-wide">
-                  Full-stack capabilities meet digital artistry. A portfolio of technical solutions and visual explorations by <span className="font-medium text-white dark:text-neutral-900">ARTCODED</span>.
+              <div className={`relative pl-4 sm:pl-5 border-l-2 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-neutral-600'}`}>
+                <span className={`absolute -left-1 -top-2 text-2xl sm:text-3xl font-serif leading-none ${isArtMode ? 'text-[var(--art-accent)]' : 'text-neutral-600'}`}>"</span>
+                <p className={`text-xs sm:text-sm leading-relaxed font-light tracking-wide ${isArtMode ? 'text-neutral-700 italic' : 'text-neutral-300'}`}>
+                  {isArtMode
+                    ? "Curating pixels and code into immersive digital experiences. A gallery of technical solutions and visual explorations."
+                    : "Building scalable, high-performance web applications with a focus on user experience and clean architecture."
+                  }
+                  <span className={`font-medium ${isArtMode ? 'text-[var(--art-accent)]' : 'text-white'}`}> ARTCODED</span>.
                 </p>
-                <p className="text-neutral-500 dark:text-neutral-500 text-[10px] sm:text-xs mt-2 sm:mt-3 uppercase tracking-widest">
-                  From the terminal to the tablet
+                <p className={`text-[10px] sm:text-xs mt-2 sm:mt-3 uppercase tracking-widest ${isArtMode ? 'text-[var(--art-accent)]' : 'text-neutral-500'}`}>
+                  {isArtMode ? 'Est. 2024' : 'From the terminal to the tablet'}
                 </p>
               </div>
             </div>

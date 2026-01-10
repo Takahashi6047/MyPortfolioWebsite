@@ -20,6 +20,8 @@ export function useRipple() {
   return context;
 }
 
+export const useTheme = useRipple;
+
 interface RippleProviderProps {
   children: ReactNode;
 }
