@@ -445,13 +445,16 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         }
 
         const isDark = isDarkModeRef.current;
-        const baseR = isDark ? 0 : 255;
-        const baseG = isDark ? 0 : 255;
-        const baseB = isDark ? 0 : 255;
 
-        const targetR = 59;
-        const targetG = 130;
-        const targetB = 246;
+        // -- ARTISTRY MODE CONFIG (Gold/Obsidian) --
+        // Obsidian: #1A1A1A (26, 26, 26) -> Main particle color
+        // Gold: #C5A059 (197, 160, 89) -> Accent/Interaction color
+        const artBaseR = 26, artBaseG = 26, artBaseB = 26;
+        const artTargetR = 197, artTargetG = 160, artTargetB = 89;
+
+        // -- DEV MODE CONFIG (White/Blue) --
+        const devBaseR = 255, devBaseG = 255, devBaseB = 255;
+        const devTargetR = 59, devTargetG = 130, devTargetB = 246;
 
         particlesRef.current.forEach((particle) => {
             const rotationAngle = time * particle.rotationSpeed + particle.phase;
@@ -471,9 +474,20 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 if (dist < MOUSE_RADIUS && dist > 0) {
                     const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
                     const angle = Math.atan2(dy, dx);
-                    const power = 10;
-                    repulsionVx = Math.cos(angle) * force * power;
-                    repulsionVy = Math.sin(angle) * force * power;
+
+                    // Artistry Mode: Turbulence/Swirl instead of pure repulsion
+                    if (isDark) {
+                        const swirlAngle = angle + Math.PI / 2; // Perpendicular force
+                        const power = 2; // Gentler swirl
+                        repulsionVx = Math.cos(swirlAngle) * force * power - Math.cos(angle) * force * 0.5;
+                        repulsionVy = Math.sin(swirlAngle) * force * power - Math.sin(angle) * force * 0.5;
+                    }
+                    // Dev Mode: Pure Repulsion (Force Field)
+                    else {
+                        const power = 10;
+                        repulsionVx = Math.cos(angle) * force * power;
+                        repulsionVy = Math.sin(angle) * force * power;
+                    }
                 }
             }
             let waveIntensity = 0;
@@ -496,9 +510,12 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     particle.colorTransition = Math.max(0, particle.colorTransition - 0.02);
                 }
             } else if (particle.colorTransition > 0) {
-
                 particle.colorTransition = Math.max(0, particle.colorTransition - 0.02);
             }
+
+            // MORPH LOGIC: Interpolate physics state
+            // If Art Mode, we ideally want to drift away from baseX/baseY
+            // If Dev Mode, we snap back to baseX/baseY
 
             //  SHAPE PARTICLES 
             if (particle.type === 'shape') {
@@ -506,6 +523,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 let displayY = particle.y;
 
                 if (isEntrancePhase) {
+                    // Initial entrance animation overrides everything
                     const curBaseX = particle.startX + (particle.baseX - particle.startX) * easedEntrance;
                     const curBaseY = particle.startY + (particle.baseY - particle.startY) * easedEntrance;
                     particle.x = curBaseX + orbitX;
@@ -513,34 +531,105 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     displayX = particle.x;
                     displayY = particle.y;
                 } else {
-                    const homeX = particle.baseX + orbitX;
-                    const homeY = particle.baseY + orbitY;
-                    const springDx = homeX - particle.x;
-                    const springDy = homeY - particle.y;
-                    const springStrength = 0.05;
+                    if (isDark) {
+                        // -- ARTISTRY PHYSICS: FLUID DRIFT --
+                        // Release the anchor. Particles drift upwards like bubbles/ink
+                        const noise = Math.sin(time * 0.5 + particle.phase * 3 + particle.y * 0.005);
 
-                    particle.vx += springDx * springStrength;
-                    particle.vy += springDy * springStrength;
+                        // Vertical drift (upwards)
+                        const driftSpeedY = -0.3 - (Math.sin(particle.phase) + 1) * 0.2;
 
-                    particle.vx += repulsionVx;
-                    particle.vy += repulsionVy;
+                        // Horizontal sway
+                        const driftSpeedX = noise * 0.5;
 
-                    particle.vx *= 0.85;
-                    particle.vy *= 0.85;
+                        // Apply forces
+                        particle.vx += driftSpeedX * 0.02;
+                        particle.vy += driftSpeedY * 0.02;
 
-                    particle.x += particle.vx;
-                    particle.y += particle.vy;
+                        // Damping (Drag)
+                        particle.vx *= 0.96;
+                        particle.vy *= 0.96;
 
-                    displayX = particle.x + rippleDisplacementX;
-                    displayY = particle.y + rippleDisplacementY;
+                        // Mouse influence
+                        particle.vx += repulsionVx;
+                        particle.vy += repulsionVy;
+
+                        particle.x += particle.vx;
+                        particle.y += particle.vy;
+
+                        // WRAP AROUND (Infinite Canvas)
+                        if (particle.y < -50) {
+                            particle.y = height + 50;
+                            particle.x = Math.random() * width; // Randomize x re-entry for variety
+                        }
+                        if (particle.x < -50) particle.x = width + 50;
+                        if (particle.x > width + 50) particle.x = -50;
+
+                        displayX = particle.x + rippleDisplacementX;
+                        displayY = particle.y + rippleDisplacementY;
+                    } else {
+                        // -- DEV MODE PHYSICS: ELASTIC SNAP --
+                        // Ensure we try to return to baseX if we drifted far away
+                        // If coming back from Art mode, we might be far away.
+                        // But for smooth morph, we just use the spring physics to pull us back.
+
+                        // Note: If particle was wrapped in Art mode, it will fly across screen to return. 
+                        // To fix this visual glitch, we could silently teleport it closer, but the "flying back usually looks okay"
+
+                        const homeX = particle.baseX + orbitX;
+                        const homeY = particle.baseY + orbitY;
+                        const springDx = homeX - particle.x;
+                        const springDy = homeY - particle.y;
+                        const springStrength = 0.05;
+
+                        particle.vx += springDx * springStrength;
+                        particle.vy += springDy * springStrength;
+
+                        particle.vx += repulsionVx;
+                        particle.vy += repulsionVy;
+
+                        particle.vx *= 0.85;
+                        particle.vy *= 0.85;
+
+                        particle.x += particle.vx;
+                        particle.y += particle.vy;
+
+                        displayX = particle.x + rippleDisplacementX;
+                        displayY = particle.y + rippleDisplacementY;
+                    }
                 }
 
                 const alphaPulse = Math.sin(time * 3 + particle.phase * 2) * 0.15;
                 let finalAlpha = Math.max(0.1, particle.alpha + alphaPulse);
 
+                // COLOR MIXING
+                // Shape particles should be BLUE in Dev Mode, OBSIDIAN in Art Mode
+                // We interpolate based on isDark.
+
+                let curR, curG, curB;
+                let targetR, targetG, targetB;
+
+                if (isDark) {
+                    // Art Mode: Obsidian base -> Gold accent
+                    curR = artBaseR; curG = artBaseG; curB = artBaseB;
+                    targetR = artTargetR; targetG = artTargetG; targetB = artTargetB;
+                } else {
+                    // Dev Mode: Blue base -> Blue accent (shape particles are always blue)
+                    curR = devTargetR; curG = devTargetG; curB = devTargetB;
+                    targetR = devTargetR; targetG = devTargetG; targetB = devTargetB;
+                }
+
+                // If wave is active, we flash the accent color
+                let r = curR, g = curG, b = curB;
+
                 if (waveIntensity > 0.3) {
                     ctx.shadowBlur = 8 * waveIntensity;
-                    ctx.shadowColor = 'rgba(59, 130, 246, 0.6)';
+                    ctx.shadowColor = `rgba(${targetR}, ${targetG}, ${targetB}, 0.6)`;
+                    // Lerp towards accent color
+                    r = r + (targetR - r) * waveIntensity;
+                    g = g + (targetG - g) * waveIntensity;
+                    b = b + (targetB - b) * waveIntensity;
+
                     finalAlpha = Math.min(1, finalAlpha + waveIntensity * 0.3);
                 } else {
                     ctx.shadowBlur = 0;
@@ -548,7 +637,7 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
 
                 ctx.beginPath();
                 ctx.arc(displayX, displayY, particle.size * (1 + waveIntensity * 0.3), 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(59, 130, 246, ${finalAlpha})`;
+                ctx.fillStyle = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${finalAlpha})`;
                 ctx.fill();
                 ctx.shadowBlur = 0;
                 return;
@@ -586,16 +675,19 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 let targetVecX = 0;
                 let targetVecY = 0;
 
-                for (const attr of attractorsRef.current) {
-                    const { dist, dx, dy } = getDistanceToLineSegment(particle.x, particle.y, attr.x1, attr.y1, attr.x2, attr.y2);
-                    if (dist < minKeepDist) {
-                        minKeepDist = dist;
-                        targetVecX = -dx;
-                        targetVecY = -dy;
+                // Only seek attractors in DEV mode
+                if (!isDark) {
+                    for (const attr of attractorsRef.current) {
+                        const { dist, dx, dy } = getDistanceToLineSegment(particle.x, particle.y, attr.x1, attr.y1, attr.x2, attr.y2);
+                        if (dist < minKeepDist) {
+                            minKeepDist = dist;
+                            targetVecX = -dx;
+                            targetVecY = -dy;
+                        }
                     }
                 }
 
-                // DRIFTING STATE
+                // DRIFTING STATE (Shared but modified for Art Mode)
                 if (particle.state === 'drifting') {
                     particle.vx += (Math.random() - 0.5) * 0.01;
                     particle.vy += (Math.random() - 0.5) * 0.01;
@@ -603,20 +695,26 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     particle.vx += repulsionVx * 0.5;
                     particle.vy += repulsionVy * 0.5;
 
-                    if (minKeepDist < EXCLUSION_RADIUS) {
-                        const force = (EXCLUSION_RADIUS - minKeepDist) / EXCLUSION_RADIUS;
-                        particle.vx -= targetVecX * force * 0.1;
-                        particle.vy -= targetVecY * force * 0.1;
+                    if (isDark) {
+                        // Art Mode: General upwards drift
+                        particle.vy -= 0.02;
+                    } else {
+                        // Dev Mode: Magnetism logic
+                        if (minKeepDist < EXCLUSION_RADIUS) {
+                            const force = (EXCLUSION_RADIUS - minKeepDist) / EXCLUSION_RADIUS;
+                            particle.vx -= targetVecX * force * 0.1;
+                            particle.vy -= targetVecY * force * 0.1;
 
-                        if (Math.random() < 0.02) {
-                            particle.state = 'magnetized';
-                            particle.vx *= 0.1;
-                            particle.vy *= 0.1;
+                            if (Math.random() < 0.02) {
+                                particle.state = 'magnetized';
+                                particle.vx *= 0.1;
+                                particle.vy *= 0.1;
+                            }
                         }
-                    }
 
-                    if (Math.random() < 0.001) {
-                        particle.state = 'magnetized';
+                        if (Math.random() < 0.001) {
+                            particle.state = 'magnetized';
+                        }
                     }
 
                     particle.x += particle.vx;
@@ -627,43 +725,54 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     if (particle.alpha < 0.5) particle.alpha += 0.01;
 
                 }
-                // MAGNETIZED STATE
+                // MAGNETIZED STATE (Dev Mode Only - effectively)
                 else if (particle.state === 'magnetized') {
-                    particle.vx += repulsionVx * 0.3;
-                    particle.vy += repulsionVy * 0.3;
+                    // If we switch to Dark mode while magnetized, instantly free them
+                    if (isDark) {
+                        particle.state = 'drifting';
+                    } else {
+                        particle.vx += repulsionVx * 0.3;
+                        particle.vy += repulsionVy * 0.3;
 
-                    if (minKeepDist > 0) {
-                        const speedFactor = 0.0001 + (3000 / (minKeepDist + 20)) * 0.0001;
-                        particle.vx += targetVecX * speedFactor;
-                        particle.vy += targetVecY * speedFactor;
-                    }
+                        if (minKeepDist > 0) {
+                            const speedFactor = 0.0001 + (3000 / (minKeepDist + 20)) * 0.0001;
+                            particle.vx += targetVecX * speedFactor;
+                            particle.vy += targetVecY * speedFactor;
+                        }
 
-                    particle.x += particle.vx;
-                    particle.y += particle.vy;
+                        particle.x += particle.vx;
+                        particle.y += particle.vy;
 
-                    particle.vx *= 0.98;
-                    particle.vy *= 0.98;
+                        particle.vx *= 0.98;
+                        particle.vy *= 0.98;
 
-                    if (minKeepDist < LANDING_DIST) {
-                        particle.state = 'landing';
-                        particle.vx = 0;
-                        particle.vy = 0;
+                        if (minKeepDist < LANDING_DIST) {
+                            particle.state = 'landing';
+                            particle.vx = 0;
+                            particle.vy = 0;
+                        }
                     }
                 }
                 // LANDING STATE
                 else if (particle.state === 'landing') {
-                    particle.alpha -= 0.05;
-                    if (particle.alpha <= 0) {
-                        particle.state = 'hidden';
-                        particle.hiddenUntil = now + 1000;
+                    if (isDark) {
+                        particle.state = 'drifting';
+                        particle.alpha = 0.5; // Restore visibility
+                    } else {
+                        particle.alpha -= 0.05;
+                        if (particle.alpha <= 0) {
+                            particle.state = 'hidden';
+                            particle.hiddenUntil = now + 1000;
+                        }
                     }
                 }
 
+                // Boundary Checks
                 if (particle.state === 'drifting') {
-                    if (particle.x < 0) particle.x = width;
-                    if (particle.x > width) particle.x = 0;
-                    if (particle.y < 0) particle.y = height;
-                    if (particle.y > height) particle.y = 0;
+                    if (particle.x < -10) particle.x = width + 10;
+                    if (particle.x > width + 10) particle.x = -10;
+                    if (particle.y < -10) particle.y = height + 10;
+                    if (particle.y > height + 10) particle.y = -10;
                 }
 
                 const alphaPulse = Math.sin(time * 2 + particle.phase) * 0.1;
@@ -675,16 +784,29 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     finalAlpha *= easedEntrance;
                 }
 
-                let r = baseR, g = baseG, b = baseB;
+                let curR, curG, curB;
+                let curTargetR, curTargetG, curTargetB;
+
+                if (isDark) {
+                    curR = artBaseR; curG = artBaseG; curB = artBaseB;
+                    // In Art mode, ambients are just dark dust.
+                    curTargetR = artBaseR; curTargetG = artBaseG; curTargetB = artBaseB;
+                } else {
+                    curR = devBaseR; curG = devBaseG; curB = devBaseB;
+                    curTargetR = devTargetR; curTargetG = devTargetG; curTargetB = devTargetB;
+                }
+
+                let r = curR, g = curG, b = curB;
                 let shadowBlur = 0;
 
-                if (particle.state === 'magnetized' || particle.state === 'landing') {
+                // Dev Mode "Charging" effect
+                if (!isDark && (particle.state === 'magnetized' || particle.state === 'landing')) {
                     const distMax = 300;
                     const factor = Math.max(0, Math.min(1, 1 - (minKeepDist - LANDING_DIST) / (distMax - LANDING_DIST)));
 
-                    r = baseR + (targetR - baseR) * factor;
-                    g = baseG + (targetG - baseG) * factor;
-                    b = baseB + (targetB - baseB) * factor;
+                    r = curR + (curTargetR - curR) * factor;
+                    g = curG + (curTargetG - curG) * factor;
+                    b = curB + (curTargetB - curB) * factor;
 
                     if (factor > 0.5) {
                         shadowBlur = 10 * factor;
@@ -692,10 +814,16 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 }
 
                 if (waveIntensity > 0.1) {
+                    // Flash effect handles transition to whatever target color
+                    let flashR, flashG, flashB;
+                    if (isDark) { flashR = artTargetR; flashG = artTargetG; flashB = artTargetB; }
+                    else { flashR = devTargetR; flashG = devTargetG; flashB = devTargetB; }
+
                     const flashIntensity = waveIntensity * 0.7;
-                    r = r + (targetR - r) * flashIntensity;
-                    g = g + (targetG - g) * flashIntensity;
-                    b = b + (targetB - b) * flashIntensity;
+                    r = r + (flashR - r) * flashIntensity;
+                    g = g + (flashG - g) * flashIntensity;
+                    b = b + (flashB - b) * flashIntensity;
+
                     shadowBlur = Math.max(shadowBlur, 12 * waveIntensity);
                     finalAlpha = Math.min(1, finalAlpha + waveIntensity * 0.4);
                 }
