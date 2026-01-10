@@ -34,8 +34,8 @@ export function ArtCard({
             className={`${className} group relative bg-[#050505] border border-[var(--art-accent)]/20 overflow-hidden`}
         >
             {/* Tech overlay (Base) */}
-            <div className="absolute top-4 left-4 z-20 flex gap-2">
-                <span className="text-[9px] bg-black/80 text-[var(--art-accent)] px-1 border border-[var(--art-accent)]/30 backdrop-blur-sm">
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20 flex gap-2">
+                <span className="text-[8px] sm:text-[9px] bg-black/80 text-[var(--art-accent)] px-1 border border-[var(--art-accent)]/30 backdrop-blur-sm">
                     FIG_{id}
                 </span>
             </div>
@@ -51,24 +51,24 @@ export function ArtCard({
                 <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none" />
             </div>
 
-            {/* Hover Overlay (Tech specs) */}
-            <div className="absolute inset-0 bg-black/90 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 border-[0.5px] border-[var(--art-accent)] m-1">
-                <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
-                    <div className="w-full h-px bg-[var(--art-accent)] mb-3 opacity-50" />
-                    <h3 className="text-lg font-bold text-white mb-1 font-sans tracking-wide line-clamp-2">
+            {/* Hover Overlay (Tech specs) - Mobile: tap to reveal */}
+            <div className="absolute inset-0 bg-black/90 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-300 flex flex-col justify-end p-4 sm:p-6 border-[0.5px] border-[var(--art-accent)] m-1">
+                <div className="transform translate-y-4 group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-500 delay-75">
+                    <div className="w-full h-px bg-[var(--art-accent)] mb-2 sm:mb-3 opacity-50" />
+                    <h3 className="text-base sm:text-lg font-bold text-white mb-1 font-sans tracking-wide line-clamp-2">
                         {title}
                     </h3>
                     <div className="flex justify-between items-end">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-[10px] text-[var(--art-accent)] uppercase tracking-wider">
+                        <div className="flex flex-col gap-0.5 sm:gap-1">
+                            <span className="text-[9px] sm:text-[10px] text-[var(--art-accent)] uppercase tracking-wider">
                                 CAT: {category}
                             </span>
-                            <span className="text-[10px] text-neutral-500 uppercase tracking-wider">
+                            <span className="text-[9px] sm:text-[10px] text-neutral-500 uppercase tracking-wider">
                                 DATE: {year}
                             </span>
                         </div>
-                        <button className="p-2 border border-[var(--art-accent)] text-[var(--art-accent)] hover:bg-[var(--art-accent)] hover:text-black transition-colors">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button className="p-1.5 sm:p-2 border border-[var(--art-accent)] text-[var(--art-accent)] hover:bg-[var(--art-accent)] hover:text-black active:bg-[var(--art-accent)] active:text-black transition-colors">
+                            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-3 sm:h-3">
                                 <path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.5" />
                             </svg>
                         </button>
@@ -76,10 +76,10 @@ export function ArtCard({
                 </div>
 
                 {/* Corner Brackets - Animated */}
-                <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
-                <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
-                <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
-                <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
+                <div className="absolute top-0 left-0 w-2 h-2 sm:w-3 sm:h-3 border-t-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
+                <div className="absolute top-0 right-0 w-2 h-2 sm:w-3 sm:h-3 border-t-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
+                <div className="absolute bottom-0 left-0 w-2 h-2 sm:w-3 sm:h-3 border-b-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
+                <div className="absolute bottom-0 right-0 w-2 h-2 sm:w-3 sm:h-3 border-b-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
             </div>
         </motion.div>
     );

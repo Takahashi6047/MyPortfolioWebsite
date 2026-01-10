@@ -109,7 +109,7 @@ export function DigitalArtistry() {
         <section
             id="artistry"
             ref={sectionRef}
-            className="relative min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono"
+            className="relative min-h-screen py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono"
         >
             {/* -- TECH BACKGROUND GRID with Parallax -- */}
             <motion.div 
@@ -127,7 +127,7 @@ export function DigitalArtistry() {
 
             {/* Main content with entrance animation */}
             <motion.div 
-                className="relative max-w-[95%] mx-auto"
+                className="relative w-full max-w-[95%] mx-auto"
                 variants={containerVariants}
                 initial="hidden"
                 animate={isInView ? "visible" : "hidden"}
@@ -135,26 +135,26 @@ export function DigitalArtistry() {
                 {/* -- HEADER -- */}
                 <motion.div 
                     ref={headerRef}
-                    className="mb-12 flex flex-col md:flex-row justify-between items-end border-b border-[var(--art-accent)]/30 pb-6"
+                    className="mb-8 sm:mb-12 flex flex-col md:flex-row justify-between md:items-end gap-4 border-b border-[var(--art-accent)]/30 pb-4 sm:pb-6"
                     variants={itemVariants}
                 >
-                    <div>
+                    <div className="w-full md:w-auto">
                         <motion.div 
-                            className="flex items-center gap-3 mb-2"
+                            className="flex items-center gap-2 sm:gap-3 mb-2"
                             variants={statusVariants}
                         >
-                            <div className="w-2 h-2 bg-[var(--art-accent)] animate-pulse" />
-                            <span className="text-[10px] tracking-[0.2em] text-[var(--art-accent)]">SYS.STATUS: ONLINE</span>
+                            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[var(--art-accent)] animate-pulse" />
+                            <span className="text-[8px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] text-[var(--art-accent)]">SYS.STATUS: ONLINE</span>
                         </motion.div>
                         <motion.h2 
-                            className="text-4xl md:text-6xl font-bold text-[#e5e5e5] tracking-tighter uppercase font-sans"
+                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#e5e5e5] tracking-tighter uppercase font-sans leading-tight"
                             variants={itemVariants}
                         >
                             Visual <TypewriterText text="Database" delay={600} startTyping={isInView} className="text-[var(--art-accent)]" />
                         </motion.h2>
                     </div>
 
-                    <motion.div variants={filterVariants}>
+                    <motion.div variants={filterVariants} className="w-full md:w-auto">
                         <CategoryFilter 
                             selectedCategory={selectedCategory} 
                             onCategoryChange={setSelectedCategory} 
@@ -169,7 +169,7 @@ export function DigitalArtistry() {
 
                 {/* Footer Data */}
                 <motion.div 
-                    className="mt-8 flex justify-between text-[10px] border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-widest"
+                    className="mt-8 flex flex-col sm:flex-row justify-between gap-2 sm:gap-0 text-[8px] sm:text-[10px] border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-wider sm:tracking-widest"
                     variants={itemVariants}
                 >
                     <span className="text-[var(--art-accent)]/40">End Of Stream</span>

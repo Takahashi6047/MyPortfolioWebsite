@@ -13,8 +13,8 @@ export interface ArtPiece {
 export const artPieces: ArtPiece[] = [
     {
         id: "01",
-        title: "MSUN 51st Founding Anniversary",
-        category: "Concept Art",
+        title: "Mindanao State University at Naawan 51st Founding Anniversary",
+         category: "Concept Art",
         image: "/artworks/conceptArt/51st.webp",
         year: "2024",
         size: "large"
@@ -126,9 +126,9 @@ export const artPieces: ArtPiece[] = [
     },
     {
         id: "15",
-        title: "𝐋𝐈𝐓𝐄𝐑𝐀𝐑𝐘 | 𝐅𝐢𝐠𝐡𝐭𝐢𝐧𝐠 𝐭𝐡𝐞 𝐏𝐚𝐫𝐚𝐝𝐨𝐱𝐢𝐜𝐚𝐥 𝐔𝐫𝐠𝐞",
+        title: "𝐅𝐄𝐀𝐓𝐔𝐑𝐄 | 𝐏𝐚𝐫𝐞𝐧𝐭𝐥𝐞𝐬𝐬, 𝐁𝐮𝐭 𝐍𝐨𝐭 𝐀𝐥𝐨𝐧𝐞",
         category: "Concept Art",
-        image: "/artworks/conceptArt/hns.webp",
+        image: "/artworks/conceptArt/notAlone.webp",
         year: "2024",
         size: "large"
     },
@@ -140,6 +140,176 @@ export const artPieces: ArtPiece[] = [
         year: "2024",
         size: "medium"
     },
+    {
+        id: "17",
+        title: "Green Dragon Border",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/cafes champ.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "18",
+        title: "Red Dragon Border",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/cmas champ.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "19",
+        title: "Yellow Dragon Border",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/cbaa champ.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "20",
+        title: "Green Dragon Border",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/cess champ.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "21",
+        title: "Fire Banner Design ",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/banner team1.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "22",
+        title: "Poison Banner Design ",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/banner team2.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "23",
+        title: "Electric Banner Design ",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/banner team3-1.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "24",
+        title: "Nature Banner Design ",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/banner team4.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "25",
+        title: "Banner Design ",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/banner.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "26",
+        title: "Palakasan Banner",
+        category: "Graphic Element",
+        image: "/artworks/layouts/Palakasan_Banner.png",
+        year: "2024",
+        size: "wide"
+    },
+    {
+        id: "27",
+        title: "Palakasan Banner",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/map_design.png",
+        year: "2024",
+        size: "large"
+    },
+    {
+        id: "28",
+        title: "Palakasan Banner",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/map_design2.png",
+        year: "2024",
+        size: "large"
+    },
+    {
+        id: "29",
+        title: "Palakasan Avatar Earth Banner",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/EarthBannerAvatar.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "30",
+        title: "Palakasan Avatar Fire Banner",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/FireBannerAvatar.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "31",
+        title: "Palakasan Avatar Water Banner",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/WaterBannerAvatar.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "32",
+        title: "Palakasan Avatar Wind Banner",
+        category: "Graphic Element",
+        image: "/artworks/graphicElements/WindBannerAvatar.png",
+        year: "2024",
+        size: "tall"
+    },
+    {
+        id: "33",
+        title: "Coffee Sticker",
+        category: "Stickers",
+        image: "/artworks/stickers/coffee.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "34",
+        title: "Hero Eraser Sticker",
+        category: "Stickers",
+        image: "/artworks/stickers/eraser.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "35",
+        title: "Literary Book Sticker",
+        category: "Stickers",
+        image: "/artworks/stickers/literary1.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "36",
+        title: "Happy Pen Sticker",
+        category: "Stickers",
+        image: "/artworks/stickers/pen happy.png",
+        year: "2024",
+        size: "medium"
+    },
+    {
+        id: "37",
+        title: "The Plot Twist Expert Sticker",
+        category: "Stickers",
+        image: "/artworks/stickers/plottwist.png",
+        year: "2024",
+        size: "medium"
+    },
+
+
 
 
 
