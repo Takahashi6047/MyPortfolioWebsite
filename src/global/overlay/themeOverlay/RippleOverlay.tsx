@@ -22,7 +22,6 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
   }, [isActive]);
 
   const handleExpandComplete = () => {
-    // Trigger theme update when screen is fully covered to avoid recursion/lag during animation
     const html = document.documentElement;
     if (isDarkMode) {
       html.classList.add('dark');
