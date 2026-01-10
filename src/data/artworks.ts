@@ -14,14 +14,14 @@ export const artPieces: ArtPiece[] = [
     {
         id: "01",
         title: "Mindanao State University at Naawan 51st Founding Anniversary",
-         category: "Concept Art",
+        category: "Concept Art",
         image: "/artworks/conceptArt/51st.webp",
         year: "2024",
         size: "large"
     },
     {
         id: "02",
-        title: "Subroutine: CHROMATIC",
+        title: "A Christmas Struggle",
         category: "Concept Art",
         image: "/artworks/conceptArt/christmas_art.webp",
         year: "2024",

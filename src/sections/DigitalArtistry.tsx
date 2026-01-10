@@ -109,8 +109,11 @@ export function DigitalArtistry() {
         <section
             id="artistry"
             ref={sectionRef}
-            className="relative min-h-screen py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono"
+            className="relative min-h-screen py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono -mt-16"
         >
+            {/* Gradient overlay at the top - #3A3A3A fading downwards */}
+            <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent pointer-events-none z-100" />
+            
             {/* -- TECH BACKGROUND GRID with Parallax -- */}
             <motion.div 
                 className="absolute inset-0 pointer-events-none opacity-20"

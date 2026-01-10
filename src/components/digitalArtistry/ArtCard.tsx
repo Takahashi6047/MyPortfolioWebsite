@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
+import { useState, useCallback } from 'react';
 import type { ArtPiece } from '../../data/artworks';
 
 interface ArtCardProps extends ArtPiece {
@@ -8,7 +9,10 @@ interface ArtCardProps extends ArtPiece {
     initial?: string;
     animate?: string;
     exit?: string;
+    onClick?: () => void;
 }
+
+
 
 export function ArtCard({
     id,
@@ -21,8 +25,19 @@ export function ArtCard({
     layout,
     initial,
     animate,
-    exit
+    exit,
+    onClick
 }: ArtCardProps) {
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseMove = useCallback(({ currentTarget, clientX, clientY }: React.MouseEvent) => {
+        const { left, top } = currentTarget.getBoundingClientRect();
+        mouseX.set(clientX - left);
+        mouseY.set(clientY - top);
+    }, [mouseX, mouseY]);
+
     return (
         <motion.div
             key={id}
@@ -31,56 +46,102 @@ export function ArtCard({
             initial={initial}
             animate={animate}
             exit={exit}
-            className={`${className} group relative bg-[#050505] border border-[var(--art-accent)]/20 overflow-hidden`}
+            onClick={onClick}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className={`${className} group relative bg-[#050505] overflow-hidden rounded-sm cursor-pointer`}
         >
-            {/* Tech overlay (Base) */}
-            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20 flex gap-2">
-                <span className="text-[8px] sm:text-[9px] bg-black/80 text-[var(--art-accent)] px-1 border border-[var(--art-accent)]/30 backdrop-blur-sm">
-                    FIG_{id}
-                </span>
+            <motion.div
+                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-30"
+                style={{
+                    background: useMotionTemplate`
+                        radial-gradient(
+                            650px circle at ${mouseX}px ${mouseY}px,
+                            rgba(197, 160, 89, 0.15),
+                            transparent 80%
+                        )
+                    `
+                }}
+            />
+            <motion.div
+                className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 z-30"
+                style={{
+                    background: useMotionTemplate`
+                        radial-gradient(
+                            400px circle at ${mouseX}px ${mouseY}px,
+                            rgba(197, 160, 89, 0.4),
+                            transparent 40%
+                        )
+                    `,
+                    maskImage: 'linear-gradient(black, black) content-box, linear-gradient(black, black)',
+                    maskComposite: 'exclude',
+                    WebkitMaskComposite: 'xor',
+                    padding: '1px'
+                }}
+            />
+
+            <div className="absolute top-3 left-3 z-30 pointer-events-none">
+                <div className="flex items-center gap-2 px-2 py-1 bg-black/60 backdrop-blur-md border border-[var(--art-accent)]/30 group-hover:border-[var(--art-accent)]/60 transition-colors duration-300">
+                    <div className={`w-1 h-1 bg-[var(--art-accent)] ${isHovered ? 'animate-ping' : 'opacity-50'}`} />
+                    <span className="text-[10px] font-mono tracking-widest text-[var(--art-accent)]">FIG_{id}</span>
+                </div>
             </div>
 
-            {/* Image */}
-            <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden bg-[#0a0a0a]">
                 <img
                     src={image}
                     alt={title}
-                    className="w-full h-full object-cover grayscale-[0.5] contrast-[1.1] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700 ease-in-out"
+                    className="w-full h-full object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
                 />
-                {/* Scanline */}
-                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none" />
+
+                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.7)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none z-10" />
+
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.8)_100%)] opacity-60 pointer-events-none z-10" />
             </div>
 
-            {/* Hover Overlay (Tech specs) - Mobile: tap to reveal */}
-            <div className="absolute inset-0 bg-black/90 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-300 flex flex-col justify-end p-4 sm:p-6 border-[0.5px] border-[var(--art-accent)] m-1">
-                <div className="transform translate-y-4 group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-500 delay-75">
-                    <div className="w-full h-px bg-[var(--art-accent)] mb-2 sm:mb-3 opacity-50" />
-                    <h3 className="text-base sm:text-lg font-bold text-white mb-1 font-sans tracking-wide line-clamp-2">
-                        {title}
-                    </h3>
-                    <div className="flex justify-between items-end">
-                        <div className="flex flex-col gap-0.5 sm:gap-1">
-                            <span className="text-[9px] sm:text-[10px] text-[var(--art-accent)] uppercase tracking-wider">
-                                CAT: {category}
+            {/* --- HOVER OVERLAY --- */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 ease-out" />
+
+            <div className="absolute inset-x-0 bottom-0 p-5 z-30 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+
+                <div className="w-0 h-px bg-gradient-to-r from-[var(--art-accent)] to-transparent mb-3 group-hover:w-full transition-all duration-700 delay-100 ease-out opacity-0 group-hover:opacity-100" />
+
+                <div className="flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75">
+                    <div className="flex-1 pr-4 min-w-0">
+                        <h3 className="text-lg font-bold text-[#e5e5e5] mb-1 font-sans tracking-tight leading-tight group-hover:text-white transition-colors duration-300 min-h-[1.5em] truncate">
+                            {title}
+                        </h3>
+
+                        <div className="flex items-center gap-3 mt-2">
+                            <span className="text-[10px] font-mono text-[var(--art-accent)] uppercase tracking-wider bg-[var(--art-accent)]/10 px-1 py-0.5 border border-[var(--art-accent)]/20">
+                                //{category}
                             </span>
-                            <span className="text-[9px] sm:text-[10px] text-neutral-500 uppercase tracking-wider">
-                                DATE: {year}
+                            <span className="text-[10px] font-mono text-neutral-500">
+                                {year}
                             </span>
                         </div>
-                        <button className="p-1.5 sm:p-2 border border-[var(--art-accent)] text-[var(--art-accent)] hover:bg-[var(--art-accent)] hover:text-black active:bg-[var(--art-accent)] active:text-black transition-colors">
-                            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-3 sm:h-3">
+                    </div>
+
+                    {/* Action Button */}
+                    <div className="relative group/btn">
+                        <button className="w-8 h-8 flex items-center justify-center border border-[var(--art-accent)]/50 text-[var(--art-accent)] bg-black/50 overflow-hidden hover:bg-[var(--art-accent)] hover:text-black transition-all duration-300 hover:scale-110">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="transform group-hover/btn:-rotate-45 transition-transform duration-300">
                                 <path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.5" />
                             </svg>
                         </button>
                     </div>
                 </div>
-
-                {/* Corner Brackets - Animated */}
-                <div className="absolute top-0 left-0 w-2 h-2 sm:w-3 sm:h-3 border-t-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
-                <div className="absolute top-0 right-0 w-2 h-2 sm:w-3 sm:h-3 border-t-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
-                <div className="absolute bottom-0 left-0 w-2 h-2 sm:w-3 sm:h-3 border-b-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
-                <div className="absolute bottom-0 right-0 w-2 h-2 sm:w-3 sm:h-3 border-b-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4 sm:group-hover:w-6 sm:group-hover:h-6" />
             </div>
+
+            {/* --- CORNER BRACKETS --- */}
+            <div className="pointer-events-none z-40">
+                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--art-accent)] opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--art-accent)] opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--art-accent)] opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--art-accent)] opacity-0 group-hover:opacity-100 transition-all duration-300" />
+            </div>
+
         </motion.div>
     );
 }
