@@ -100,7 +100,7 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
 
           {/* Bottom section */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 sm:gap-0">
-            <div className="max-w-[300px] sm:max-w-xs md:max-w-sm ml-2 sm:ml-4 md:ml-5 mb-0 sm:mb-4 md:mb-5 order-2 sm:order-1">
+            <div className="max-w-[300px] sm:max-w-xs md:max-w-sm ml-2 sm:ml-4 md:ml-5 mb-8 sm:mb-4 md:mb-5 order-2 sm:order-1">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`quote-${theme}`}
@@ -108,8 +108,8 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
                   animate={visibleElements.quote ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                   transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
                 >
-                  <div className={`relative pl-4 sm:pl-5 border-l-2 transition-colors duration-500 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-neutral-600'}`}>
-                    <span className={`absolute -left-1 -top-2 text-2xl sm:text-3xl font-serif leading-none transition-colors duration-500 ${isArtMode ? 'text-[var(--art-accent)]' : 'text-neutral-600'}`}>"</span>
+                  <div className={`relative pl-6 sm:pl-7 border-l-2 transition-colors duration-500 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-neutral-600'}`}>
+                    <span className={`absolute left-2 -top-2 text-2xl sm:text-3xl font-serif leading-none transition-colors duration-500 ${isArtMode ? 'text-[var(--art-accent)]' : 'text-neutral-600'}`}>"</span>
                     <p className={`text-xs sm:text-sm leading-relaxed font-light tracking-wide ${isArtMode ? 'text-neutral-700 italic' : 'text-neutral-300'}`}>
                       {isArtMode
                         ? "Curating pixels and code into immersive digital experiences. A gallery of technical solutions and visual explorations."

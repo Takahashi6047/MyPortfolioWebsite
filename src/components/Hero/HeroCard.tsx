@@ -26,9 +26,9 @@ export function HeroCard() {
 
       {/* Professional card */}
       <div
-        className={`relative bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl w-52 sm:w-60 md:w-64 lg:w-72 border border-white/20 bg-cover bg-center overflow-hidden transition-all duration-700 ease-out transform-gpu ${isVisible
-            ? 'h-64 sm:h-72 md:h-80 lg:h-96 opacity-100 scale-y-100'
-            : 'h-0 opacity-0 scale-y-0'
+        className={`relative bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl w-32 sm:w-60 md:w-64 lg:w-72 border border-white/20 bg-cover bg-center overflow-hidden transition-all duration-700 ease-out transform-gpu ${isVisible
+          ? 'h-40 sm:h-72 md:h-80 lg:h-96 opacity-100 scale-y-100'
+          : 'h-0 opacity-0 scale-y-0'
           }`}
         style={{
           backgroundImage: 'url(/hero/HeroCard2.png)',
@@ -36,15 +36,15 @@ export function HeroCard() {
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/40"></div>
-        <div className={`relative h-full p-4 sm:p-5 md:p-6 flex flex-col justify-between transition-all duration-500 ease-out delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        <div className={`relative h-full p-3 sm:p-5 md:p-6 flex flex-col justify-between transition-all duration-500 ease-out delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}>
-          <p className="text-sm sm:text-base md:text-lg font-medium text-white">
-            Digital Art &<br />Web Development
+          <p className="text-xs sm:text-base md:text-lg font-medium text-white leading-tight">
+            Digital Art &<br />Web Dev
           </p>
 
-          <div className="flex justify-between items-center">
-            <span className="text-xs sm:text-sm text-white/80">© 2025</span>
-            <button className="text-xs sm:text-sm bg-white text-black px-4 sm:px-5 py-2 sm:py-2.5 rounded-full hover:opacity-90 transition">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+            <span className="text-[10px] sm:text-sm text-white/80">© 2025</span>
+            <button className="text-[10px] sm:text-sm bg-white text-black px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full hover:opacity-90 transition whitespace-nowrap">
               Let's talk
             </button>
           </div>

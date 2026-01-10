@@ -342,6 +342,10 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const width = rect.width;
         const height = rect.height;
 
+        const prevParticles = particlesRef.current;
+        const prevWidth = dimensionsRef.current.width || width;
+        const prevHeight = dimensionsRef.current.height || height;
+
         dimensionsRef.current = { width, height };
 
         canvas.width = width * dpr;
@@ -354,7 +358,26 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
             ctx.scale(dpr, dpr);
         }
 
-        particlesRef.current = initParticles(width, height);
+        const newParticles = initParticles(width, height);
+
+        if (prevParticles.length > 0) {
+            const scaleX = width / prevWidth;
+            const scaleY = height / prevHeight;
+
+            newParticles.forEach((p, i) => {
+                if (i < prevParticles.length) {
+                    const old = prevParticles[i];
+                    p.x = old.x * scaleX;
+                    p.y = old.y * scaleY;
+                    p.alpha = old.alpha;
+                    p.state = old.state;
+
+
+                }
+            });
+        }
+
+        particlesRef.current = newParticles;
         return true;
     }, [initParticles]);
 
@@ -446,41 +469,32 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
 
         const isDark = isDarkModeRef.current;
 
-        // -- ARTISTRY MODE CONFIG (Gold/Obsidian) --
-        // Obsidian: #1A1A1A (26, 26, 26) -> Main particle color
-        // Gold: #C5A059 (197, 160, 89) -> Accent/Interaction color
         const artBaseR = 26, artBaseG = 26, artBaseB = 26;
         const artTargetR = 197, artTargetG = 160, artTargetB = 89;
 
-        // -- DEV MODE CONFIG (White/Blue) --
         const devBaseR = 255, devBaseG = 255, devBaseB = 255;
         const devTargetR = 59, devTargetG = 130, devTargetB = 246;
 
-        // -- GOLDEN FREQUENCY WAVES (Artistry Mode Only) --
         if (isDark) {
             ctx.lineWidth = 1.5;
             const waveCount = 5;
 
-            // "Write-on" animation during entrance
             const drawProgress = isEntrancePhase ? easedEntrance : 1;
             const maxDrawX = width * drawProgress;
 
             for (let i = 0; i < waveCount; i++) {
                 ctx.beginPath();
                 const progress = i / waveCount;
-                // Increased opacity + glow for metallic feel
                 const alpha = 0.2 + Math.sin(time * 0.5 + progress * Math.PI) * 0.05;
                 ctx.strokeStyle = `rgba(${artTargetR}, ${artTargetG}, ${artTargetB}, ${alpha})`;
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = `rgba(${artTargetR}, ${artTargetG}, ${artTargetB}, 0.6)`;
 
 
-                // Draw sine wave across screen
                 for (let x = 0; x < maxDrawX; x += 10) {
-                    // Complex wave function: composite of 2 sines for irregularity
                     const y1 = Math.sin(x * 0.002 + time * 0.5 + progress * 10) * 50;
                     const y2 = Math.sin(x * 0.01 + time * 1.2 + progress * 5) * 20;
-                    const yBase = height * (0.3 + progress * 0.4); // Spread vertically across center
+                    const yBase = height * (0.3 + progress * 0.4);
 
                     const y = yBase + y1 + y2;
                     if (x === 0) ctx.moveTo(x, y);
@@ -510,14 +524,12 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
                     const angle = Math.atan2(dy, dx);
 
-                    // Artistry Mode: Turbulence/Swirl instead of pure repulsion
                     if (isDark) {
-                        const swirlAngle = angle + Math.PI / 2; // Perpendicular force
-                        const power = 2; // Gentler swirl
+                        const swirlAngle = angle + Math.PI / 2;
+                        const power = 2;
                         repulsionVx = Math.cos(swirlAngle) * force * power - Math.cos(angle) * force * 0.5;
                         repulsionVy = Math.sin(swirlAngle) * force * power - Math.sin(angle) * force * 0.5;
                     }
-                    // Dev Mode: Pure Repulsion (Force Field)
                     else {
                         const power = 10;
                         repulsionVx = Math.cos(angle) * force * power;
@@ -548,17 +560,12 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 particle.colorTransition = Math.max(0, particle.colorTransition - 0.02);
             }
 
-            // MORPH LOGIC: Interpolate physics state
-            // If Art Mode, we ideally want to drift away from baseX/baseY
-            // If Dev Mode, we snap back to baseX/baseY
-
             //  SHAPE PARTICLES 
             if (particle.type === 'shape') {
                 let displayX = particle.x;
                 let displayY = particle.y;
 
                 if (isEntrancePhase) {
-                    // Initial entrance animation overrides everything
                     const curBaseX = particle.startX + (particle.baseX - particle.startX) * easedEntrance;
                     const curBaseY = particle.startY + (particle.baseY - particle.startY) * easedEntrance;
                     particle.x = curBaseX + orbitX;
@@ -567,35 +574,27 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                     displayY = particle.y;
                 } else {
                     if (isDark) {
-                        // -- ARTISTRY PHYSICS: FLUID DRIFT --
-                        // Release the anchor. Particles drift upwards like bubbles/ink
                         const noise = Math.sin(time * 0.5 + particle.phase * 3 + particle.y * 0.005);
 
-                        // Vertical drift (upwards)
                         const driftSpeedY = -0.3 - (Math.sin(particle.phase) + 1) * 0.2;
 
-                        // Horizontal sway
                         const driftSpeedX = noise * 0.5;
 
-                        // Apply forces
                         particle.vx += driftSpeedX * 0.02;
                         particle.vy += driftSpeedY * 0.02;
 
-                        // Damping (Drag)
                         particle.vx *= 0.96;
                         particle.vy *= 0.96;
 
-                        // Mouse influence
                         particle.vx += repulsionVx;
                         particle.vy += repulsionVy;
 
                         particle.x += particle.vx;
                         particle.y += particle.vy;
 
-                        // WRAP AROUND (Infinite Canvas)
                         if (particle.y < -50) {
                             particle.y = height + 50;
-                            particle.x = Math.random() * width; // Randomize x re-entry for variety
+                            particle.x = Math.random() * width;
                         }
                         if (particle.x < -50) particle.x = width + 50;
                         if (particle.x > width + 50) particle.x = -50;
@@ -603,13 +602,6 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                         displayX = particle.x + rippleDisplacementX;
                         displayY = particle.y + rippleDisplacementY;
                     } else {
-                        // -- DEV MODE PHYSICS: ELASTIC SNAP --
-                        // Ensure we try to return to baseX if we drifted far away
-                        // If coming back from Art mode, we might be far away.
-                        // But for smooth morph, we just use the spring physics to pull us back.
-
-                        // Note: If particle was wrapped in Art mode, it will fly across screen to return. 
-                        // To fix this visual glitch, we could silently teleport it closer, but the "flying back usually looks okay"
 
                         const homeX = particle.baseX + orbitX;
                         const homeY = particle.baseY + orbitY;
@@ -637,30 +629,22 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
                 const alphaPulse = Math.sin(time * 3 + particle.phase * 2) * 0.15;
                 let finalAlpha = Math.max(0.1, particle.alpha + alphaPulse);
 
-                // COLOR MIXING
-                // Shape particles should be BLUE in Dev Mode, OBSIDIAN in Art Mode
-                // We interpolate based on isDark.
-
                 let curR, curG, curB;
                 let targetR, targetG, targetB;
 
                 if (isDark) {
-                    // Art Mode: Obsidian base -> Gold accent
                     curR = artBaseR; curG = artBaseG; curB = artBaseB;
                     targetR = artTargetR; targetG = artTargetG; targetB = artTargetB;
                 } else {
-                    // Dev Mode: Blue base -> Blue accent (shape particles are always blue)
                     curR = devTargetR; curG = devTargetG; curB = devTargetB;
                     targetR = devTargetR; targetG = devTargetG; targetB = devTargetB;
                 }
 
-                // If wave is active, we flash the accent color
                 let r = curR, g = curG, b = curB;
 
                 if (waveIntensity > 0.3) {
                     ctx.shadowBlur = 8 * waveIntensity;
                     ctx.shadowColor = `rgba(${targetR}, ${targetG}, ${targetB}, 0.6)`;
-                    // Lerp towards accent color
                     r = r + (targetR - r) * waveIntensity;
                     g = g + (targetG - g) * waveIntensity;
                     b = b + (targetB - b) * waveIntensity;
