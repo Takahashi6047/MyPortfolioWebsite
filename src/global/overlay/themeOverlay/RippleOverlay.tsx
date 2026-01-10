@@ -23,6 +23,7 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
 
   const handleExpandComplete = () => {
     const html = document.documentElement;
+    
     if (isDarkMode) {
       html.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -38,6 +39,11 @@ export function RippleOverlay({ isActive, centerX, centerY, isDarkMode, onComple
         onThemeChange?.('light');
       });
     }
+
+    // Scroll to top when theme changes - use instant scroll and slight delay
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
 
     setTimeout(() => {
       setAnimationPhase('exploding');

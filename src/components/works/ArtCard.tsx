@@ -13,7 +13,6 @@ export const ArtCard: React.FC<ArtCardProps> = ({
     image,
     category = "Digital Art",
     className = "",
-    index
 }) => {
     return (
         <div

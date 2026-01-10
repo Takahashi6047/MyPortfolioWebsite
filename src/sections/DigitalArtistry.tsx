@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Typewriter Terminal Effect ---
 const TypewriterText = ({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) => {
@@ -40,7 +40,6 @@ const TypewriterText = ({ text, className = "", delay = 0 }: { text: string, cla
 };
 
 export function DigitalArtistry() {
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [selectedCategory, setSelectedCategory] = useState('All');
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
@@ -118,15 +117,7 @@ export function DigitalArtistry() {
         : artPieces.filter(piece => piece.category === selectedCategory || piece.type === 'text');
 
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-        if (sectionRef.current) {
-            const rect = sectionRef.current.getBoundingClientRect();
-            setMousePosition({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
-            });
-        }
-    };
+
 
     // Stagger Animation Variants
     const containerVariants = {
@@ -157,7 +148,6 @@ export function DigitalArtistry() {
         <section
             id="artistry"
             ref={sectionRef}
-            onMouseMove={handleMouseMove}
             className="relative min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono"
         >
             {/* -- TECH BACKGROUND GRID -- */}
