@@ -1,19 +1,16 @@
-import React from 'react';
-
 interface ArtCardProps {
     title: string;
     image: string;
     category?: string;
-    className?: string; // For grid column/row spans
-    index: number;
+    className?: string;
 }
 
-export const ArtCard: React.FC<ArtCardProps> = ({
+export function ArtCard({
     title,
     image,
     category = "Digital Art",
     className = "",
-}) => {
+}: ArtCardProps) {
     return (
         <div
             className={`
@@ -49,4 +46,4 @@ export const ArtCard: React.FC<ArtCardProps> = ({
             </div>
         </div>
     );
-};
+}

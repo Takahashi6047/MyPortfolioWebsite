@@ -181,3 +181,13 @@ a:focus-visible {
 .animate-drift {
   animation: drift 15s ease-in-out infinite;
 }
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
