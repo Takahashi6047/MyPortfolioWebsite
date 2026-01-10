@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { artPieces } from '../data/artworks';
+import { CategoryFilter } from '../components/digitalArtistry';
 
 // --- Typewriter Terminal Effect ---
 const TypewriterText = ({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) => {
@@ -44,73 +46,17 @@ export function DigitalArtistry() {
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
 
-    // Curated art pieces - Reorganized for Bento
-    const artPieces = [
-        {
-            id: "01",
-            title: "Project: NEON_VOID",
-            category: "3D Render",
-            image: "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=2552&auto=format&fit=crop",
-            year: "2024",
-            size: "large"
-        },
-        {
-            id: "TEXT_01",
-            type: "text",
-            content: "DESIGN PHILOSOPHY //\nFUNCTION OVER FORM",
-            sub: "SYS.INIT",
-            size: "small"
-        },
-        {
-            id: "02",
-            title: "Subroutine: CHROMATIC",
-            category: "Data Vis",
-            image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2574&auto=format&fit=crop",
-            year: "2024",
-            size: "medium"
-        },
-        {
-            id: "03",
-            title: "Flow_State_v9",
-            category: "Generative",
-            image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
-            year: "2023",
-            size: "medium"
-        },
-        {
-            id: "04",
-            title: "Synth_Dreams.exe",
-            category: "Illustration",
-            image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2670&auto=format&fit=crop",
-            year: "2024",
-            size: "wide"
-        },
-        {
-            id: "05",
-            title: "Neural_Net__Training",
-            category: "AI Model",
-            image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2565&auto=format&fit=crop",
-            year: "2023",
-            size: "small"
-        },
-        {
-            id: "TEXT_02",
-            type: "text",
-            content: "VISUAL DATA\nCOMPILING...",
-            sub: "ERR_404_ART_FOUND",
-            size: "small"
-        },
-        {
-            id: "06",
-            title: "Sector_7_Metropolis",
-            category: "Concept Art",
-            image: "https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=2698&auto=format&fit=crop",
-            year: "2024",
-            size: "medium"
-        },
-    ];
+    // Parallax scroll setup
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
 
-    const categories = ['All', '3D Render', 'Concept Art', 'Data Vis'];
+    // Parallax transforms - different speeds for depth effect
+    const gridY = useTransform(scrollYProgress, [0, 1], [0, -100]);
+    const headerY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+    const headerOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.5, 1, 1, 0.5]);
+    const footerY = useTransform(scrollYProgress, [0, 1], [50, -30]);
 
     const filteredPieces = selectedCategory === 'All'
         ? artPieces
@@ -150,8 +96,11 @@ export function DigitalArtistry() {
             ref={sectionRef}
             className="relative min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono"
         >
-            {/* -- TECH BACKGROUND GRID -- */}
-            <div className="absolute inset-0 pointer-events-none opacity-20">
+            {/* -- TECH BACKGROUND GRID with Parallax -- */}
+            <motion.div 
+                className="absolute inset-0 pointer-events-none opacity-20"
+                style={{ y: gridY }}
+            >
                 <div
                     className="absolute inset-0"
                     style={{
@@ -159,11 +108,15 @@ export function DigitalArtistry() {
                         backgroundSize: '40px 40px'
                     }}
                 />
-            </div>
+            </motion.div>
 
             <div className="relative max-w-[95%] mx-auto">
-                {/* -- HEADER: INDUSTRIAL TERMINAL STYLE -- */}
-                <div ref={headerRef} className="mb-12 flex flex-col md:flex-row justify-between items-end border-b border-[var(--art-accent)]/30 pb-6">
+                {/* -- HEADER: INDUSTRIAL TERMINAL STYLE with Parallax -- */}
+                <motion.div 
+                    ref={headerRef} 
+                    className="mb-12 flex flex-col md:flex-row justify-between items-end border-b border-[var(--art-accent)]/30 pb-6"
+                    style={{ y: headerY, opacity: headerOpacity }}
+                >
                     <div>
                         <div className="flex items-center gap-3 mb-2">
                             <div className="w-2 h-2 bg-[var(--art-accent)] animate-pulse" />
@@ -174,24 +127,11 @@ export function DigitalArtistry() {
                         </h2>
                     </div>
 
-                    <div className="flex gap-2 mt-6 md:mt-0">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                onClick={() => setSelectedCategory(category)}
-                                className={`
-                                    px-4 py-2 text-[10px] tracking-widest uppercase border transition-all duration-300
-                                    ${selectedCategory === category
-                                        ? 'bg-[var(--art-accent)] text-black border-[var(--art-accent)] font-bold'
-                                        : 'bg-transparent text-[var(--art-accent)] border-[var(--art-accent)]/30 hover:border-[var(--art-accent)]'
-                                    }
-                                `}
-                            >
-                                [{category}]
-                            </button>
-                        ))}
-                    </div>
-                </div>
+                    <CategoryFilter 
+                        selectedCategory={selectedCategory} 
+                        onCategoryChange={setSelectedCategory} 
+                    />
+                </motion.div>
 
                 {/* -- BENTO GRID -- */}
                 <motion.div
@@ -303,11 +243,14 @@ export function DigitalArtistry() {
                     </AnimatePresence>
                 </motion.div>
 
-                {/* Footer Data */}
-                <div className="mt-8 flex justify-between text-[10px] text-[var(--art-accent)]/40 border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-widest">
+                {/* Footer Data with Parallax */}
+                <motion.div 
+                    className="mt-8 flex justify-between text-[10px] text-[var(--art-accent)]/40 border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-widest"
+                    style={{ y: footerY }}
+                >
                     <span>End Of Stream</span>
                     <span>ARTCODED // V.2.0</span>
-                </div>
+                </motion.div>
             </div>
         </section>
     );
