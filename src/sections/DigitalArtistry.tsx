@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { artPieces } from '../data/artworks';
 import { CategoryFilter } from '../components/digitalArtistry';
@@ -60,7 +60,7 @@ export function DigitalArtistry() {
 
     const filteredPieces = selectedCategory === 'All'
         ? artPieces
-        : artPieces.filter(piece => piece.category === selectedCategory || piece.type === 'text');
+        : artPieces.filter(piece => piece.category === selectedCategory);
 
 
 
@@ -97,7 +97,7 @@ export function DigitalArtistry() {
             className="relative min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono"
         >
             {/* -- TECH BACKGROUND GRID with Parallax -- */}
-            <motion.div 
+            <motion.div
                 className="absolute inset-0 pointer-events-none opacity-20"
                 style={{ y: gridY }}
             >
@@ -112,8 +112,8 @@ export function DigitalArtistry() {
 
             <div className="relative max-w-[95%] mx-auto">
                 {/* -- HEADER: INDUSTRIAL TERMINAL STYLE with Parallax -- */}
-                <motion.div 
-                    ref={headerRef} 
+                <motion.div
+                    ref={headerRef}
                     className="mb-12 flex flex-col md:flex-row justify-between items-end border-b border-[var(--art-accent)]/30 pb-6"
                     style={{ y: headerY, opacity: headerOpacity }}
                 >
@@ -123,13 +123,13 @@ export function DigitalArtistry() {
                             <span className="text-[10px] tracking-[0.2em] text-[var(--art-accent)]">SYS.STATUS: ONLINE</span>
                         </div>
                         <h2 className="text-4xl md:text-6xl font-bold text-[#e5e5e5] tracking-tighter uppercase font-sans">
-                            Visual <TypewriterText text="Database" delay={500} className="text-[var(--art-accent)]" />
+                            Visual <span className="text-[var(--art-accent)]">Database</span>
                         </h2>
                     </div>
 
-                    <CategoryFilter 
-                        selectedCategory={selectedCategory} 
-                        onCategoryChange={setSelectedCategory} 
+                    <CategoryFilter
+                        selectedCategory={selectedCategory}
+                        onCategoryChange={setSelectedCategory}
                     />
                 </motion.div>
 
@@ -150,33 +150,6 @@ export function DigitalArtistry() {
                             if (piece.size === 'large') { colSpan = 'md:col-span-2'; rowSpan = 'md:row-span-2'; }
                             else if (piece.size === 'wide') { colSpan = 'md:col-span-2'; }
                             else if (piece.size === 'tall') { rowSpan = 'md:row-span-2'; }
-
-                            // Text Card
-                            if (piece.type === 'text') {
-                                return (
-                                    <motion.div
-                                        key={piece.id}
-                                        layout
-                                        variants={itemVariants}
-                                        initial="hidden"
-                                        animate="show"
-                                        exit="exit"
-                                        className={`${colSpan} ${rowSpan} relative bg-[#111] border border-[var(--art-accent)]/20 p-8 flex flex-col justify-center items-center text-center group overflow-hidden`}
-                                    >
-                                        <div className="absolute inset-0 bg-[var(--art-accent)]/5 group-hover:bg-[var(--art-accent)]/10 transition-colors duration-500" />
-                                        {/* Animated Brackets */}
-                                        <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
-                                        <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
-                                        <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
-                                        <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
-
-                                        <span className="text-[10px] text-[var(--art-accent)]/50 mb-4 tracking-[0.3em]">{piece.sub}</span>
-                                        <p className="text-xl md:text-2xl font-bold text-[#e5e5e5] whitespace-pre-line leading-tight font-sans">
-                                            <TypewriterText text={piece.content || ""} delay={200} />
-                                        </p>
-                                    </motion.div>
-                                );
-                            }
 
                             // Image Card
                             return (
@@ -244,7 +217,7 @@ export function DigitalArtistry() {
                 </motion.div>
 
                 {/* Footer Data with Parallax */}
-                <motion.div 
+                <motion.div
                     className="mt-8 flex justify-between text-[10px] text-[var(--art-accent)]/40 border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-widest"
                     style={{ y: footerY }}
                 >

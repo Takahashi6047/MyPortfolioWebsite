@@ -11,6 +11,7 @@ export interface ArtPiece {
 }
 
 export const artPieces: ArtPiece[] = [
+    // Large items first (anchor the layout)
     {
         id: "01",
         title: "Project: NEON_VOID",
@@ -19,13 +20,16 @@ export const artPieces: ArtPiece[] = [
         year: "2024",
         size: "large"
     },
+    // Wide items (fill horizontal space)
     {
-        id: "TEXT_01",
-        type: "text",
-        content: "DESIGN PHILOSOPHY //\nFUNCTION OVER FORM",
-        sub: "SYS.INIT",
-        size: "small"
+        id: "04",
+        title: "Synth_Dreams.exe",
+        category: "Illustration",
+        image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2670&auto=format&fit=crop",
+        year: "2024",
+        size: "wide"
     },
+    // Medium items (flexible fillers)
     {
         id: "02",
         title: "Subroutine: CHROMATIC",
@@ -43,13 +47,14 @@ export const artPieces: ArtPiece[] = [
         size: "medium"
     },
     {
-        id: "04",
-        title: "Synth_Dreams.exe",
-        category: "Illustration",
-        image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2670&auto=format&fit=crop",
+        id: "06",
+        title: "Sector_7_Metropolis",
+        category: "Concept Art",
+        image: "https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=2698&auto=format&fit=crop",
         year: "2024",
-        size: "wide"
+        size: "medium"
     },
+    // Small items last (fill gaps)
     {
         id: "05",
         title: "Neural_Net__Training",
@@ -57,21 +62,6 @@ export const artPieces: ArtPiece[] = [
         image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2565&auto=format&fit=crop",
         year: "2023",
         size: "small"
-    },
-    {
-        id: "TEXT_02",
-        type: "text",
-        content: "VISUAL DATA\nCOMPILING...",
-        sub: "ERR_404_ART_FOUND",
-        size: "small"
-    },
-    {
-        id: "06",
-        title: "Sector_7_Metropolis",
-        category: "Concept Art",
-        image: "https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=2698&auto=format&fit=crop",
-        year: "2024",
-        size: "medium"
     },
 ];
 
