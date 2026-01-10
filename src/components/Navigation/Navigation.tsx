@@ -20,6 +20,14 @@ export function Navigation() {
     setCursorVariant('default');
   };
 
+  // Reset cursor on unmount
+  useEffect(() => {
+    return () => {
+      setCursorText('');
+      setCursorVariant('default');
+    };
+  }, [setCursorText, setCursorVariant]);
+
   const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     window.scrollTo({

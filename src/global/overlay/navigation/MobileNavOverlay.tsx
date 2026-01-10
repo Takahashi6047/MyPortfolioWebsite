@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { useCursor } from '../../cursor';
@@ -18,6 +18,18 @@ export function MobileNavOverlay() {
     setCursorText('');
     setCursorVariant('default');
   };
+
+  // Reset cursor on unmount or when overlay closes
+  useEffect(() => {
+    if (!isOpen) {
+      setCursorText('');
+      setCursorVariant('default');
+    }
+    return () => {
+      setCursorText('');
+      setCursorVariant('default');
+    };
+  }, [isOpen, setCursorText, setCursorVariant]);
 
   const navItems = [
     { label: 'HOME', href: '#home', cursorText: 'Take me home! ' },

@@ -15,8 +15,17 @@ export function ThemeToggle() {
   useEffect(() => {
     if (isHovering) {
       setCursorText(isDark ? 'Enter Dev Mode' : 'Enter Artistry Mode');
+      setCursorVariant('text');
     }
-  }, [isDark, isHovering, setCursorText]);
+  }, [isDark, isHovering, setCursorText, setCursorVariant]);
+
+  // Reset cursor state when component unmounts or loses focus
+  useEffect(() => {
+    return () => {
+      setCursorText('');
+      setCursorVariant('default');
+    };
+  }, [setCursorText, setCursorVariant]);
 
   const toggleTheme = () => {
     if (isAnimating || !buttonRef.current) {

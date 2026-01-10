@@ -1,117 +1,122 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+
+// --- Typewriter Terminal Effect ---
+const TypewriterText = ({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) => {
+    const [display, setDisplay] = useState("");
+    const [showCursor, setShowCursor] = useState(true);
+
+    useEffect(() => {
+        let timeout: ReturnType<typeof setTimeout>;
+        let currentIndex = 0;
+
+        const startTyping = () => {
+            const typeChar = () => {
+                if (currentIndex < text.length) {
+                    setDisplay(text.slice(0, currentIndex + 1));
+                    currentIndex++;
+                    timeout = setTimeout(typeChar, 30); // Fast typing speed
+                }
+            };
+            typeChar();
+        };
+
+        timeout = setTimeout(startTyping, delay);
+
+        // Cursor blink loop
+        const cursorInterval = setInterval(() => {
+            setShowCursor(prev => !prev);
+        }, 500);
+
+        return () => { clearTimeout(timeout); clearInterval(cursorInterval); };
+    }, [text, delay]);
+
+    return (
+        <span className={`font-mono ${className}`}>
+            {display}
+            <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} text-[var(--art-accent)]`}>_</span>
+        </span>
+    );
+};
 
 export function DigitalArtistry() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const [scrollProgress, setScrollProgress] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState('All');
-    const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
-    const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-    // Curated art pieces for gallery display
+    // Curated art pieces - Reorganized for Bento
     const artPieces = [
         {
-            title: "Neon Void",
+            id: "01",
+            title: "Project: NEON_VOID",
             category: "3D Render",
             image: "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=2552&auto=format&fit=crop",
-            year: "2024"
+            year: "2024",
+            size: "large"
         },
         {
-            title: "Chromatic Data",
-            category: "Data Visualization",
+            id: "TEXT_01",
+            type: "text",
+            content: "DESIGN PHILOSOPHY //\nFUNCTION OVER FORM",
+            sub: "SYS.INIT",
+            size: "small"
+        },
+        {
+            id: "02",
+            title: "Subroutine: CHROMATIC",
+            category: "Data Vis",
             image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2574&auto=format&fit=crop",
-            year: "2024"
+            year: "2024",
+            size: "medium"
         },
         {
-            title: "Abstract Flows",
-            category: "Generative Art",
+            id: "03",
+            title: "Flow_State_v9",
+            category: "Generative",
             image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
-            year: "2023"
+            year: "2023",
+            size: "medium"
         },
         {
-            title: "Synthwave Dreams",
-            category: "Digital Illustration",
+            id: "04",
+            title: "Synth_Dreams.exe",
+            category: "Illustration",
             image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2670&auto=format&fit=crop",
-            year: "2024"
+            year: "2024",
+            size: "wide"
         },
         {
-            title: "Neural Network",
-            category: "AI Art",
+            id: "05",
+            title: "Neural_Net__Training",
+            category: "AI Model",
             image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2565&auto=format&fit=crop",
-            year: "2023"
+            year: "2023",
+            size: "small"
         },
         {
-            title: "Cyber Metropolis",
+            id: "TEXT_02",
+            type: "text",
+            content: "VISUAL DATA\nCOMPILING...",
+            sub: "ERR_404_ART_FOUND",
+            size: "small"
+        },
+        {
+            id: "06",
+            title: "Sector_7_Metropolis",
             category: "Concept Art",
             image: "https://images.unsplash.com/photo-1515630278258-407f66498911?q=80&w=2698&auto=format&fit=crop",
-            year: "2024"
+            year: "2024",
+            size: "medium"
         },
-        {
-            title: "Quantum Glitch",
-            category: "Glitch Art",
-            image: "https://images.unsplash.com/photo-1506318137071-a8bcbf67cc77?q=80&w=2670&auto=format&fit=crop",
-            year: "2023"
-        },
-        {
-            title: "Digital Horizon",
-            category: "Digital Landscape",
-            image: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2574&auto=format&fit=crop",
-            year: "2024"
-        }
     ];
 
-    const categories = ['All', ...Array.from(new Set(artPieces.map(piece => piece.category)))];
+    const categories = ['All', '3D Render', 'Concept Art', 'Data Vis'];
 
     const filteredPieces = selectedCategory === 'All'
         ? artPieces
-        : artPieces.filter(piece => piece.category === selectedCategory);
+        : artPieces.filter(piece => piece.category === selectedCategory || piece.type === 'text');
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (!sectionRef.current) return;
-
-            const rect = sectionRef.current.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-
-            if (rect.top < windowHeight && rect.bottom > 0) {
-                const progress = Math.min(Math.max((windowHeight - rect.top) / (windowHeight * 0.5), 0), 1);
-                setScrollProgress(progress);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    useEffect(() => {
-        const observers: IntersectionObserver[] = [];
-
-        cardsRef.current.forEach((card, index) => {
-            if (!card) return;
-
-            const observer = new IntersectionObserver(
-                ([entry]) => {
-                    if (entry.isIntersecting) {
-                        setVisibleCards(prev => new Set([...prev, index]));
-                    }
-                },
-                {
-                    threshold: 0.2,
-                    rootMargin: "-50px"
-                }
-            );
-
-            observer.observe(card);
-            observers.push(observer);
-        });
-
-        return () => {
-            observers.forEach(observer => observer.disconnect());
-        };
-    }, [filteredPieces]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
         if (sectionRef.current) {
@@ -123,271 +128,195 @@ export function DigitalArtistry() {
         }
     };
 
-    useEffect(() => {
-        setVisibleCards(new Set());
-    }, [selectedCategory]);
+    // Stagger Animation Variants
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, scale: 0.9 },
+        show: {
+            opacity: 1,
+            scale: 1,
+            transition: { type: "spring" as const, stiffness: 50 }
+        },
+        exit: {
+            opacity: 0,
+            scale: 0.9,
+            transition: { duration: 0.2 }
+        }
+    };
 
     return (
         <section
             id="artistry"
             ref={sectionRef}
             onMouseMove={handleMouseMove}
-            className="relative min-h-screen py-32 lg:py-40 px-4 sm:px-6 lg:px-8 bg-background overflow-hidden"
+            className="relative min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono"
         >
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-
-                <div
-                    className="absolute inset-0 transition-opacity duration-1000"
-                    style={{
-                        opacity: scrollProgress * 0.3,
-                        background: `
-                            radial-gradient(ellipse 120% 80% at 20% -20%, rgba(161, 98, 7, 0.05) 0%, transparent 50%),
-                            radial-gradient(ellipse 100% 60% at 80% 120%, rgba(133, 77, 14, 0.04) 0%, transparent 50%),
-                            radial-gradient(ellipse 80% 100% at -10% 60%, rgba(202, 138, 4, 0.03) 0%, transparent 50%)
-                        `
-                    }}
-                />
-
-                <div
-                    className="absolute w-[500px] h-[500px] rounded-full blur-[120px] transition-transform duration-[3000ms] ease-out"
-                    style={{
-                        top: '10%',
-                        left: '5%',
-                        background: 'radial-gradient(circle, rgba(161, 98, 7, 0.08) 0%, rgba(161, 98, 7, 0.02) 50%, transparent 70%)',
-                        transform: `translate(${mousePosition.x * 0.015}px, ${mousePosition.y * 0.015}px)`,
-                        opacity: scrollProgress
-                    }}
-                />
-
-                <div
-                    className="absolute w-[400px] h-[400px] rounded-full blur-[100px] transition-transform duration-[2500ms] ease-out"
-                    style={{
-                        top: '50%',
-                        right: '10%',
-                        background: 'radial-gradient(circle, rgba(202, 138, 4, 0.10) 0%, rgba(161, 98, 7, 0.03) 50%, transparent 70%)',
-                        transform: `translate(${-mousePosition.x * 0.02}px, ${mousePosition.y * 0.01}px)`,
-                        opacity: scrollProgress * 0.8
-                    }}
-                />
-
-                <div
-                    className="absolute w-[300px] h-[300px] rounded-full blur-[80px] transition-transform duration-[2000ms] ease-out"
-                    style={{
-                        bottom: '20%',
-                        left: '30%',
-                        background: 'radial-gradient(circle, rgba(250, 204, 21, 0.08) 0%, transparent 60%)',
-                        transform: `translate(${mousePosition.x * 0.025}px, ${-mousePosition.y * 0.02}px)`,
-                        opacity: scrollProgress * 0.6
-                    }}
-                />
-
-                <div
-                    className="absolute w-[800px] h-[800px] rounded-full transition-all duration-700 ease-out"
-                    style={{
-                        left: mousePosition.x - 400,
-                        top: mousePosition.y - 400,
-                        background: `radial-gradient(circle, rgba(161, 98, 7, 0.04) 0%, rgba(133, 77, 14, 0.02) 30%, transparent 60%)`,
-                        filter: 'blur(60px)',
-                        opacity: scrollProgress * 0.5
-                    }}
-                />
-
-                <div className="absolute inset-0" style={{ opacity: scrollProgress * 0.5 }}>
-                    <div className="absolute w-1 h-1 bg-white/60 rounded-full animate-sparkle" style={{ top: '12%', left: '18%', animationDelay: '0s' }} />
-                    <div className="absolute w-1.5 h-1.5 bg-yellow-200/50 rounded-full animate-sparkle" style={{ top: '28%', right: '25%', animationDelay: '0.5s' }} />
-                    <div className="absolute w-1 h-1 bg-amber-200/60 rounded-full animate-sparkle" style={{ top: '45%', left: '12%', animationDelay: '1s' }} />
-                    <div className="absolute w-0.5 h-0.5 bg-white/70 rounded-full animate-sparkle" style={{ top: '65%', right: '18%', animationDelay: '1.5s' }} />
-                    <div className="absolute w-1 h-1 bg-yellow-100/50 rounded-full animate-sparkle" style={{ top: '78%', left: '28%', animationDelay: '2s' }} />
-                    <div className="absolute w-1.5 h-1.5 bg-amber-100/40 rounded-full animate-sparkle" style={{ bottom: '22%', right: '35%', animationDelay: '2.5s' }} />
-                    <div className="absolute w-0.5 h-0.5 bg-white/60 rounded-full animate-sparkle" style={{ top: '38%', left: '42%', animationDelay: '0.8s' }} />
-
-                    <div className="absolute w-2 h-2 rounded-full bg-yellow-500/25 blur-[1px] animate-float" style={{ top: '15%', left: '25%', animationDelay: '0s' }} />
-                    <div className="absolute w-3 h-3 rounded-full bg-amber-500/20 blur-[2px] animate-float" style={{ top: '35%', right: '20%', animationDelay: '1s' }} />
-                    <div className="absolute w-1.5 h-1.5 rounded-full bg-yellow-400/25 blur-[1px] animate-float" style={{ top: '60%', left: '15%', animationDelay: '2s' }} />
-                    <div className="absolute w-2.5 h-2.5 rounded-full bg-amber-600/20 blur-[1px] animate-float" style={{ bottom: '25%', right: '30%', animationDelay: '0.5s' }} />
-                </div>
-
-                <div
-                    className="absolute inset-0 opacity-[0.015] mix-blend-overlay"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-                    }}
-                />
-
+            {/* -- TECH BACKGROUND GRID -- */}
+            <div className="absolute inset-0 pointer-events-none opacity-20">
                 <div
                     className="absolute inset-0"
                     style={{
-                        background: 'radial-gradient(ellipse at center, transparent 40%, var(--background) 100%)',
-                        opacity: 0.4
+                        backgroundImage: `linear-gradient(rgba(197, 160, 89, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(197, 160, 89, 0.05) 1px, transparent 1px)`,
+                        backgroundSize: '40px 40px'
                     }}
                 />
-
-                <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-background via-background/80 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
             </div>
 
-            <div className="relative max-w-7xl mx-auto">
-                <div
-                    ref={headerRef}
-                    className="text-center mb-24 lg:mb-32"
-                    style={{
-                        opacity: scrollProgress,
-                        transform: `translateY(${(1 - scrollProgress) * 60}px) scale(${0.95 + scrollProgress * 0.05})`,
-                        transition: 'transform 0.1s ease-out'
-                    }}
-                >
-                    <div className="inline-flex items-center gap-6 mb-10">
-                        <div className="w-16 h-px bg-gradient-to-r from-transparent to-[var(--art-accent)] opacity-20" />
-                        <span className="text-xs font-bold tracking-[0.3em] text-[var(--art-accent)] uppercase font-sans border border-[var(--art-accent)] p-2 px-4 shadow-lg shadow-yellow-900/20">
-                            The Collection
-                        </span>
-                        <div className="w-16 h-px bg-gradient-to-l from-transparent to-[var(--art-accent)] opacity-20" />
+            <div className="relative max-w-[95%] mx-auto">
+                {/* -- HEADER: INDUSTRIAL TERMINAL STYLE -- */}
+                <div ref={headerRef} className="mb-12 flex flex-col md:flex-row justify-between items-end border-b border-[var(--art-accent)]/30 pb-6">
+                    <div>
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="w-2 h-2 bg-[var(--art-accent)] animate-pulse" />
+                            <span className="text-[10px] tracking-[0.2em] text-[var(--art-accent)]">SYS.STATUS: ONLINE</span>
+                        </div>
+                        <h2 className="text-4xl md:text-6xl font-bold text-[#e5e5e5] tracking-tighter uppercase font-sans">
+                            Visual <TypewriterText text="Database" delay={500} className="text-[var(--art-accent)]" />
+                        </h2>
                     </div>
 
-                    <h2 className="font-serif tracking-tight leading-[0.9] mb-10">
-                        <span
-                            className="block text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal text-foreground"
-                            style={{
-                                transform: `translateY(${(1 - scrollProgress) * 20}px)`,
-                                opacity: scrollProgress,
-                                transition: 'all 0.3s ease-out'
-                            }}
-                        >
-                            Curated
-                        </span>
-                        <span
-                            className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light italic text-[var(--art-accent)] mt-2"
-                            style={{
-                                transform: `translateY(${(1 - scrollProgress) * 40}px)`,
-                                opacity: scrollProgress,
-                                transition: 'all 0.4s ease-out 0.1s'
-                            }}
-                        >
-                            Selections
-                        </span>
-                    </h2>
-
-                    <p
-                        className="max-w-xl mx-auto text-base sm:text-lg text-foreground/60 font-light leading-relaxed font-sans"
-                        style={{
-                            transform: `translateY(${(1 - scrollProgress) * 30}px)`,
-                            opacity: scrollProgress * 0.8,
-                            transition: 'all 0.5s ease-out 0.2s'
-                        }}
-                    >
-                        A curated collection exploring the intersection of
-                        <span className="text-foreground/80 font-normal"> technology</span>,
-                        <span className="text-foreground/80 font-normal"> creativity</span>, and
-                        <span className="text-foreground/80 font-normal"> visual storytelling</span>.
-                    </p>
-                </div>
-
-                <div
-                    className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-16 lg:mb-20"
-                    style={{
-                        opacity: scrollProgress,
-                        transform: `translateY(${(1 - scrollProgress) * 40}px)`,
-                        transition: 'all 0.6s ease-out 0.3s'
-                    }}
-                >
-                    {categories.map((category, idx) => (
-                        <button
-                            key={category}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`
-                                px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-medium tracking-wider 
-                                transition-all duration-400 font-sans uppercase
-                                ${selectedCategory === category
-                                    ? 'bg-[var(--art-accent)] text-background shadow-xl shadow-yellow-900/20'
-                                    : 'bg-accent/50 text-foreground/60 hover:bg-accent hover:text-[var(--art-accent)] border border-foreground/5'
-                                }
-                            `}
-                            style={{
-                                transitionDelay: `${idx * 50}ms`
-                            }}
-                        >
-                            {category}
-                        </button>
-                    ))}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24">
-                    {filteredPieces.map((piece, index) => {
-                        const isCardVisible = visibleCards.has(index);
-
-                        return (
-                            <div
-                                key={`${piece.title}-${selectedCategory}`}
-                                ref={el => { cardsRef.current[index] = el; }}
-                                className="group cursor-none"
-                                style={{
-                                    opacity: isCardVisible ? 1 : 0,
-                                    transform: isCardVisible
-                                        ? 'translateY(0)'
-                                        : 'translateY(40px)',
-                                    transition: `all 1.2s cubic-bezier(0.16, 1, 0.3, 1) ${index * 150}ms`
-                                }}
+                    <div className="flex gap-2 mt-6 md:mt-0">
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => setSelectedCategory(category)}
+                                className={`
+                                    px-4 py-2 text-[10px] tracking-widest uppercase border transition-all duration-300
+                                    ${selectedCategory === category
+                                        ? 'bg-[var(--art-accent)] text-black border-[var(--art-accent)] font-bold'
+                                        : 'bg-transparent text-[var(--art-accent)] border-[var(--art-accent)]/30 hover:border-[var(--art-accent)]'
+                                    }
+                                `}
                             >
-                                <div className="relative aspect-[3/4] overflow-hidden mb-8">
-                                    <div className="absolute inset-4 border-[0.5px] border-[var(--art-accent)]/40 opacity-0 group-hover:opacity-100 transition-all duration-700 z-20 pointer-events-none scale-95 group-hover:scale-100 ease-out" />
-
-                                    <img
-                                        src={piece.image}
-                                        alt={piece.title}
-                                        className="w-full h-full object-cover filter grayscale-[0.3] contrast-[1.05] brightness-[0.9] group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-1000 ease-out"
-                                        loading="lazy"
-                                    />
-
-                                    {/* Overlay Content */}
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                                        <div className="text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                            <div className="w-12 h-px bg-[var(--art-accent)] mx-auto mb-4" />
-                                            <span className="inline-block px-6 py-3 border border-[var(--art-accent)]/50 text-[10px] tracking-[0.4em] text-[var(--art-accent)] uppercase font-sans hover:bg-[var(--art-accent)] hover:text-black transition-all duration-500">
-                                                View Piece
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="text-center px-4">
-                                    <h3 className="text-3xl font-serif italic text-[#E5E5E5] mb-3 tracking-wide group-hover:text-[var(--art-accent)] transition-colors duration-500">
-                                        {piece.title}
-                                    </h3>
-
-                                    <div className="flex items-center justify-center gap-4 text-[11px] tracking-[0.25em] uppercase text-neutral-500 font-sans opacity-60">
-                                        <span className="text-white/40">{piece.year}</span>
-                                        <span className="w-1 h-1 rounded-full bg-[var(--art-accent)]" />
-                                        <span className="text-[var(--art-accent)]">{piece.category}</span>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        );
-                    })}
+                                [{category}]
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
-                <div
-                    className="text-center mt-24 lg:mt-32"
-                    style={{
-                        opacity: scrollProgress > 0.5 ? 1 : 0,
-                        transform: `translateY(${scrollProgress > 0.5 ? 0 : 20}px)`,
-                        transition: 'all 0.6s ease-out'
-                    }}
+                {/* -- BENTO GRID -- */}
+                <motion.div
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 auto-rows-[250px]"
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, margin: "-100px" }}
                 >
-                    <div className="inline-flex items-center gap-6">
-                        <div className="w-12 h-px bg-gradient-to-r from-transparent to-foreground/20" />
-                        <span className="text-[10px] font-bold tracking-[0.4em] text-foreground/30 uppercase font-sans">
-                            More works in progress
-                        </span>
-                        <div className="w-12 h-px bg-gradient-to-l from-transparent to-foreground/20" />
-                    </div>
+                    <AnimatePresence mode="popLayout">
+                        {filteredPieces.map((piece) => {
+                            // Grid Spanning Logic
+                            let colSpan = 'col-span-1';
+                            let rowSpan = 'row-span-1';
 
-                    <div className="mt-8">
-                        <span className="text-xs font-light tracking-[0.2em] text-foreground/20 font-sans">
-                            ARTCODED
-                        </span>
-                    </div>
+                            if (piece.size === 'large') { colSpan = 'md:col-span-2'; rowSpan = 'md:row-span-2'; }
+                            else if (piece.size === 'wide') { colSpan = 'md:col-span-2'; }
+                            else if (piece.size === 'tall') { rowSpan = 'md:row-span-2'; }
+
+                            // Text Card
+                            if (piece.type === 'text') {
+                                return (
+                                    <motion.div
+                                        key={piece.id}
+                                        layout
+                                        variants={itemVariants}
+                                        initial="hidden"
+                                        animate="show"
+                                        exit="exit"
+                                        className={`${colSpan} ${rowSpan} relative bg-[#111] border border-[var(--art-accent)]/20 p-8 flex flex-col justify-center items-center text-center group overflow-hidden`}
+                                    >
+                                        <div className="absolute inset-0 bg-[var(--art-accent)]/5 group-hover:bg-[var(--art-accent)]/10 transition-colors duration-500" />
+                                        {/* Animated Brackets */}
+                                        <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
+                                        <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
+                                        <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
+                                        <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-[var(--art-accent)] transition-all duration-300 group-hover:w-4 group-hover:h-4" />
+
+                                        <span className="text-[10px] text-[var(--art-accent)]/50 mb-4 tracking-[0.3em]">{piece.sub}</span>
+                                        <p className="text-xl md:text-2xl font-bold text-[#e5e5e5] whitespace-pre-line leading-tight font-sans">
+                                            <TypewriterText text={piece.content || ""} delay={200} />
+                                        </p>
+                                    </motion.div>
+                                );
+                            }
+
+                            // Image Card
+                            return (
+                                <motion.div
+                                    key={piece.id}
+                                    layout
+                                    variants={itemVariants}
+                                    initial="hidden"
+                                    animate="show"
+                                    exit="exit"
+                                    className={`${colSpan} ${rowSpan} group relative bg-[#050505] border border-[var(--art-accent)]/20 overflow-hidden`}
+                                >
+                                    {/* Tech overlay (Base) */}
+                                    <div className="absolute top-4 left-4 z-20 flex gap-2">
+                                        <span className="text-[9px] bg-black/80 text-[var(--art-accent)] px-1 border border-[var(--art-accent)]/30 backdrop-blur-sm">
+                                            FIG_{piece.id}
+                                        </span>
+                                    </div>
+
+                                    {/* Image */}
+                                    <div className="absolute inset-0 overflow-hidden">
+                                        <img
+                                            src={piece.image}
+                                            alt={piece.title}
+                                            className="w-full h-full object-cover grayscale-[0.5] contrast-[1.1] group-hover:scale-105 group-hover:grayscale-0 transition-all duration-700 ease-in-out"
+                                        />
+                                        {/* Scanline - Now Animated */}
+                                        <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none" />
+                                    </div>
+
+                                    {/* Hover Overlay (Tech specs) */}
+                                    <div className="absolute inset-0 bg-black/90 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 border-[0.5px] border-[var(--art-accent)] m-1">
+                                        <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+                                            <div className="w-full h-px bg-[var(--art-accent)] mb-3 opacity-50" />
+                                            <h3 className="text-lg font-bold text-white mb-1 font-sans tracking-wide">
+                                                {piece.title}
+                                            </h3>
+                                            <div className="flex justify-between items-end">
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="text-[10px] text-[var(--art-accent)] uppercase tracking-wider">
+                                                        CAT: {piece.category}
+                                                    </span>
+                                                    <span className="text-[10px] text-neutral-500 uppercase tracking-wider">
+                                                        DATE: {piece.year}
+                                                    </span>
+                                                </div>
+                                                <button className="p-2 border border-[var(--art-accent)] text-[var(--art-accent)] hover:bg-[var(--art-accent)] hover:text-black transition-colors">
+                                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M1 11L11 1M11 1H3M11 1V9" stroke="currentColor" strokeWidth="1.5" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Corner Brackets - Animated */}
+                                        <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
+                                        <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
+                                        <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
+                                        <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[var(--art-accent)] transition-all duration-300 group-hover:w-6 group-hover:h-6" />
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+                    </AnimatePresence>
+                </motion.div>
+
+                {/* Footer Data */}
+                <div className="mt-8 flex justify-between text-[10px] text-[var(--art-accent)]/40 border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-widest">
+                    <span>End Of Stream</span>
+                    <span>ARTCODED // V.2.0</span>
                 </div>
             </div>
         </section>
