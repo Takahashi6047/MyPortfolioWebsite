@@ -456,6 +456,41 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const devBaseR = 255, devBaseG = 255, devBaseB = 255;
         const devTargetR = 59, devTargetG = 130, devTargetB = 246;
 
+        // -- GOLDEN FREQUENCY WAVES (Artistry Mode Only) --
+        if (isDark) {
+            ctx.lineWidth = 1.5;
+            const waveCount = 5;
+
+            // "Write-on" animation during entrance
+            const drawProgress = isEntrancePhase ? easedEntrance : 1;
+            const maxDrawX = width * drawProgress;
+
+            for (let i = 0; i < waveCount; i++) {
+                ctx.beginPath();
+                const progress = i / waveCount;
+                // Increased opacity + glow for metallic feel
+                const alpha = 0.2 + Math.sin(time * 0.5 + progress * Math.PI) * 0.05;
+                ctx.strokeStyle = `rgba(${artTargetR}, ${artTargetG}, ${artTargetB}, ${alpha})`;
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = `rgba(${artTargetR}, ${artTargetG}, ${artTargetB}, 0.6)`;
+
+
+                // Draw sine wave across screen
+                for (let x = 0; x < maxDrawX; x += 10) {
+                    // Complex wave function: composite of 2 sines for irregularity
+                    const y1 = Math.sin(x * 0.002 + time * 0.5 + progress * 10) * 50;
+                    const y2 = Math.sin(x * 0.01 + time * 1.2 + progress * 5) * 20;
+                    const yBase = height * (0.3 + progress * 0.4); // Spread vertically across center
+
+                    const y = yBase + y1 + y2;
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+            ctx.shadowBlur = 0;
+        }
+
         particlesRef.current.forEach((particle) => {
             const rotationAngle = time * particle.rotationSpeed + particle.phase;
             const orbitX = Math.cos(rotationAngle) * particle.orbitRadius;
