@@ -172,7 +172,9 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
         </div>
       </div>
 
-      <LogosSection isLoadingComplete={isLoadingComplete} />
+      <div className="mt-4 sm:mt-6 md:mt-0 pb-8 sm:pb-6 md:pb-0">
+        <LogosSection isLoadingComplete={isLoadingComplete} />
+      </div>
     </section>
   );
 }

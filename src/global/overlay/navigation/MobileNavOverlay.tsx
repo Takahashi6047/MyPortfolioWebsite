@@ -3,11 +3,16 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { useCursor } from '../../cursor';
+import { useTheme } from '../themeOverlay/RippleContext';
 
 export function MobileNavOverlay() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const { setCursorText, setCursorVariant } = useCursor();
+  const { theme } = useTheme();
+  
+  // Determine if we're in artistry mode (dark) or dev mode (light)
+  const isArtistryMode = theme === 'dark';
 
   const handleMouseEnter = (text: string) => {
     setCursorText(text);
@@ -31,11 +36,48 @@ export function MobileNavOverlay() {
     };
   }, [isOpen, setCursorText, setCursorVariant]);
 
+  // Dynamic nav items based on mode
   const navItems = [
-    { label: 'HOME', href: '#home', cursorText: 'Take me home! ' },
-    { label: 'WORKS', href: '#work', cursorText: 'Ooh, the good stuff ' },
-    { label: 'SERVICES', href: '#services', cursorText: 'What can I do for ya? ' },
-    { label: 'CONTACT', href: '#contact', cursorText: 'Let\'s chat! ' }
+    { 
+      label: 'HOME', 
+      href: '#home', 
+      cursorText: 'Take me home! ',
+      scrollAction: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+    { 
+      label: 'WORKS', 
+      href: isArtistryMode ? '#artistry' : '#works', 
+      cursorText: isArtistryMode ? 'View the gallery ' : 'Ooh, the good stuff ',
+      scrollAction: () => {
+        const targetId = isArtistryMode ? 'artistry' : 'works';
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    },
+    { 
+      label: 'SERVICES', 
+      href: '#services', 
+      cursorText: 'What can I do for ya? ',
+      scrollAction: () => {
+        const element = document.getElementById('services');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    },
+    { 
+      label: 'CONTACT', 
+      href: '#contact', 
+      cursorText: 'Let\'s chat! ',
+      scrollAction: () => {
+        const element = document.getElementById('contact');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
   ];
 
   const handleClose = () => {
@@ -46,13 +88,10 @@ export function MobileNavOverlay() {
     }, 1200); // Increased timeout to allow overlay animation to complete
   };
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (item: typeof navItems[0]) => {
     handleClose();
     setTimeout(() => {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+      item.scrollAction();
     }, 1300);
   };
 
@@ -128,7 +167,7 @@ export function MobileNavOverlay() {
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.href}
-                  onClick={() => handleNavClick(item.href)}
+                  onClick={() => handleNavClick(item)}
                   onMouseEnter={() => handleMouseEnter(item.cursorText)}
                   onMouseLeave={handleMouseLeave}
                   initial={{ opacity: 0, y: 60, scale: 0.8 }}
