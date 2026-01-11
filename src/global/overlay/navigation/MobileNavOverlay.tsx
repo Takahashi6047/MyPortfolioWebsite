@@ -36,47 +36,47 @@ export function MobileNavOverlay() {
     };
   }, [isOpen, setCursorText, setCursorVariant]);
 
+  const scrollToSection = (sectionId: string) => {
+    if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const navHeight = -50; // approximate nav height
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - navHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   // Dynamic nav items based on mode
   const navItems = [
     { 
       label: 'HOME', 
       href: '#home', 
-      cursorText: 'Take me home! ',
-      scrollAction: () => window.scrollTo({ top: 0, behavior: 'smooth' })
+      sectionId: 'home',
+      cursorText: 'Take me home! '
     },
     { 
       label: 'WORKS', 
       href: isArtistryMode ? '#artistry' : '#works', 
-      cursorText: isArtistryMode ? 'View the gallery ' : 'Ooh, the good stuff ',
-      scrollAction: () => {
-        const targetId = isArtistryMode ? 'artistry' : 'works';
-        const element = document.getElementById(targetId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+      sectionId: isArtistryMode ? 'artistry' : 'works',
+      cursorText: isArtistryMode ? 'View the gallery ' : 'Ooh, the good stuff '
     },
     { 
       label: 'SERVICES', 
       href: '#services', 
-      cursorText: 'What can I do for ya? ',
-      scrollAction: () => {
-        const element = document.getElementById('services');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+      sectionId: 'services',
+      cursorText: 'What can I do for ya? '
     },
     { 
       label: 'CONTACT', 
       href: '#contact', 
-      cursorText: 'Let\'s chat! ',
-      scrollAction: () => {
-        const element = document.getElementById('contact');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
+      sectionId: 'contact',
+      cursorText: 'Let\'s chat! '
     }
   ];
 
@@ -91,7 +91,7 @@ export function MobileNavOverlay() {
   const handleNavClick = (item: typeof navItems[0]) => {
     handleClose();
     setTimeout(() => {
-      item.scrollAction();
+      scrollToSection(item.sectionId);
     }, 1300);
   };
 

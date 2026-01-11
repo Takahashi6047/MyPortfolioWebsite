@@ -3,12 +3,16 @@ import { ThemeToggle } from './ThemeToggle';
 import { MobileNavOverlay } from '../../global/overlay/navigation/MobileNavOverlay';
 import { useState, useEffect, useRef } from 'react';
 import { useCursor } from '../../global/cursor';
+import { useTheme } from '../../global/overlay/themeOverlay/RippleContext';
 
 export function Navigation() {
   const [showSideNav, setShowSideNav] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const { setCursorText, setCursorVariant } = useCursor();
+  const { theme } = useTheme();
   const dragControls = useDragControls();
   const constraintsRef = useRef<HTMLDivElement>(null);
+  const isArtMode = theme === 'dark';
 
   const handleMouseEnter = (text: string) => {
     setCursorText(text);
@@ -28,22 +32,46 @@ export function Navigation() {
     };
   }, [setCursorText, setCursorVariant]);
 
-  const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
     e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const navHeight = -50; // approximate nav height
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - navHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   useEffect(() => {
     const handleScroll = () => {
       setShowSideNav(window.scrollY > 50);
+      
+      // Track active section
+      const sections = ['home', isArtMode ? 'artistry' : 'works', 'services', 'contact'];
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
+      
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(sectionId);
+            break;
+          }
+        }
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isArtMode]);
 
   return (
     <>
@@ -99,22 +127,39 @@ export function Navigation() {
             className="fixed right-6 top-1/3 -translate-y-1/2 z-[999999] py-6 px-3 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col gap-6 items-center cursor-grab active:cursor-grabbing"
           >
             {[
-              { label: 'Home', href: '#home', onClick: handleHomeClick },
-              { label: 'Works', href: '#works' },
-              { label: 'Services', href: '#services' },
-              { label: 'Contact Me', href: '#contact' }
-            ].map((item, index) => (
+              { label: 'Home', href: '#home', id: 'home' },
+              { label: isArtMode ? 'Artistry' : 'Works', href: isArtMode ? '#artistry' : '#works', id: isArtMode ? 'artistry' : 'works' },
+              { label: 'Services', href: '#services', id: 'services' },
+              { label: 'Contact Me', href: '#contact', id: 'contact' }
+            ].map((item, index) => {
+              const isActive = activeSection === item.id;
+              return (
               <motion.a
                 key={item.href}
                 href={item.href}
-                onClick={item.onClick}
+                onClick={(e) => scrollToSection(e, item.id)}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
                 className="relative group flex items-center justify-center p-1"
               >
+                {/* Active indicator ring */}
+                <motion.div
+                  className={`absolute inset-0 rounded-full border-2 ${isArtMode ? 'border-[var(--art-accent)]' : 'border-blue-400'}`}
+                  initial={false}
+                  animate={{
+                    scale: isActive ? 1.8 : 0,
+                    opacity: isActive ? 1 : 0
+                  }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                />
+                
                 <div
-                  className="w-2 h-2 rounded-full transition-all duration-300 group-hover:bg-blue-400 group-hover:scale-150 bg-black dark:bg-white"
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    isActive 
+                      ? (isArtMode ? 'bg-[var(--art-accent)] scale-125' : 'bg-blue-400 scale-125')
+                      : 'bg-black dark:bg-white group-hover:bg-blue-400 group-hover:scale-150'
+                  }`}
                 />
 
                 <span className="absolute right-8 px-3 py-1 rounded-md bg-black/80 text-white text-xs font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none backdrop-blur-md">
@@ -124,7 +169,8 @@ export function Navigation() {
 
                 <div className="absolute inset-[-8px]" />
               </motion.a>
-            ))}
+            );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
