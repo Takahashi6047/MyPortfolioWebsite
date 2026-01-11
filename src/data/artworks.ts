@@ -144,7 +144,7 @@ export const artPieces: ArtPiece[] = [
         id: "17",
         title: "Green Dragon Border",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/cafes champ.png",
+        image: "/artworks/graphicElements/cafes champ.webp",
         year: "2024",
         size: "medium"
     },
@@ -152,7 +152,7 @@ export const artPieces: ArtPiece[] = [
         id: "18",
         title: "Red Dragon Border",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/cmas champ.png",
+        image: "/artworks/graphicElements/cmas champ.webp",
         year: "2024",
         size: "medium"
     },
@@ -160,7 +160,7 @@ export const artPieces: ArtPiece[] = [
         id: "19",
         title: "Yellow Dragon Border",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/cbaa champ.png",
+        image: "/artworks/graphicElements/cbaa champ.webp",
         year: "2024",
         size: "medium"
     },
@@ -168,7 +168,7 @@ export const artPieces: ArtPiece[] = [
         id: "20",
         title: "Green Dragon Border",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/cess champ.png",
+        image: "/artworks/graphicElements/cess champ.webp",
         year: "2024",
         size: "medium"
     },
@@ -176,7 +176,7 @@ export const artPieces: ArtPiece[] = [
         id: "21",
         title: "Fire Banner Design ",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/banner team1.png",
+        image: "/artworks/graphicElements/banner team1.webp",
         year: "2024",
         size: "tall"
     },
@@ -184,7 +184,7 @@ export const artPieces: ArtPiece[] = [
         id: "22",
         title: "Poison Banner Design ",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/banner team2.png",
+        image: "/artworks/graphicElements/banner team2.webp",
         year: "2024",
         size: "tall"
     },
@@ -192,7 +192,7 @@ export const artPieces: ArtPiece[] = [
         id: "23",
         title: "Electric Banner Design ",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/banner team3-1.png",
+        image: "/artworks/graphicElements/banner team3-1.webp",
         year: "2024",
         size: "tall"
     },
@@ -200,7 +200,7 @@ export const artPieces: ArtPiece[] = [
         id: "24",
         title: "Nature Banner Design ",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/banner team4.png",
+        image: "/artworks/graphicElements/banner team4.webp",
         year: "2024",
         size: "tall"
     },
@@ -208,7 +208,7 @@ export const artPieces: ArtPiece[] = [
         id: "25",
         title: "Banner Design ",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/banner.png",
+        image: "/artworks/graphicElements/banner.webp",
         year: "2024",
         size: "tall"
     },
@@ -216,7 +216,7 @@ export const artPieces: ArtPiece[] = [
         id: "26",
         title: "Palakasan Banner",
         category: "Graphic Element",
-        image: "/artworks/layouts/Palakasan_Banner.png",
+        image: "/artworks/layouts/Palakasan_Banner.webp",
         year: "2024",
         size: "wide"
     },
@@ -224,7 +224,7 @@ export const artPieces: ArtPiece[] = [
         id: "27",
         title: "Palakasan Banner",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/map_design.png",
+        image: "/artworks/graphicElements/map_design.webp",
         year: "2024",
         size: "large"
     },
@@ -232,7 +232,7 @@ export const artPieces: ArtPiece[] = [
         id: "28",
         title: "Palakasan Banner",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/map_design2.png",
+        image: "/artworks/graphicElements/map_design2.webp",
         year: "2024",
         size: "large"
     },
@@ -240,7 +240,7 @@ export const artPieces: ArtPiece[] = [
         id: "29",
         title: "Palakasan Avatar Earth Banner",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/EarthBannerAvatar.png",
+        image: "/artworks/graphicElements/EarthBannerAvatar.webp",
         year: "2024",
         size: "tall"
     },
@@ -248,7 +248,7 @@ export const artPieces: ArtPiece[] = [
         id: "30",
         title: "Palakasan Avatar Fire Banner",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/FireBannerAvatar.png",
+        image: "/artworks/graphicElements/FireBannerAvatar.webp",
         year: "2024",
         size: "tall"
     },
@@ -256,7 +256,7 @@ export const artPieces: ArtPiece[] = [
         id: "31",
         title: "Palakasan Avatar Water Banner",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/WaterBannerAvatar.png",
+        image: "/artworks/graphicElements/WaterBannerAvatar.webp",
         year: "2024",
         size: "tall"
     },
@@ -264,7 +264,7 @@ export const artPieces: ArtPiece[] = [
         id: "32",
         title: "Palakasan Avatar Wind Banner",
         category: "Graphic Element",
-        image: "/artworks/graphicElements/WindBannerAvatar.png",
+        image: "/artworks/graphicElements/WindBannerAvatar.webp",
         year: "2024",
         size: "tall"
     },
@@ -272,7 +272,7 @@ export const artPieces: ArtPiece[] = [
         id: "33",
         title: "Coffee Sticker",
         category: "Stickers",
-        image: "/artworks/stickers/coffee.png",
+        image: "/artworks/stickers/coffee.webp",
         year: "2024",
         size: "medium"
     },
@@ -280,7 +280,7 @@ export const artPieces: ArtPiece[] = [
         id: "34",
         title: "Hero Eraser Sticker",
         category: "Stickers",
-        image: "/artworks/stickers/eraser.png",
+        image: "/artworks/stickers/eraser.webp",
         year: "2024",
         size: "medium"
     },
@@ -288,7 +288,7 @@ export const artPieces: ArtPiece[] = [
         id: "35",
         title: "Literary Book Sticker",
         category: "Stickers",
-        image: "/artworks/stickers/literary1.png",
+        image: "/artworks/stickers/literary1.webp",
         year: "2024",
         size: "medium"
     },
@@ -296,7 +296,7 @@ export const artPieces: ArtPiece[] = [
         id: "36",
         title: "Happy Pen Sticker",
         category: "Stickers",
-        image: "/artworks/stickers/pen happy.png",
+        image: "/artworks/stickers/pen happy.webp",
         year: "2024",
         size: "medium"
     },
@@ -304,7 +304,7 @@ export const artPieces: ArtPiece[] = [
         id: "37",
         title: "The Plot Twist Expert Sticker",
         category: "Stickers",
-        image: "/artworks/stickers/plottwist.png",
+        image: "/artworks/stickers/plottwist.webp",
         year: "2024",
         size: "medium"
     },
