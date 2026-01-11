@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ProjectCard } from '../components/works/ProjectCard';
 import { projects } from '../data/projects';
+import { useCursor } from '../global/cursor/CursorContext';
 
 export function Works() {
-
+    const { setCursorText, setCursorVariant } = useCursor();
     const [activeIndex, setActiveIndex] = useState(0);
     const sectionRef = useRef<HTMLElement>(null);
     const rightColumnRef = useRef<HTMLDivElement>(null);
@@ -43,6 +43,17 @@ export function Works() {
         }
     };
 
+    // Cursor Interactions
+    const handleProjectEnter = () => {
+        setCursorText("VIEW CASE");
+        setCursorVariant("text");
+    };
+
+    const handleProjectLeave = () => {
+        setCursorText("");
+        setCursorVariant("default");
+    };
+
     return (
         <section
             id="works"
@@ -50,31 +61,86 @@ export function Works() {
             onMouseMove={handleMouseMove}
             className="relative bg-background text-foreground"
         >
-            {/* Mobile View (Original Grid Layout) */}
-            <div className="block lg:hidden py-16 px-4 sm:px-6 relative">
-                {/* Grid background for mobile */}
+            {/* Mobile/Tablet View (Unified System Design) */}
+            <div className="block lg:hidden py-10 px-4 relative overflow-hidden">
+                {/* Background Grid */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div
-                        className="absolute inset-0 opacity-[0.08]"
+                        className="absolute inset-0 opacity-[0.05]"
                         style={{
                             backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
                             backgroundSize: '30px 30px',
                         }}
                     />
-                    {/* Faded edges */}
-                    <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-background to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
-                    <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent" />
-                    <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
                 </div>
 
-                <div className="mb-10 relative z-10">
-                    <span className="text-[10px] font-bold tracking-[0.3em] text-foreground/40 uppercase block font-sans">Selected Works</span>
+                {/* Global Rail */}
+                <div className="absolute left-5 top-0 bottom-0 w-[1px] bg-gradient-to-b from-foreground/5 via-foreground/20 to-foreground/5" />
+
+                {/* Section Header */}
+                <div className="relative pl-10 mb-12 pt-4">
+                    {/* Connector */}
+                    <div className="absolute left-5 top-[1.6rem] w-4 h-[1px] bg-foreground/30" />
+                    <span className="text-[10px] font-bold tracking-[0.3em] text-foreground/40 uppercase font-mono block">
+                        System.Gallery
+                    </span>
                 </div>
-                <div className="grid grid-cols-1 gap-6 relative z-10">
+
+                <div className="flex flex-col gap-16 pl-9 relative">
                     {projects.map((project, index) => (
-                        <div key={index}>
-                            <ProjectCard {...project} index={index} total={projects.length} />
+                        <div key={index} className="flex flex-col gap-5 group">
+                            {/* Mobile Header: Index & Title */}
+                            <div className="flex flex-col gap-1 relative">
+                                {/* Connector Dot on Rail (Visual trickery) */}
+                                <div className="absolute -left-[1.35rem] top-2 w-1.5 h-1.5 rounded-full border border-foreground/30 bg-background z-10" />
+
+                                <div className="flex items-baseline gap-3 text-foreground/30 font-mono text-xs tracking-widest mb-1">
+                                    <span className="text-foreground/80 font-sans text-base">0{index + 1}</span>
+                                    <span className="h-[1px] w-8 bg-foreground/10" />
+                                    <span>0{projects.length}</span>
+                                </div>
+
+                                <h2 className="text-3xl sm:text-4xl font-semibold tracking-tighter font-sans leading-[1.0] text-foreground">
+                                    {project.title}
+                                </h2>
+                            </div>
+
+                            {/* Mobile Image Card */}
+                            <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden shadow-lg border border-foreground/5">
+                                <img
+                                    src={project.image}
+                                    alt={project.title}
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80" />
+
+                                {/* Overlay Info on Image */}
+                                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 border border-white/20 rounded-full bg-black/40 backdrop-blur-md">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                                        <span className="text-[9px] font-bold tracking-[0.2em] text-white/90 uppercase font-sans">
+                                            {project.category}
+                                        </span>
+                                    </div>
+                                    <span className="text-[10px] font-mono text-white/60 tracking-wider bg-black/40 px-2 py-1 rounded backdrop-blur-md border border-white/10">
+                                        {project.year}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Mobile Description & Tech */}
+                            <div className="pl-0 border-t border-foreground/5 pt-4">
+                                <p className="text-sm text-foreground/70 font-light leading-relaxed mb-4 font-sans line-clamp-3">
+                                    {project.description}
+                                </p>
+
+                                <div className="flex flex-wrap gap-x-3 gap-y-2 text-[9px] font-mono text-foreground/40 uppercase tracking-widest">
+                                    {projects[activeIndex].tags.slice(0, 3).map((tag, i) => ( // Show fewer tags on mobile
+                                        <span key={i}>/{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -82,85 +148,102 @@ export function Works() {
 
             {/* Desktop View (Split Sticky Layout) */}
             <div className="hidden lg:flex flex-row w-full relative">
-                {/* Full-width grid background */}
+                {/* Background Grid */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div
-                        className="absolute inset-0 opacity-[0.08]"
+                        className="absolute inset-0 opacity-[0.05]"
                         style={{
                             backgroundImage: `linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)`,
                             backgroundSize: '40px 40px',
                         }}
                     />
-                    {/* Faded edges - top, bottom, left, right */}
-                    <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
-                    <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent" />
-                    <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-background to-transparent" />
+                    {/* Soft Vignette */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
                 </div>
 
                 {/* Left Column - Sticky Content */}
-                <div className="w-1/2 h-screen sticky top-0 flex flex-col justify-center px-12 md:px-20 py-20 bg-transparent z-10 transition-colors duration-300">
+                <div className="w-1/2 h-screen sticky top-0 flex flex-col justify-center px-12 md:px-20 py-20 bg-transparent z-10">
 
-                    {/* Background Decorative Elements */}
+                    {/* Dynamic Ambient Glow */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
                         <div
-                            className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-accent/30 blur-[80px] transition-transform duration-1000 ease-out"
+                            className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-accent/20 blur-[100px] transition-transform duration-1000 ease-out"
                             style={{
                                 transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`
                             }}
                         />
                     </div>
 
-                    <div className="max-w-xl ml-auto mr-8">
-                        <span className="text-xs font-bold tracking-[0.3em] text-foreground/40 uppercase mb-12 block font-sans">Selected Works</span>
+                    <div className="max-w-xl ml-auto mr-8 relative pl-8">
+                        {/* Vertical Timeline Rail */}
+                        <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-foreground/10 via-foreground/20 to-transparent" />
 
-                        {/* Counter */}
-                        <div className="text-lg font-light font-sans mb-4 text-foreground/50 tracking-wider">
-                            <span className="text-foreground/80 font-medium">0{activeIndex + 1}</span>
-                            <span className="mx-2 text-foreground/30">/</span>
-                            <span>0{projects.length}</span>
+                        {/* Tech Header Line */}
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="h-[1px] w-8 bg-foreground/30 relative">
+                                <span className="absolute -left-1 -top-[3px] w-[7px] h-[7px] border border-foreground/50 rounded-full bg-background" />
+                            </div>
+                            <span className="text-xs font-bold tracking-[0.3em] text-foreground/40 uppercase font-mono">
+                                System.Gallery
+                            </span>
+                        </div>
+
+                        {/* Interactive Counter with Progress Bar */}
+                        <div className="flex items-center gap-4 mb-4">
+                            <div className="text-5xl font-light font-sans text-foreground">
+                                0{activeIndex + 1}
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-foreground/40 font-mono tracking-wider">INDEX</span>
+                                <div className="w-48 h-[2px] bg-foreground/10 relative overflow-hidden">
+                                    <div
+                                        className="absolute inset-y-0 left-0 bg-foreground/80 transition-all duration-500 ease-out"
+                                        style={{ width: `${((activeIndex + 1) / projects.length) * 100}%` }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="text-xl font-light text-foreground/30 ml-2">
+                                / 0{projects.length}
+                            </div>
                         </div>
 
                         {/* Title Wrapper */}
-                        <div className="relative mb-6 pointer-events-none">
-                            {projects.map((project, idx) => {
-                                const wordCount = project.title.split(' ').length;
-                                const heightClass = wordCount <= 2 ? 'min-h-[10rem]' : wordCount === 3 ? 'min-h-[14rem]' : 'min-h-[18rem]';
-                                return (
-                                    <div
-                                        key={idx}
-                                        className={`${activeIndex === idx ? 'relative' : 'absolute top-0 left-0'} ${heightClass} transition-opacity duration-700 ease-out ${activeIndex === idx
-                                            ? 'opacity-100'
-                                            : 'opacity-0 pointer-events-none'
-                                            }`}
-                                    >
-                                        <h1 className="text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-tight font-sans leading-[1.05]">
-                                            {project.title.split(' ').map((word, i) => (
-                                                <span key={i} className="block">{word}</span>
-                                            ))}
-                                        </h1>
-                                    </div>
-                                );
-                            })}
+                        <div className="relative mb-6 min-h-[12rem] pointer-events-none">
+                            {projects.map((project, idx) => (
+                                <div
+                                    key={idx}
+                                    className={`absolute top-0 left-0 transition-all duration-700 ease-out ${activeIndex === idx
+                                        ? 'opacity-100 transform translate-y-0'
+                                        : 'opacity-0 transform translate-y-8 pointer-events-none'
+                                        }`}
+                                >
+                                    <h1 className="text-6xl xl:text-7xl font-semibold tracking-tighter font-sans leading-[0.95]">
+                                        {project.title.split(' ').map((word, i) => (
+                                            <span key={i} className="block">{word}</span>
+                                        ))}
+                                    </h1>
+                                </div>
+                            ))}
                         </div>
 
-                        {/* Category & Year */}
-                        <div className="flex items-center gap-4 mb-8 text-foreground/50 text-sm uppercase tracking-[0.2em] border-b border-foreground/8 pb-4 font-sans font-medium">
-                            <span>{projects[activeIndex].category}</span>
-                            <span className="w-1 h-1 rounded-full bg-foreground/30" />
-                            <span className="tabular-nums">{projects[activeIndex].year}</span>
+                        {/* Category Tag */}
+                        <div className="inline-flex items-center gap-3 px-4 py-2 border border-foreground/10 rounded-full bg-background/50 backdrop-blur-sm mb-6">
+                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                            <span className="text-xs font-bold tracking-[0.2em] text-foreground/70 uppercase font-sans">
+                                {projects[activeIndex].category} — {projects[activeIndex].year}
+                            </span>
                         </div>
 
                         {/* Description */}
-                        <p className="text-lg text-foreground/70 font-light leading-relaxed mb-8 min-h-[5rem] transition-all duration-500 font-sans">
+                        <p className="text-xl text-foreground/70 font-light leading-relaxed mb-8 min-h-[5rem] font-sans max-w-lg">
                             {projects[activeIndex].description}
                         </p>
 
-                        {/* Tags */}
-                        <div className="flex flex-wrap gap-2">
+                        {/* Tech Stack - Cyberpunk style */}
+                        <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono text-foreground/40 uppercase tracking-widest border-t border-foreground/10 pt-6">
                             {projects[activeIndex].tags.map((tag, i) => (
-                                <span key={i} className="px-4 py-2 text-xs font-medium tracking-wider uppercase bg-accent/40 text-foreground/70 rounded-full font-sans border border-foreground/5 hover:border-foreground/15 hover:bg-accent/60 transition-all duration-300">
-                                    {tag}
+                                <span key={i} className="hover:text-foreground/80 transition-colors cursor-default">
+                                    /{tag}
                                 </span>
                             ))}
                         </div>
@@ -168,24 +251,34 @@ export function Works() {
                 </div>
 
                 {/* Right Column - Scrolling Images */}
-                <div className="w-full lg:w-1/2 bg-transparent transition-colors duration-300 relative z-10" ref={rightColumnRef}>
+                <div className="w-full lg:w-1/2 bg-transparent relative z-10" ref={rightColumnRef}>
                     {projects.map((project, index) => (
                         <div
                             key={index}
                             data-index={index}
-                            className="project-item min-h-screen w-full flex items-center justify-center p-20"
+                            className="project-item min-h-screen w-full flex items-center justify-center p-12 xl:p-24"
                         >
-                            <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group cursor-pointer">
+                            <div
+                                className="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl group cursor-none"
+                                onMouseEnter={handleProjectEnter}
+                                onMouseLeave={handleProjectLeave}
+                            >
+                                {/* Active State Border/Glow */}
+                                <div className={`absolute inset-0 z-30 pointer-events-none border-[1px] border-white/10 transition-all duration-500 rounded-[2rem] ${activeIndex === index ? 'opacity-100 ring-1 ring-white/20' : 'opacity-0'}`} />
+
                                 <img
                                     src={project.image}
                                     alt={project.title}
-                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
                                 />
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
 
-                                <div className={`absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transition-all duration-300 ${activeIndex === index ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-white transform -rotate-45">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                {/* Overlay gradient */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
+
+                                {/* Floating Action Button hint (visual only, cursor handles text) */}
+                                <div className={`absolute bottom-8 right-8 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transition-all duration-500 ${activeIndex === index ? 'opacity-100 translate-y-0 rotate-0' : 'opacity-0 translate-y-10 rotate-45'}`}>
+                                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-white">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                     </svg>
                                 </div>
                             </div>

@@ -86,7 +86,7 @@ export function CustomCursor() {
       <AnimatePresence>
         {cursorVariant === 'text' && cursorText && (
           <motion.div
-            className="fixed top-0 left-0 pointer-events-none z-[99999999]"
+            className="fixed top-0 left-0 pointer-events-none z-[99999999] mix-blend-difference" // Apply blend mode to the whole wrapper
             style={{
               x: cursorXSpring,
               y: cursorYSpring,
@@ -99,15 +99,15 @@ export function CustomCursor() {
             <div
               className={`relative -mt-3 transition-all duration-300 ${isNearRightEdge ? '-translate-x-full pr-6' : 'pl-6'}`}
             >
-              {/* Connectivity Line */}
+              {/* Connectivity Line - Pure White for inversion */}
               <div
-                className={`absolute top-1/2 w-4 h-[1px] bg-foreground/60 ${isNearRightEdge ? 'right-2' : 'left-2'}`}
+                className={`absolute top-1/2 w-4 h-[1px] bg-white ${isNearRightEdge ? 'right-2' : 'left-2'}`}
               />
 
-              {/* Text Container */}
-              <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border border-foreground/20 px-3 py-1.5 shadow-xl rounded-sm">
-                <div className="w-1.5 h-1.5 bg-foreground animate-pulse rounded-full" />
-                <span className="text-foreground text-xs font-mono font-medium uppercase tracking-widest whitespace-nowrap">
+              {/* Text Container - Pure White Background/Black Text for maximum inversion contrast */}
+              <div className="flex items-center gap-2 bg-white px-3 py-1.5 shadow-none rounded-sm">
+                <div className="w-1.5 h-1.5 bg-black animate-pulse rounded-full" />
+                <span className="text-black text-xs font-mono font-bold uppercase tracking-widest whitespace-nowrap">
                   {cursorText}
                 </span>
               </div>
