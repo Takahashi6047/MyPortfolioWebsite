@@ -4,6 +4,9 @@ import { artPieces } from '../data/artworks';
 import { CategoryFilter, BentoGrid } from '../components/digitalArtistry';
 import { useRipple } from '../global/overlay/themeOverlay/RippleContext';
 
+// Check if device is mobile
+const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+
 // --- Typewriter Terminal Effect ---
 const TypewriterText = ({ text, className = "", delay = 0, startTyping = false }: { text: string, className?: string, delay?: number, startTyping?: boolean }) => {
     const [display, setDisplay] = useState("");
@@ -50,54 +53,54 @@ export function DigitalArtistry() {
     const { theme } = useRipple();
     
     // Use useInView for reliable entrance detection
-    const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+    const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
-    // Parallax scroll setup
+    // Parallax scroll setup - only on desktop
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start end", "end start"]
     });
 
-    // Parallax transforms - different speeds for depth effect
-    const gridY = useTransform(scrollYProgress, [0, 1], [50, -50]);
+    // Parallax transforms - disabled on mobile
+    const gridY = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [50, -50]);
 
-    // Entrance animation variants
+    // Simplified animation variants for mobile
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: { 
             opacity: 1,
             transition: { 
-                duration: 0.6,
-                staggerChildren: 0.15,
+                duration: isMobile ? 0.3 : 0.6,
+                staggerChildren: isMobile ? 0.08 : 0.15,
                 delayChildren: 0.1
             }
         }
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 60 },
+        hidden: { opacity: 0, y: isMobile ? 20 : 60 },
         visible: { 
             opacity: 1, 
             y: 0,
-            transition: { duration: 0.7, ease: "easeOut" as const }
+            transition: { duration: isMobile ? 0.4 : 0.7, ease: "easeOut" as const }
         }
     };
 
     const statusVariants = {
-        hidden: { opacity: 0, x: -30 },
+        hidden: { opacity: 0, x: -20 },
         visible: { 
             opacity: 1, 
             x: 0,
-            transition: { duration: 0.5, delay: 0.2 }
+            transition: { duration: 0.4, delay: 0.1 }
         }
     };
 
     const filterVariants = {
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, y: 20 },
         visible: { 
             opacity: 1, 
             y: 0,
-            transition: { duration: 0.6, delay: 0.4 }
+            transition: { duration: 0.4, delay: 0.2 }
         }
     };
 
@@ -115,18 +118,20 @@ export function DigitalArtistry() {
             <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent pointer-events-none z-100" />
             
             {/* -- TECH BACKGROUND GRID with Parallax -- */}
-            <motion.div 
-                className="absolute inset-0 pointer-events-none opacity-20"
-                style={{ y: gridY }}
-            >
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        backgroundImage: `linear-gradient(rgba(197, 160, 89, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(197, 160, 89, 0.05) 1px, transparent 1px)`,
-                        backgroundSize: '40px 40px'
-                    }}
-                />
-            </motion.div>
+            {!isMobile && (
+                <motion.div 
+                    className="absolute inset-0 pointer-events-none opacity-20"
+                    style={{ y: gridY }}
+                >
+                    <div
+                        className="absolute inset-0"
+                        style={{
+                            backgroundImage: `linear-gradient(rgba(197, 160, 89, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(197, 160, 89, 0.05) 1px, transparent 1px)`,
+                            backgroundSize: '40px 40px'
+                        }}
+                    />
+                </motion.div>
+            )}
 
             {/* Main content with entrance animation */}
             <motion.div 

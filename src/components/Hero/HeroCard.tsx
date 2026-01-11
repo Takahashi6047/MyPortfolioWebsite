@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from '../../global/overlay/themeOverlay/RippleContext';
 
 export function HeroCard() {
   const [isVisible, setIsVisible] = useState(false);
+  const { theme } = useTheme();
+  const isArtMode = theme === 'dark';
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -14,34 +17,36 @@ export function HeroCard() {
   return (
     <div className="relative sm:absolute right-0 sm:right-4 md:right-6 lg:right-8 bottom-0 sm:bottom-8 md:bottom-11 lg:bottom-13 flex flex-col items-end gap-2 sm:gap-3 md:gap-4 self-end">
       {/* Skill meters */}
-      <div className={`flex items-center gap-1.5 sm:gap-2 transition-all duration-500 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+      <div className={`flex items-center gap-1.5 sm:gap-2 transition-all duration-500 ease-out sm:mr-8 md:mr-10 mr-1 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
         }`}>
         <div className="flex items-center gap-1 sm:gap-1.5">
           {/* Frontend skill */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
-              <div className="w-full h-[85%] bg-blue-400 rounded-full"></div>
+              <div className={`w-full h-[85%] rounded-full transition-colors duration-500 ${isArtMode ? 'bg-[var(--art-accent)]' : 'bg-blue-400'}`}></div>
             </div>
-            <span className="text-[6px] sm:text-[8px] text-white/50">FE</span>
+            <span className={`text-[6px] sm:text-[8px] transition-colors duration-500 ${isArtMode ? 'text-black/50' : 'text-white/50'}`}>FE</span>
           </div>
           
           {/* Backend skill */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
-              <div className="w-full h-[75%] bg-white rounded-full"></div>
+              <div className={`w-full h-[75%] rounded-full transition-colors duration-500 ${isArtMode ? 'bg-black' : 'bg-white'}`}></div>
             </div>
-            <span className="text-[6px] sm:text-[8px] text-white/50">BE</span>
+            <span className={`text-[6px] sm:text-[8px] transition-colors duration-500 ${isArtMode ? 'text-black/50' : 'text-white/50'}`}>BE</span>
           </div>
           
           {/* Design skill */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
-              <div className="w-full h-[90%] bg-blue-400 rounded-full"></div>
+              <div className={`w-full h-[90%] rounded-full transition-colors duration-500 ${isArtMode ? 'bg-[var(--art-accent)]' : 'bg-blue-400'}`}></div>
             </div>
-            <span className="text-[6px] sm:text-[8px] text-white/50">UI</span>
+            <span className={`text-[6px] sm:text-[8px] transition-colors duration-500 ${isArtMode ? 'text-black/50' : 'text-white/50'}`}>UI</span>
           </div>
         </div>
-        <span className="text-[10px] sm:text-xs text-white/70 hidden sm:inline">Passionate developer</span>
+        <span className={`text-[8px] sm:text-xs transition-colors duration-500 ${isArtMode ? 'text-black/70' : 'text-white/70'}`}>
+          {isArtMode ? 'Digital artist' : 'Passionate developer'}
+        </span>
       </div>
 
       {/* Professional card */}

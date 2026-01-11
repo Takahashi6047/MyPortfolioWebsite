@@ -8,24 +8,33 @@ interface BentoGridProps {
     pieces: ArtPiece[];
 }
 
-// Wrapper component for individual card animations
-function AnimatedCard({ piece, index, className, onClick }: { piece: ArtPiece; index: number; className: string; onClick: () => void }) {
+// Check if device is mobile
+const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+
+// Simple card wrapper - no individual intersection observers on mobile
+function AnimatedCard({ piece, index, className, onClick, isGridInView }: { 
+    piece: ArtPiece; 
+    index: number; 
+    className: string; 
+    onClick: () => void;
+    isGridInView: boolean;
+}) {
+    // On mobile, use the parent's inView state; on desktop, use individual observers
     const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, { once: true, amount: 0.1 });
+    const individualInView = useInView(ref, { once: true, amount: 0.1 });
+    const isInView = isMobile ? isGridInView : individualInView;
 
     return (
         <motion.div
             ref={ref}
             className={className}
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.98 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{
-                duration: 0.3,
-                delay: index * 0.05,
+                duration: isMobile ? 0.2 : 0.3,
+                delay: isMobile ? Math.min(index * 0.03, 0.15) : index * 0.05,
                 ease: "easeOut"
             }}
-            layout
         >
             <ArtCard
                 {...piece}
@@ -39,12 +48,15 @@ function AnimatedCard({ piece, index, className, onClick }: { piece: ArtPiece; i
 export function BentoGrid({ pieces }: BentoGridProps) {
     const [showAll, setShowAll] = useState(false);
     const [selectedPiece, setSelectedPiece] = useState<ArtPiece | null>(null);
+    const gridRef = useRef<HTMLDivElement>(null);
+    
+    // Single intersection observer for the entire grid on mobile
+    const isGridInView = useInView(gridRef, { once: true, amount: 0.1 });
 
     // Calculate how many items to show initially based on screen size
     const getInitialCount = () => {
-        // Show enough items to fill roughly one viewport height
-        // Assuming ~250px per row and ~4-5 rows for a fullscreen section
-        return 12; // This will show about 3-4 rows on most screens
+        // Show fewer items on mobile for faster initial render
+        return isMobile ? 8 : 12;
     };
 
     const initialCount = getInitialCount();
@@ -54,6 +66,7 @@ export function BentoGrid({ pieces }: BentoGridProps) {
     return (
         <div className="w-full">
             <div
+                ref={gridRef}
                 className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 auto-rows-[200px] sm:auto-rows-[250px]"
                 style={{ gridAutoFlow: 'dense' }}
             >
@@ -74,6 +87,7 @@ export function BentoGrid({ pieces }: BentoGridProps) {
                                 index={index}
                                 className={`${colSpan} ${rowSpan}`}
                                 onClick={() => setSelectedPiece(piece)}
+                                isGridInView={isGridInView}
                             />
                         );
                     })}

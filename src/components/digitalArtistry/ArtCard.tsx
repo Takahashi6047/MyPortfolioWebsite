@@ -1,6 +1,7 @@
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { useState, useCallback } from 'react';
 import type { ArtPiece } from '../../data/artworks';
+import { useCursor } from '../../global/cursor/CursorContext';
 
 interface ArtCardProps extends ArtPiece {
     className?: string;
@@ -12,7 +13,28 @@ interface ArtCardProps extends ArtPiece {
     onClick?: () => void;
 }
 
+// Check if device is mobile/touch
+const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
 
+// Playful cursor messages
+const cursorMessages = [
+    "ooh, nice pick!",
+    "click me~",
+    "good taste!",
+    "expand me!",
+    "let's see more",
+    "curious?",
+    "zoom in!",
+    "take a peek",
+    "art awaits",
+    "discover me",
+];
+
+// Get a consistent message based on card id
+const getCursorMessage = (id: string) => {
+    const index = parseInt(id, 10) % cursorMessages.length;
+    return cursorMessages[index];
+};
 
 export function ArtCard({
     id,
@@ -31,58 +53,79 @@ export function ArtCard({
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
     const [isHovered, setIsHovered] = useState(false);
+    const { setCursorText, setCursorVariant } = useCursor();
 
     const handleMouseMove = useCallback(({ currentTarget, clientX, clientY }: React.MouseEvent) => {
+        if (isMobile) return; // Skip on mobile
         const { left, top } = currentTarget.getBoundingClientRect();
         mouseX.set(clientX - left);
         mouseY.set(clientY - top);
     }, [mouseX, mouseY]);
 
+    const handleMouseEnter = useCallback(() => {
+        if (isMobile) return;
+        setIsHovered(true);
+        setCursorText(getCursorMessage(id));
+        setCursorVariant('text');
+    }, [id, setCursorText, setCursorVariant]);
+
+    const handleMouseLeave = useCallback(() => {
+        if (isMobile) return;
+        setIsHovered(false);
+        setCursorText('');
+        setCursorVariant('default');
+    }, [setCursorText, setCursorVariant]);
+
     return (
         <motion.div
             key={id}
-            layout={layout}
+            layout={!isMobile && layout} // Disable layout animations on mobile
             variants={variants}
             initial={initial}
             animate={animate}
             exit={exit}
             onClick={onClick}
             onMouseMove={handleMouseMove}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             className={`${className} group relative bg-[#050505] overflow-hidden rounded-sm cursor-pointer`}
         >
-            <motion.div
-                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-30"
-                style={{
-                    background: useMotionTemplate`
-                        radial-gradient(
-                            650px circle at ${mouseX}px ${mouseY}px,
-                            rgba(197, 160, 89, 0.15),
-                            transparent 80%
-                        )
-                    `
-                }}
-            />
-            <motion.div
-                className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 z-30"
-                style={{
-                    background: useMotionTemplate`
-                        radial-gradient(
-                            400px circle at ${mouseX}px ${mouseY}px,
-                            rgba(197, 160, 89, 0.4),
-                            transparent 40%
-                        )
-                    `,
-                    maskImage: 'linear-gradient(black, black) content-box, linear-gradient(black, black)',
-                    maskComposite: 'exclude',
-                    WebkitMaskComposite: 'xor',
-                    padding: '1px'
-                }}
-            />
+            {/* Only render mouse-follow effects on desktop */}
+            {!isMobile && (
+                <>
+                    <motion.div
+                        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 z-30"
+                        style={{
+                            background: useMotionTemplate`
+                                radial-gradient(
+                                    650px circle at ${mouseX}px ${mouseY}px,
+                                    rgba(197, 160, 89, 0.15),
+                                    transparent 80%
+                                )
+                            `
+                        }}
+                    />
+                    <motion.div
+                        className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 z-30"
+                        style={{
+                            background: useMotionTemplate`
+                                radial-gradient(
+                                    400px circle at ${mouseX}px ${mouseY}px,
+                                    rgba(197, 160, 89, 0.4),
+                                    transparent 40%
+                                )
+                            `,
+                            maskImage: 'linear-gradient(black, black) content-box, linear-gradient(black, black)',
+                            maskComposite: 'exclude',
+                            WebkitMaskComposite: 'xor',
+                            padding: '1px'
+                        }}
+                    />
+                </>
+            )}
 
             <div className="absolute top-3 left-3 z-30 pointer-events-none">
-                <div className="flex items-center gap-2 px-2 py-1 bg-black/60 backdrop-blur-md border border-[var(--art-accent)]/30 group-hover:border-[var(--art-accent)]/60 transition-colors duration-300">
+                <div className="flex items-center gap-2 px-2 py-1 bg-black/60 md:backdrop-blur-md border border-[var(--art-accent)]/30 group-hover:border-[var(--art-accent)]/60 transition-colors duration-300">
                     <div className={`w-1 h-1 bg-[var(--art-accent)] ${isHovered ? 'animate-ping' : 'opacity-50'}`} />
                     <span className="text-[10px] font-mono tracking-widest text-[var(--art-accent)]">FIG_{id}</span>
                 </div>
@@ -92,10 +135,15 @@ export function ArtCard({
                 <img
                     src={image}
                     alt={title}
-                    className="w-full h-full object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover grayscale opacity-70 group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
                 />
 
-                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.7)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none z-10" />
+                {/* Scanline effect - desktop only */}
+                {!isMobile && (
+                    <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.7)_50%)] bg-[length:100%_4px] opacity-20 pointer-events-none z-10" />
+                )}
 
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(0,0,0,0.8)_100%)] opacity-60 pointer-events-none z-10" />
             </div>

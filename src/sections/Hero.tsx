@@ -49,7 +49,7 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
     <section id="home" className="relative px-4 sm:px-6 md:px-8 flex flex-col pt-2 sm:pt-4 md:min-h-screen md:justify-center md:pt-0 md:-mt-8">
       <div
         className={`relative w-full rounded-2xl sm:rounded-3xl bg-black dark:bg-white overflow-hidden transition-all duration-700 ease-out transform-gpu ${isContainerVisible
-          ? 'h-[70vh] sm:h-[75vh] md:h-[80vh] opacity-100 scale-y-100'
+          ? 'h-[500px] sm:h-[75svh] md:h-[80vh] opacity-100 scale-y-100'
           : 'h-0 opacity-0 scale-y-0'
           }`}
         style={{ transformOrigin: 'top' }}
