@@ -1,6 +1,7 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTheme } from '../themeOverlay/RippleContext';
 
 interface LoaderOverlayProps {
   onLoadingComplete?: () => void;
@@ -8,7 +9,11 @@ interface LoaderOverlayProps {
 
 export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [displayPercentage, setDisplayPercentage] = useState(0);
   const onLoadingCompleteRef = useRef(onLoadingComplete);
+  const progress = useMotionValue(0);
+  const { theme } = useTheme();
+  const isArtMode = theme === 'dark';
   
   // Keep the ref updated
   onLoadingCompleteRef.current = onLoadingComplete;
@@ -20,6 +25,15 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
     // Also prevent scrolling during loading
     document.body.style.overflow = 'hidden';
     
+    // Animate progress from 0 to 100
+    const controls = animate(progress, 100, {
+      duration: 2.2,
+      ease: 'easeInOut',
+      onUpdate: (latest) => {
+        setDisplayPercentage(Math.round(latest));
+      },
+    });
+    
     // Simulate loading time - adjust as needed
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -30,10 +44,11 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
 
     return () => {
       clearTimeout(timer);
+      controls.stop();
       // Cleanup: ensure scrolling is re-enabled if component unmounts
       document.body.style.overflow = 'unset';
     };
-  }, []);
+  }, [progress]);
 
   const loader = (
     <AnimatePresence>
@@ -66,21 +81,24 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
             >
               ARTCODED
             </motion.span>
+          </div>
 
-            {/* Loading bar */}
+          {/* Bottom right percentage */}
+          <motion.span
+            className="absolute bottom-12 right-8 font-orbitron text-7xl md:text-8xl font-bold text-foreground/20 tabular-nums tracking-tight"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            {displayPercentage}%
+          </motion.span>
+
+          {/* Full width loading bar at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-foreground/10">
             <motion.div
-              className="w-48 h-[2px] bg-foreground/20 rounded-full overflow-hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <motion.div
-                className="h-full bg-foreground"
-                initial={{ width: '0%' }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 1.8, delay: 0.6, ease: 'easeInOut' }}
-              />
-            </motion.div>
+              className={`h-full ${isArtMode ? 'bg-[var(--art-accent)]' : 'bg-blue-400'}`}
+              style={{ width: `${displayPercentage}%` }}
+            />
           </div>
         </motion.div>
       )}
