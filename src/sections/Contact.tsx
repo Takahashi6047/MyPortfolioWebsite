@@ -40,7 +40,7 @@ export function Contact() {
                     <ProjectInquiry />
 
                     {/* ACTION DASHBOARD BAR */}
-                    <div className={`mt-8 md:mt-16 w-full border-t border-b overflow-hidden flex flex-col md:flex-row ${isArtMode ? 'border-white/20' : 'border-black/20'}`}>
+                    <div className={`mt-4 w-full border-t border-b overflow-hidden flex flex-col md:flex-row ${isArtMode ? 'border-white/20' : 'border-black/20'}`}>
                         {/* Description / Context */}
                         <div className={`flex-1 py-6 md:py-8 md:pr-12 flex items-center ${isArtMode ? 'border-white/20' : 'border-black/20'} border-b md:border-b-0 md:border-r`}>
                             <p className={`max-w-md text-sm font-sans opacity-70 leading-relaxed pl-2 ${isArtMode ? 'text-white' : 'text-black'}`}>
@@ -84,9 +84,9 @@ export function Contact() {
                 {/* BOTTOM SECTION */}
                 <motion.div
                     style={{ y }}
-                    className="mt-auto pt-24 md:pt-20 pb-8"
+                    className="mt-auto pt-8 pb-8"
                 >
-                    <div className="max-w-[1600px] mx-auto">
+                    <div className="w-full">
                         <ContactInfo />
 
                         <div className={`mt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono font-bold uppercase tracking-widest text-center md:text-left gap-4 md:gap-0 ${isArtMode ? 'text-white/20' : 'text-black/20'}`}>
