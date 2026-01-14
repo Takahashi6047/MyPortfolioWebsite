@@ -39,9 +39,17 @@ export function Contact() {
                 <div className="relative pt-8 pb-0">
                     <ProjectInquiry />
 
-                    {/* BUTTON ROW - Positioned below text on Left/Center */}
-                    <div className="mt-8 md:mt-12 flex flex-col md:flex-row items-start md:items-center gap-8 pl-1">
-                        {/* THE REDESIGNED BUTTON - Now independent */}
+                    {/* ACTION DASHBOARD BAR */}
+                    <div className={`mt-8 md:mt-16 w-full border-t border-b overflow-hidden flex flex-col md:flex-row ${isArtMode ? 'border-white/20' : 'border-black/20'}`}>
+                        {/* Description / Context */}
+                        <div className={`flex-1 py-6 md:py-8 md:pr-12 flex items-center ${isArtMode ? 'border-white/20' : 'border-black/20'} border-b md:border-b-0 md:border-r`}>
+                            <p className={`max-w-md text-sm font-sans opacity-70 leading-relaxed pl-2 ${isArtMode ? 'text-white' : 'text-black'}`}>
+                                have an idea? let's discuss how we can bring it to life with precision and style.
+                                <span className="block mt-2 opacity-50 text-xs font-mono uppercase">/// AWAITING INPUT</span>
+                            </p>
+                        </div>
+
+                        {/* THE REDESIGNED BUTTON - Huge & Integrated */}
                         <motion.button
                             onMouseEnter={() => {
                                 setCursorText("SEND");
@@ -51,27 +59,23 @@ export function Contact() {
                                 setCursorText("");
                                 setCursorVariant("default");
                             }}
-                            className={`group relative flex items-center gap-4 px-8 py-5 text-lg font-mono tracking-widest uppercase font-bold border overflow-hidden transition-all duration-300
-                            ${isArtMode ? 'border-white text-white hover:text-black' : 'border-black text-black hover:text-white'}`}
+                            className={`group relative flex-none w-full md:w-[400px] flex items-center justify-between px-8 py-6 md:py-0
+                            ${isArtMode ? 'text-white hover:text-black' : 'text-black hover:text-white'}`}
                         >
-                            <span className="relative z-10">Start Project</span>
-                            <ArrowRight className="w-5 h-5 relative z-10 transition-transform duration-300 group-hover:translate-x-2" />
-
-                            {/* Fill Hover Effect */}
-                            <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0
+                            {/* Fill Effect */}
+                            <div className={`absolute inset-0 translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[0.22,1,0.36,1] z-0
                                 ${isArtMode ? 'bg-white' : 'bg-black'}`} />
-                        </motion.button>
 
-                        <p className={`hidden md:block max-w-xs text-sm font-sans opacity-60 ${isArtMode ? 'text-white' : 'text-black'}`}>
-                            Have an idea? Let's discuss how we can bring it to life with precision and style.
-                        </p>
+                            <span className="relative z-10 text-xl md:text-2xl font-mono tracking-widest uppercase font-bold">Start Project</span>
+                            <ArrowRight className="w-6 h-6 md:w-8 md:h-8 relative z-10 transition-transform duration-500 group-hover:-rotate-45" />
+                        </motion.button>
                     </div>
 
 
                     {/* THE PORTAL - Positioned cleanly on the right */}
                     <motion.div
                         style={{ y: typeof window !== 'undefined' && window.innerWidth >= 768 ? portalY : 0 }}
-                        className="relative md:absolute w-[50vw] mx-auto md:w-[320px] lg:w-[380px] mt-16 md:mt-0 md:top-[10%] md:right-[5%] z-20"
+                        className="relative md:absolute w-[60vw] mx-auto md:w-[320px] lg:w-[380px] mt-12 md:mt-0 md:top-[10%] md:right-[5%] z-20"
                     >
                         <AboutPortal />
                     </motion.div>
