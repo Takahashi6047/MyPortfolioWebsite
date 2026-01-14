@@ -62,14 +62,14 @@ function ParallaxText({ children, baseVelocity = 100, theme }: ParallaxProps) {
         : 'bg-[#1a1a1a]/90 backdrop-blur-sm text-white shadow-[0_0_20px_rgba(0,0,0,0.2)]';
 
     return (
-        <div className={`overflow-hidden flex flex-nowrap whitespace-nowrap py-4 sm:py-6 ${stripStyle} w-[120%] -ml-[10%] transform-gpu`}>
-            <motion.div style={{ x, skew: skewVelocity }} className="flex flex-nowrap whitespace-nowrap gap-12 sm:gap-24 items-center">
+        <div className={`overflow-hidden flex flex-nowrap whitespace-nowrap py-2 md:py-6 ${stripStyle} w-[120%] -ml-[10%] transform-gpu`}>
+            <motion.div style={{ x, skew: skewVelocity }} className="flex flex-nowrap whitespace-nowrap gap-8 md:gap-24 items-center">
                 {[...Array(8)].map((_, i) => (
-                    <div key={i} className="flex items-center gap-12 sm:gap-24 flex-shrink-0">
-                        <span className="block text-2xl sm:text-4xl font-black italic uppercase tracking-tighter font-sans">
+                    <div key={i} className="flex items-center gap-8 md:gap-24 flex-shrink-0">
+                        <span className="block text-xl sm:text-2xl md:text-4xl font-black italic uppercase tracking-tighter font-sans">
                             {children}
                         </span>
-                        <Sparkle className={`w-6 h-6 sm:w-8 sm:h-8 fill-current ${theme === 'dark' ? 'text-black' : 'text-white'}`} />
+                        <Sparkle className={`w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8 fill-current ${theme === 'dark' ? 'text-black' : 'text-white'}`} />
                     </div>
                 ))}
             </motion.div>
@@ -81,7 +81,7 @@ export function TransitionMarquee() {
     const { theme } = useTheme();
 
     return (
-        <section className={`py-32 sm:py-48 overflow-hidden w-full relative flex items-center justify-center
+        <section className={`py-20 sm:py-32 md:py-48 overflow-hidden w-full relative flex items-center justify-center
             ${theme === 'dark' ? 'bg-[#050505]' : 'bg-[#fafafa]'}`}>
 
             {/* Background Texture - Optional */}
@@ -90,13 +90,13 @@ export function TransitionMarquee() {
             />
 
             <div className="relative w-full flex flex-col items-center justify-center">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full rotate-[-2deg] z-10 hover:z-30 transition-all duration-300">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full rotate-[-6deg] md:rotate-[-2deg] z-10 hover:z-30 transition-all duration-300">
                     <ParallaxText baseVelocity={-3} theme={theme}>
                         Creative Developer
                     </ParallaxText>
                 </div>
 
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full rotate-[2deg] z-20 hover:z-30 transition-all duration-300 mix-blend-normal">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full rotate-[6deg] md:rotate-[2deg] z-20 hover:z-30 transition-all duration-300 mix-blend-normal">
                     <ParallaxText baseVelocity={3} theme={theme}>
                         Digital Artistry
                     </ParallaxText>

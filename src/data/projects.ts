@@ -9,11 +9,11 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    title: "FinTech Dashboard",
+    title: "Assessment Management System",
     category: "Web Application",
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop",
     description: "A comprehensive financial data visualization platform with real-time analytics and predictive modeling.",
-    tags: ["React", "TypeScript", "D3.js", "Node.js"],
+    tags: ["Vue.js", "Laravel", "Tailwind", "Postgres"],
     year: "2024"
   },
   {
