@@ -52,7 +52,13 @@ export function ProjectInquiry() {
                     whileInView="visible"
                     viewport={{ once: true }}
                     className={`text-[16vw] font-bold tracking-tighter uppercase italic text-transparent`}
-                    style={{ WebkitTextStroke: isArtMode ? '1px rgba(255,255,255,0.3)' : '1px rgba(0,0,0,0.8)' }}
+                    style={{
+                        WebkitTextStroke: isArtMode
+                            ? '1px rgba(255,255,255,0.3)'
+                            : typeof window !== 'undefined' && window.innerWidth < 768
+                                ? '1px rgba(0,0,0,0.8)'
+                                : '3px rgba(0,0,0,0.8)'
+                    }}
                 >
                     BUILD
                 </motion.h2>

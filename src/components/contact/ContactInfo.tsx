@@ -14,7 +14,7 @@ export function ContactInfo() {
     ];
 
     return (
-        <div className="flex flex-col md:flex-row justify-between w-full border-t border-b py-8 gap-8 md:gap-0 h-auto min-h-0 border-current opacity-20 hover:opacity-100 transition-opacity duration-500">
+        <div className="flex flex-col md:flex-row justify-between w-full border-t border-b py-8 gap-8 md:gap-0 h-auto min-h-0 border-current opacity-100 md:opacity-20 md:hover:opacity-100 transition-opacity duration-500">
             {socials.map((item, index) => (
                 <motion.a
                     key={item.label}
