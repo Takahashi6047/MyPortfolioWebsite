@@ -1,364 +1,182 @@
-import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform, useTime, useSpring } from 'framer-motion';
 import { useTheme } from '../global/overlay/themeOverlay/RippleContext';
-import { useCursor } from '../global/cursor';
-import Matter from 'matter-js';
 
 export function Statement() {
     const { theme } = useTheme();
     const isArtMode = theme === 'dark';
     const containerRef = useRef<HTMLDivElement>(null);
-    const stickyRef = useRef<HTMLDivElement>(null);
-    const textContainerRef = useRef<HTMLDivElement>(null);
-    const { setCursorText, setCursorVariant } = useCursor();
-    
-    const [physicsStarted, setPhysicsStarted] = useState(false);
-    
-    const lettersRef = useRef<(HTMLSpanElement | null)[]>([]);
-    const engineRef = useRef<Matter.Engine | null>(null);
-    const bodiesRef = useRef<Matter.Body[]>([]);
-    const initialPositionsRef = useRef<{ x: number; y: number; w: number; h: number }[]>([]);
-    const mousePositionRef = useRef({ x: 0, y: 0 });
-    const animFrameRef = useRef<number>(0);
+    const time = useTime();
 
-    const isLightParams = !isArtMode;
+    // Smooth rotation for background blobs
+    const rotate = useTransform(time, [0, 20000], [0, 360], { clamp: false });
 
-    // Scroll progress for the pinned section
+    // Scroll progress
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start start", "end end"]
+        offset: ["start end", "end start"]
     });
 
-    // Debug scroll and trigger physics
-    useMotionValueEvent(scrollYProgress, "change", (v) => {
-        console.log("Scroll progress:", v);
-        
-        // Start physics at 5% scroll
-        if (v > 0.05 && !physicsStarted && !engineRef.current) {
-            console.log("Initializing physics...");
-            initPhysics();
+    // Parallax effects
+    const yText = useTransform(scrollYProgress, [0, 1], [50, -50]);
+    const yImage = useSpring(useTransform(scrollYProgress, [0, 1], [100, -100]), { stiffness: 100, damping: 20 });
+    const scaleImage = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0.95, 1, 0.95]);
+
+    // Theme-based content
+    const content = isArtMode
+        ? {
+            leftMain: "DESIGN",
+            leftSub: ["Vision", "Soul"],
+            rightMain: "CRAFT",
+            rightSub: ["Depth", "Feel"],
+            label: "ARTISTRY // 002"
         }
-
-        if (!engineRef.current) return;
-
-        // Gravity increases with scroll
-        const gravityStrength = Math.max(0, (v - 0.05) / 0.3) * 2;
-        engineRef.current.gravity.y = Math.min(gravityStrength, 2);
-
-        // Make bodies dynamic once gravity kicks in
-        if (v > 0.1 && bodiesRef.current.length > 0) {
-            bodiesRef.current.forEach((body) => {
-                if (body.isStatic) {
-                    console.log("Making body dynamic");
-                    Matter.Body.setStatic(body, false);
-                    Matter.Body.applyForce(body, body.position, {
-                        x: (Math.random() - 0.5) * 0.005,
-                        y: 0
-                    });
-                }
-            });
-        }
-    });
-
-    // Track mouse for repulsion
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            if (!stickyRef.current) return;
-            const rect = stickyRef.current.getBoundingClientRect();
-            mousePositionRef.current = {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            };
+        : {
+            leftMain: "CODE",
+            leftSub: ["Logic", "System"],
+            rightMain: "SHIP",
+            rightSub: ["Build", "Scale"],
+            label: "FULLSTACK // 002"
         };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
-
-    // Initialize physics
-    const initPhysics = () => {
-        if (physicsStarted || !stickyRef.current || !textContainerRef.current) {
-            console.log("Cannot init physics:", { physicsStarted, stickyRef: !!stickyRef.current, textContainerRef: !!textContainerRef.current });
-            return;
-        }
-        
-        console.log("Physics initializing...");
-        setPhysicsStarted(true);
-
-        const engine = Matter.Engine.create();
-        engine.gravity.y = 0;
-        engineRef.current = engine;
-
-        const stickyRect = stickyRef.current.getBoundingClientRect();
-        const width = stickyRect.width;
-        const height = stickyRect.height;
-        
-        console.log("Container size:", width, height);
-
-        // Walls
-        const ground = Matter.Bodies.rectangle(width / 2, height + 30, width + 200, 60, { isStatic: true });
-        const leftWall = Matter.Bodies.rectangle(-30, height / 2, 60, height * 2, { isStatic: true });
-        const rightWall = Matter.Bodies.rectangle(width + 30, height / 2, 60, height * 2, { isStatic: true });
-        Matter.Composite.add(engine.world, [ground, leftWall, rightWall]);
-
-        // Get letter positions BEFORE any style changes
-        const positions: { x: number; y: number; w: number; h: number }[] = [];
-        lettersRef.current.forEach((el) => {
-            if (!el) return;
-            const r = el.getBoundingClientRect();
-            positions.push({
-                x: r.left - stickyRect.left + r.width / 2,
-                y: r.top - stickyRect.top + r.height / 2,
-                w: r.width,
-                h: r.height
-            });
-        });
-        initialPositionsRef.current = positions;
-        
-        console.log("Letter count:", positions.length);
-
-        // Create bodies for ALL letters first
-        const bodies: Matter.Body[] = [];
-        positions.forEach((p, i) => {
-            const body = Matter.Bodies.rectangle(p.x, p.y, p.w, p.h, {
-                restitution: 0.4,
-                friction: 0.3,
-                frictionAir: 0.01,
-                isStatic: true
-            });
-            (body as any).idx = i;
-            bodies.push(body);
-        });
-        Matter.Composite.add(engine.world, bodies);
-        bodiesRef.current = bodies;
-        
-        console.log("Bodies created:", bodies.length);
-
-        // NOW switch all letters to absolute positioning
-        // This must happen AFTER we've captured all positions
-        lettersRef.current.forEach((el, i) => {
-            if (el && positions[i]) {
-                const p = positions[i];
-                // Set fixed dimensions
-                el.style.width = `${p.w}px`;
-                el.style.height = `${p.h}px`;
-                // Switch to absolute - positioned relative to stickyRef
-                el.style.position = 'fixed';
-                el.style.left = `${stickyRect.left}px`;
-                el.style.top = `${stickyRect.top}px`;
-                el.style.margin = '0';
-                el.style.transform = `translate3d(${p.x - p.w / 2}px, ${p.y - p.h / 2}px, 0)`;
-                el.style.zIndex = '100';
-            }
-        });
-
-        // Physics loop
-        const loop = () => {
-            if (!engineRef.current) return;
-            
-            Matter.Engine.update(engine, 1000 / 60);
-
-            // Cursor repulsion
-            const mouse = mousePositionRef.current;
-            bodies.forEach((body) => {
-                if (body.isStatic) return;
-                const dx = body.position.x - mouse.x;
-                const dy = body.position.y - mouse.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 150 && dist > 0) {
-                    const force = (1 - dist / 150) * 0.008;
-                    Matter.Body.applyForce(body, body.position, {
-                        x: (dx / dist) * force,
-                        y: (dy / dist) * force
-                    });
-                }
-            });
-
-            // Sync DOM - use the current stickyRef position for fixed elements
-            const currentStickyRect = stickyRef.current?.getBoundingClientRect();
-            if (!currentStickyRect) return;
-            
-            bodies.forEach((body) => {
-                const i = (body as any).idx;
-                const el = lettersRef.current[i];
-                const p = initialPositionsRef.current[i];
-                if (el && p) {
-                    el.style.left = `${currentStickyRect.left}px`;
-                    el.style.top = `${currentStickyRect.top}px`;
-                    el.style.transform = `translate3d(${body.position.x - p.w / 2}px, ${body.position.y - p.h / 2}px, 0) rotate(${body.angle}rad)`;
-                }
-            });
-
-            animFrameRef.current = requestAnimationFrame(loop);
-        };
-        loop();
-        console.log("Physics loop started");
-    };
-
-    // Cleanup
-    useEffect(() => {
-        return () => {
-            cancelAnimationFrame(animFrameRef.current);
-            if (engineRef.current) {
-                Matter.World.clear(engineRef.current.world, false);
-                Matter.Engine.clear(engineRef.current);
-                engineRef.current = null;
-            }
-            setPhysicsStarted(false);
-            bodiesRef.current = [];
-            lettersRef.current.forEach(el => {
-                if (el) {
-                    el.style.transform = '';
-                    el.style.position = '';
-                    el.style.left = '';
-                    el.style.top = '';
-                    el.style.width = '';
-                    el.style.height = '';
-                    el.style.margin = '';
-                    el.style.zIndex = '';
-                }
-            });
-        };
-    }, [theme]);
-
-    // Text segments - each line is a separate segment for proper line breaks
-    const lines = isArtMode
-        ? [
-            [{ text: "DESIGN", type: 'highlight' }],
-            [{ text: "IS NOT JUST", type: 'muted' }],
-            [{ text: "VISUALS, BUT A", type: 'muted' }],
-            [{ text: "VESSEL", type: 'highlight' }, { text: " FOR HUMAN", type: 'muted' }],
-            [{ text: "CONNECTION.", type: 'highlight' }],
-        ]
-        : [
-            [{ text: "CODE", type: 'highlight' }],
-            [{ text: "IS NOT JUST", type: 'muted' }],
-            [{ text: "SYNTAX, BUT THE", type: 'muted' }, { text: " A", type: 'highlight' }],
-            [{ text: "RCHITECTURE", type: 'highlight' }, { text: " OF", type: 'muted' }],
-            [{ text: "INNOVATION.", type: 'highlight' }],
-        ];
 
     return (
         <section
             ref={containerRef}
-            className="relative z-20"
-            style={{ height: '250vh' }}
+            className="relative min-h-[120vh] flex items-center justify-center overflow-hidden py-24"
         >
-            <div 
-                ref={stickyRef}
-                className={`sticky top-0 h-screen flex flex-col justify-start pt-[12vh] px-6 md:px-12 lg:px-20 overflow-hidden transition-colors duration-1000
-                ${isArtMode ? 'bg-[#0a0a0a] text-white' : 'bg-neutral-50 text-neutral-900'}`}
-            >
-                {/* Background Texture */}
-                <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
-                    <div className={`absolute inset-0 bg-[url("https://grainy-gradients.vercel.app/noise.svg")] ${isLightParams && 'invert'} mix-blend-overlay`} />
-                </div>
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className={`absolute inset-0 opacity-[0.03] ${isArtMode ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert'}`} />
 
-                {/* Top UI */}
-                <div className="absolute top-8 w-full left-0 flex justify-between px-6 md:px-12 lg:px-20 z-30 pointer-events-none">
-                    <div className={`flex items-center gap-4 text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase opacity-50 
-                         ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
-                        <span>[ 002 ]</span>
-                        <span className="hidden md:inline-block">[ STATEMENT ]</span>
-                    </div>
-
-                    <motion.div 
-                        className={`px-4 py-2 border rounded-full text-[10px] font-mono uppercase tracking-widest pointer-events-auto
-                        ${isArtMode ? 'border-white/20 text-white' : 'border-black/20 text-black'}`}
-                        style={{ opacity: useTransform(scrollYProgress, [0, 0.15], [1, 0]) }}
-                    >
-                        SCROLL TO DROP
-                    </motion.div>
-
-                    <div className={`text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase opacity-50
-                        ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
-                        {isArtMode ? 'DSGN / ART' : 'DEV / ENG'}
-                    </div>
-                </div>
-
-                {/* Main content */}
-                <div className="w-full relative z-10">
-                    <div className="mb-4 md:mb-6 select-none pointer-events-none">
-                        <motion.span
-                            initial={{ opacity: 0, y: 10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.1 }}
-                            className={`block text-[10px] md:text-xs font-mono tracking-[0.3em] uppercase opacity-70
-                            ${isArtMode ? 'text-amber-500' : 'text-blue-600'}`}
-                        >
-                            /// THE PHILOSOPHY
-                        </motion.span>
-                    </div>
-
-                    {/* Letters container - LEFT ALIGNED */}
-                    <div
-                        ref={textContainerRef}
-                        className="relative"
-                        style={{ minHeight: '60vh' }}
-                        onMouseEnter={() => {
-                            setCursorText("PUSH");
-                            setCursorVariant("text");
-                        }}
-                        onMouseLeave={() => {
-                            setCursorText("");
-                            setCursorVariant("default");
-                        }}
-                    >
-                        {/* Render lines */}
-                        <div 
-                            className="font-black uppercase"
-                            style={{
-                                fontFamily: '"Inter", sans-serif',
-                                fontSize: 'clamp(2.5rem, 8vw, 8rem)',
-                                lineHeight: 1,
-                                letterSpacing: '-0.04em',
-                            }}
-                        >
-                            {(() => {
-                                let letterIndex = 0;
-                                return lines.map((line, lineIdx) => (
-                                    <div key={lineIdx} className="block whitespace-nowrap">
-                                        {line.map((segment, segIdx) => (
-                                            <span key={segIdx}>
-                                                {segment.text.split('').map((char, charIdx) => {
-                                                    if (char === ' ') {
-                                                        return <span key={`${segIdx}-${charIdx}`} style={{ display: 'inline', letterSpacing: '0.15em' }}>&nbsp;</span>;
-                                                    }
-                                                    
-                                                    const idx = letterIndex++;
-                                                    const isHighlight = segment.type === 'highlight';
-                                                    const colorClass = isHighlight 
-                                                        ? (isArtMode ? 'text-white' : 'text-neutral-900')
-                                                        : (isArtMode ? 'text-neutral-500' : 'text-neutral-400');
-                                                    
-                                                    return (
-                                                        <span
-                                                            key={`${segIdx}-${charIdx}`}
-                                                            ref={el => { lettersRef.current[idx] = el; }}
-                                                            className={`inline-block select-none ${colorClass}`}
-                                                            style={{ 
-                                                                opacity: isHighlight ? 1 : 0.35,
-                                                                fontStyle: !isHighlight ? 'italic' : 'normal',
-                                                                marginRight: '-0.02em',
-                                                            }}
-                                                        >
-                                                            {char}
-                                                        </span>
-                                                    );
-                                                })}
-                                            </span>
-                                        ))}
-                                    </div>
-                                ));
-                            })()}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom text */}
-                <div className="absolute bottom-12 left-6 md:left-12 lg:left-20 text-[10px] font-mono tracking-widest opacity-30 select-none">
-                    {physicsStarted ? "MOVE CURSOR TO PUSH" : "SCROLL TO REVEAL"}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] opacity-20 blur-[100px] rounded-full mix-blend-multiply transition-colors duration-700">
+                    <motion.div
+                        style={{ rotate }}
+                        className={`w-full h-full rounded-full bg-gradient-to-tr ${isArtMode ? 'from-amber-900 via-amber-700 to-transparent' : 'from-blue-200 via-indigo-200 to-transparent'}`}
+                    />
                 </div>
             </div>
+            <div className={`absolute top-1/2 left-0 w-full h-[1px] ${isArtMode ? 'bg-white/10' : 'bg-black/20'}`} />
+
+            <div className={`absolute top-24 left-1/2 -translate-x-1/2 w-[90%] h-[1px] ${isArtMode ? 'bg-gradient-to-r from-transparent via-white/10 to-transparent' : 'bg-gradient-to-r from-transparent via-black/25 to-transparent'}`} />
+
+            <div className={`absolute bottom-24 left-1/2 -translate-x-1/2 w-[90%] h-[1px] ${isArtMode ? 'bg-gradient-to-r from-transparent via-white/10 to-transparent' : 'bg-gradient-to-r from-transparent via-black/25 to-transparent'}`} />
+
+            <div className={`absolute top-0 bottom-0 left-[15%] w-[1px] ${isArtMode ? 'bg-gradient-to-b from-transparent via-white/5 to-transparent' : 'bg-gradient-to-b from-transparent via-black/20 to-transparent'}`} />
+            <div className={`absolute top-0 bottom-0 right-[15%] w-[1px] ${isArtMode ? 'bg-gradient-to-b from-transparent via-white/5 to-transparent' : 'bg-gradient-to-b from-transparent via-black/20 to-transparent'}`} />
+
+            <div className="absolute top-24 left-[15%] -translate-x-1/2 -translate-y-1/2">
+                <div className={`w-3 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+            </div>
+            <div className="absolute top-24 right-[15%] translate-x-1/2 -translate-y-1/2">
+                <div className={`w-3 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+            </div>
+            <div className="absolute bottom-24 left-[15%] -translate-x-1/2 translate-y-1/2">
+                <div className={`w-3 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+            </div>
+            <div className="absolute bottom-24 right-[15%] translate-x-1/2 translate-y-1/2">
+                <div className={`w-3 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
+            </div>
+
+            <div className={`absolute top-[6.5rem] left-[16%] text-[9px] font-mono tracking-widest ${isArtMode ? 'text-white opacity-40' : 'text-neutral-900 opacity-70'}`}>
+                FIG. 002
+            </div>
+            <div className={`absolute bottom-[6.5rem] right-[16%] text-[9px] font-mono tracking-widest ${isArtMode ? 'text-white opacity-40' : 'text-neutral-900 opacity-70'}`}>
+                COORDS: {isArtMode ? '48.8566° N' : '35.6764° N'}
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="relative w-full max-w-[1600px] px-4 md:px-12 grid grid-cols-1 md:grid-cols-12 items-center z-10">
+
+                {/* LEFT TYPOGRAPHY */}
+                <motion.div
+                    style={{ y: yText }}
+                    className="flex md:col-span-4 flex-col items-center md:items-end text-center md:text-right justify-center relative z-20 mix-blend-exclusion mb-8 md:mb-0"
+                >
+                    <span className={`block text-[15vw] md:text-[8vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
+                         ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
+                        {content.leftMain}
+                    </span>
+                    <div className="flex flex-col gap-0 mt-2">
+                        {content.leftSub.map((word, i) => (
+                            <span key={i} className={`block text-[4vw] md:text-[2vw] leading-[1] font-serif italic font-light tracking-wide opacity-60
+                                  ${isArtMode ? 'text-white' : 'text-neutral-800'}`}>
+                                {word}
+                            </span>
+                        ))}
+                    </div>
+                </motion.div>
+
+                {/* CENTER IMAGE PILL */}
+                <div className="md:col-span-4 flex justify-center items-center relative h-[45vh] md:h-[75vh] w-full z-10 perspective-[1000px] my-2 md:my-0">
+                    <motion.div
+                        style={{
+                            y: yImage,
+                            scale: scaleImage,
+                        }}
+                        className="relative w-[75vw] md:w-full max-w-[280px] md:max-w-[340px] h-full rounded-full overflow-hidden shadow-2xl"
+                    >
+                        {/* Image */}
+                        <div className="absolute inset-0 bg-neutral-200">
+                            <img
+                                src="/assets/Formalphoto.jpg"
+                                alt="Profile"
+                                className={`w-full h-full object-cover transition-all duration-700
+                                    ${isArtMode ? 'grayscale contrast-125 brightness-75' : 'grayscale-0'}`}
+                            />
+                        </div>
+
+                        {/* Glass Overlay Effect */}
+                        <div className={`absolute inset-0 opacity-10 bg-gradient-to-b ${isArtMode ? 'from-amber-500/30 to-black/50' : 'from-blue-500/30 to-transparent'}`} />
+
+                        {/* Inner Border */}
+                        <div className={`absolute inset-0 border-[1px] rounded-full z-20 ${isArtMode ? 'border-white/20' : 'border-black/10'}`} />
+
+                        {/* Floating Label */}
+                        <div className="absolute top-8 left-1/2 -translate-x-1/2 z-30 w-full flex justify-center">
+                            <div className={`px-4 py-2 rounded-full backdrop-blur-md border ${isArtMode ? 'bg-black/20 border-white/20 text-white' : 'bg-white/30 border-black/10 text-black'}`}>
+                                <span className="text-[10px] font-mono tracking-[0.2em] uppercase">
+                                    {content.label}
+                                </span>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* RIGHT TYPOGRAPHY */}
+                <motion.div
+                    style={{ y: yText }}
+                    className="flex md:col-span-4 flex-col items-center md:items-start text-center md:text-left justify-center relative z-20 mix-blend-exclusion mt-8 md:mt-0"
+                >
+                    <span className={`block text-[15vw] md:text-[8vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
+                         ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
+                        {content.rightMain}
+                    </span>
+                    <div className="flex flex-col gap-0 mt-2">
+                        {content.rightSub.map((word, i) => (
+                            <span key={i} className={`block text-[4vw] md:text-[2vw] leading-[1] font-serif italic font-light tracking-wide opacity-60
+                                  ${isArtMode ? 'text-white' : 'text-neutral-800'}`}>
+                                {word}
+                            </span>
+                        ))}
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Side Vertical Decor */}
+            <div className={`hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
+                <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
+                    System Architecture
+                </span>
+            </div>
+            <div className={`hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
+                <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
+                    Visual Narrative
+                </span>
+            </div>
+
         </section>
     );
 }

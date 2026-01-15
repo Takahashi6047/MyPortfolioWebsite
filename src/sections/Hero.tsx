@@ -118,7 +118,7 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
                 animate={visibleElements.subtitle ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
               >
-                {isArtMode ? '// DIGITAL ATELIER & VISUAL DATABASE' : '// FULL-STACK ENGINEERING & UI DESIGN'}
+                {isArtMode ? '// DIGITAL ATELIER & VISUAL DATABASE' : '// FULL-STACK DEVELOPER & UI DESIGN'}
               </motion.p>
             </AnimatePresence>
           </div>

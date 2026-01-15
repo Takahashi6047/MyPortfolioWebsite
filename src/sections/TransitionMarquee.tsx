@@ -84,7 +84,6 @@ export function TransitionMarquee() {
         <section className={`py-20 sm:py-32 md:py-48 overflow-hidden w-full relative flex items-center justify-center
             ${theme === 'dark' ? 'bg-[#050505]' : 'bg-[#fafafa]'}`}>
 
-            {/* Background Texture - Optional */}
             <div className={`absolute inset-0 opacity-[0.03] pointer-events-none 
                 ${theme === 'dark' ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert'}`}
             />
@@ -92,7 +91,7 @@ export function TransitionMarquee() {
             <div className="relative w-full flex flex-col items-center justify-center">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full rotate-[-6deg] md:rotate-[-2deg] z-10 hover:z-30 transition-all duration-300">
                     <ParallaxText baseVelocity={-3} theme={theme}>
-                        Creative Developer
+                        Full-Stack Developer
                     </ParallaxText>
                 </div>
 
