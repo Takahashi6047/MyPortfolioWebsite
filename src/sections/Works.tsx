@@ -43,7 +43,6 @@ export function Works() {
         }
     };
 
-    // Cursor Interactions
     const handleProjectEnter = () => {
         setCursorText("VIEW CASE");
         setCursorVariant("text");
@@ -61,9 +60,8 @@ export function Works() {
             onMouseMove={handleMouseMove}
             className="relative bg-background text-foreground"
         >
-            {/* Mobile/Tablet View (Unified System Design) */}
             <div className="block lg:hidden py-10 px-4 relative overflow-hidden">
-                {/* Background Grid */}
+
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div
                         className="absolute inset-0 opacity-[0.05]"
@@ -75,12 +73,10 @@ export function Works() {
                     <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
                 </div>
 
-                {/* Global Rail */}
                 <div className="absolute left-5 top-0 bottom-0 w-[1px] bg-gradient-to-b from-foreground/5 via-foreground/20 to-foreground/5" />
 
                 {/* Section Header */}
                 <div className="relative pl-10 mb-12 pt-4">
-                    {/* Connector */}
                     <div className="absolute left-5 top-[1.6rem] w-4 h-[1px] bg-foreground/30" />
                     <span className="text-[10px] font-bold tracking-[0.3em] text-foreground/40 uppercase font-mono block">
                         System.Gallery
@@ -90,9 +86,7 @@ export function Works() {
                 <div className="flex flex-col gap-16 pl-9 relative">
                     {projects.map((project, index) => (
                         <div key={index} className="flex flex-col gap-5 group">
-                            {/* Mobile Header: Index & Title */}
                             <div className="flex flex-col gap-1 relative">
-                                {/* Connector Dot on Rail (Visual trickery) */}
                                 <div className="absolute -left-[1.35rem] top-2 w-1.5 h-1.5 rounded-full border border-foreground/30 bg-background z-10" />
 
                                 <div className="flex items-baseline gap-3 text-foreground/30 font-mono text-xs tracking-widest mb-1">
@@ -136,7 +130,7 @@ export function Works() {
                                 </p>
 
                                 <div className="flex flex-wrap gap-x-3 gap-y-2 text-[9px] font-mono text-foreground/40 uppercase tracking-widest">
-                                    {projects[activeIndex].tags.slice(0, 3).map((tag, i) => ( // Show fewer tags on mobile
+                                    {projects[activeIndex].tags.slice(0, 3).map((tag, i) => (
                                         <span key={i}>/{tag}</span>
                                     ))}
                                 </div>
@@ -148,7 +142,6 @@ export function Works() {
 
             {/* Desktop View (Split Sticky Layout) */}
             <div className="hidden lg:flex flex-row w-full relative">
-                {/* Background Grid */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div
                         className="absolute inset-0 opacity-[0.05]"
@@ -157,14 +150,11 @@ export function Works() {
                             backgroundSize: '40px 40px',
                         }}
                     />
-                    {/* Soft Vignette */}
                     <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
                 </div>
 
-                {/* Left Column - Sticky Content */}
                 <div className="w-1/2 h-screen sticky top-0 flex flex-col justify-center px-12 md:px-20 py-20 bg-transparent z-10">
 
-                    {/* Dynamic Ambient Glow */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
                         <div
                             className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-accent/20 blur-[100px] transition-transform duration-1000 ease-out"
@@ -175,7 +165,6 @@ export function Works() {
                     </div>
 
                     <div className="max-w-xl ml-auto mr-8 relative pl-8">
-                        {/* Vertical Timeline Rail */}
                         <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-foreground/10 via-foreground/20 to-transparent" />
 
                         {/* Tech Header Line */}
@@ -263,7 +252,6 @@ export function Works() {
                                 onMouseEnter={handleProjectEnter}
                                 onMouseLeave={handleProjectLeave}
                             >
-                                {/* Active State Border/Glow */}
                                 <div className={`absolute inset-0 z-30 pointer-events-none border-[1px] border-white/10 transition-all duration-500 rounded-[2rem] ${activeIndex === index ? 'opacity-100 ring-1 ring-white/20' : 'opacity-0'}`} />
 
                                 <img
@@ -272,10 +260,8 @@ export function Works() {
                                     className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-105"
                                 />
 
-                                {/* Overlay gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
 
-                                {/* Floating Action Button hint (visual only, cursor handles text) */}
                                 <div className={`absolute bottom-8 right-8 w-14 h-14 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transition-all duration-500 ${activeIndex === index ? 'opacity-100 translate-y-0 rotate-0' : 'opacity-0 translate-y-10 rotate-45'}`}>
                                     <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-white">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
