@@ -100,7 +100,7 @@ export function Statement() {
         const rightWall = Matter.Bodies.rectangle(width + 30, height / 2, 60, height * 2, { isStatic: true });
         Matter.Composite.add(engine.world, [ground, leftWall, rightWall]);
 
-        // Get letter positions
+        // Get letter positions BEFORE any style changes
         const positions: { x: number; y: number; w: number; h: number }[] = [];
         lettersRef.current.forEach((el) => {
             if (!el) return;
@@ -116,15 +116,9 @@ export function Statement() {
         
         console.log("Letter count:", positions.length);
 
-        // Create bodies
+        // Create bodies for ALL letters first
         const bodies: Matter.Body[] = [];
-        lettersRef.current.forEach((el, i) => {
-            if (!el || !positions[i]) return;
-            const p = positions[i];
-            
-            el.style.width = `${p.w}px`;
-            el.style.height = `${p.h}px`;
-
+        positions.forEach((p, i) => {
             const body = Matter.Bodies.rectangle(p.x, p.y, p.w, p.h, {
                 restitution: 0.4,
                 friction: 0.3,
@@ -139,18 +133,28 @@ export function Statement() {
         
         console.log("Bodies created:", bodies.length);
 
-        // Switch to absolute positioning
+        // NOW switch all letters to absolute positioning
+        // This must happen AFTER we've captured all positions
         lettersRef.current.forEach((el, i) => {
             if (el && positions[i]) {
-                el.style.position = 'absolute';
-                el.style.left = '0';
-                el.style.top = '0';
-                el.style.transform = `translate3d(${positions[i].x - positions[i].w / 2}px, ${positions[i].y - positions[i].h / 2}px, 0)`;
+                const p = positions[i];
+                // Set fixed dimensions
+                el.style.width = `${p.w}px`;
+                el.style.height = `${p.h}px`;
+                // Switch to absolute - positioned relative to stickyRef
+                el.style.position = 'fixed';
+                el.style.left = `${stickyRect.left}px`;
+                el.style.top = `${stickyRect.top}px`;
+                el.style.margin = '0';
+                el.style.transform = `translate3d(${p.x - p.w / 2}px, ${p.y - p.h / 2}px, 0)`;
+                el.style.zIndex = '100';
             }
         });
 
         // Physics loop
         const loop = () => {
+            if (!engineRef.current) return;
+            
             Matter.Engine.update(engine, 1000 / 60);
 
             // Cursor repulsion
@@ -169,12 +173,17 @@ export function Statement() {
                 }
             });
 
-            // Sync DOM
+            // Sync DOM - use the current stickyRef position for fixed elements
+            const currentStickyRect = stickyRef.current?.getBoundingClientRect();
+            if (!currentStickyRect) return;
+            
             bodies.forEach((body) => {
                 const i = (body as any).idx;
                 const el = lettersRef.current[i];
                 const p = initialPositionsRef.current[i];
                 if (el && p) {
+                    el.style.left = `${currentStickyRect.left}px`;
+                    el.style.top = `${currentStickyRect.top}px`;
                     el.style.transform = `translate3d(${body.position.x - p.w / 2}px, ${body.position.y - p.h / 2}px, 0) rotate(${body.angle}rad)`;
                 }
             });
@@ -204,6 +213,8 @@ export function Statement() {
                     el.style.top = '';
                     el.style.width = '';
                     el.style.height = '';
+                    el.style.margin = '';
+                    el.style.zIndex = '';
                 }
             });
         };
