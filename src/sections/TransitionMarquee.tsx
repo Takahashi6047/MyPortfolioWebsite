@@ -44,16 +44,16 @@ function ParallaxText({ children, baseVelocity = 100, theme, isOutline = false }
     useAnimationFrame((_t, delta) => {
         let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
 
+        // Velocity direction check (keep this for direction switching)
         if (velocityFactor.get() < 0) {
             directionFactor.current = -1;
         } else if (velocityFactor.get() > 0) {
             directionFactor.current = 1;
         }
 
-        // Reduced velocity effect for clean tech look (disabled on mobile)
-        if (!isMobile) {
-            moveBy += directionFactor.current * moveBy * velocityFactor.get() * 0.5;
-        }
+        // REMOVED: Velocity acceleration multiplier (moveBy += ...)
+        // This was the primary cause of scroll lag/jitter on lower-end devices or heavy pages.
+        // We now maintain a constant smooth speed that only reacts to direction.
 
         baseX.set(baseX.get() + moveBy);
     });
@@ -62,7 +62,7 @@ function ParallaxText({ children, baseVelocity = 100, theme, isOutline = false }
         <div className="overflow-hidden flex flex-nowrap whitespace-nowrap py-2 sm:py-4">
             <motion.div
                 style={{ x }}
-                className="flex flex-nowrap whitespace-nowrap gap-8 sm:gap-12 items-center"
+                className="flex flex-nowrap whitespace-nowrap gap-8 sm:gap-12 items-center will-change-transform"
             >
                 {[...Array(4)].map((_, i) => (
                     <span
