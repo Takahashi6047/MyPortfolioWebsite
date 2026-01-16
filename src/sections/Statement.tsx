@@ -38,7 +38,7 @@ export function Statement() {
     return (
         <section
             ref={containerRef}
-            className="relative min-h-[120vh] flex items-center justify-center overflow-hidden py-24"
+            className={`relative min-h-[120vh] flex items-center justify-center overflow-hidden py-24 ${isArtMode ? 'bg-black' : 'bg-white'} transition-colors duration-500`}
         >
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className={`absolute inset-0 opacity-[0.03] ${isArtMode ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert'}`} />
@@ -50,14 +50,14 @@ export function Statement() {
                     />
                 </div>
             </div>
-            <div className={`absolute top-1/2 left-0 w-full h-[1px] ${isArtMode ? 'bg-white/10' : 'bg-black/20'}`} />
+            <div className={`absolute top-1/2 left-0 w-full h-[1px] ${isArtMode ? 'bg-white/20' : 'bg-black/20'}`} />
 
-            <div className={`absolute top-24 left-1/2 -translate-x-1/2 w-[90%] h-[1px] ${isArtMode ? 'bg-gradient-to-r from-transparent via-white/10 to-transparent' : 'bg-gradient-to-r from-transparent via-black/25 to-transparent'}`} />
+            <div className={`absolute top-24 left-1/2 -translate-x-1/2 w-[90%] h-[1px] ${isArtMode ? 'bg-gradient-to-r from-transparent via-white/30 to-transparent' : 'bg-gradient-to-r from-transparent via-black/25 to-transparent'}`} />
 
-            <div className={`absolute bottom-24 left-1/2 -translate-x-1/2 w-[90%] h-[1px] ${isArtMode ? 'bg-gradient-to-r from-transparent via-white/10 to-transparent' : 'bg-gradient-to-r from-transparent via-black/25 to-transparent'}`} />
+            <div className={`absolute bottom-24 left-1/2 -translate-x-1/2 w-[90%] h-[1px] ${isArtMode ? 'bg-gradient-to-r from-transparent via-white/30 to-transparent' : 'bg-gradient-to-r from-transparent via-black/25 to-transparent'}`} />
 
-            <div className={`absolute top-0 bottom-0 left-[15%] w-[1px] ${isArtMode ? 'bg-gradient-to-b from-transparent via-white/5 to-transparent' : 'bg-gradient-to-b from-transparent via-black/20 to-transparent'}`} />
-            <div className={`absolute top-0 bottom-0 right-[15%] w-[1px] ${isArtMode ? 'bg-gradient-to-b from-transparent via-white/5 to-transparent' : 'bg-gradient-to-b from-transparent via-black/20 to-transparent'}`} />
+            <div className={`absolute top-0 bottom-0 left-[15%] w-[1px] ${isArtMode ? 'bg-gradient-to-b from-transparent via-white/15 to-transparent' : 'bg-gradient-to-b from-transparent via-black/20 to-transparent'}`} />
+            <div className={`absolute top-0 bottom-0 right-[15%] w-[1px] ${isArtMode ? 'bg-gradient-to-b from-transparent via-white/15 to-transparent' : 'bg-gradient-to-b from-transparent via-black/20 to-transparent'}`} />
 
             <div className="absolute top-24 left-[15%] -translate-x-1/2 -translate-y-1/2">
                 <div className={`w-3 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/60'}`} />
@@ -166,12 +166,12 @@ export function Statement() {
             </div>
 
             {/* Side Vertical Decor */}
-            <div className={`hidden md:block absolute left-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
+            <div className={`hidden md:block absolute left-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'opacity-80' : 'opacity-40'}`}>
                 <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
                     System Architecture
                 </span>
             </div>
-            <div className={`hidden md:block absolute right-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
+            <div className={`hidden md:block absolute right-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'opacity-80' : 'opacity-40'}`}>
                 <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
                     Visual Narrative
                 </span>

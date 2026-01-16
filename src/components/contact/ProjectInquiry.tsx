@@ -26,7 +26,7 @@ export function ProjectInquiry() {
     return (
         <div className="w-full flex flex-col justify-center relative z-0 pointer-events-none select-none">
             {/* Row 1 - Top Decorative Line */}
-            <div className={`w-full h-[1px] ${isArtMode ? 'bg-black/10' : 'bg-white/10'} mb-8`} />
+            <div className={`w-full h-[1px] ${isArtMode ? 'bg-white/10' : 'bg-black/10'} mb-8`} />
 
             <div className="relative w-full">
                 {/* Decorative Label */}
@@ -45,7 +45,7 @@ export function ProjectInquiry() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-black' : 'text-white'}`}
+                        className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-white' : 'text-black'}`}
                     >
                         LET'S
                     </motion.h2>
@@ -63,8 +63,8 @@ export function ProjectInquiry() {
                     className="hero-text-responsive font-bold tracking-tighter uppercase italic text-transparent"
                     style={{
                         WebkitTextStroke: isArtMode
-                            ? `${isMobile ? '1.5px' : '3px'} rgba(0,0,0,0.8)`
-                            : `${isMobile ? '1.5px' : '3px'} rgba(255,255,255,0.6)`,
+                            ? `${isMobile ? '1.5px' : '3px'} rgba(255,255,255,0.6)`
+                            : `${isMobile ? '1.5px' : '3px'} rgba(0,0,0,0.8)`,
                     }}
                 >
                     BUILD

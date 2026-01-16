@@ -14,7 +14,7 @@ const TypewriterText = ({ text, className = "", delay = 0, startTyping = false }
 
     useEffect(() => {
         if (!startTyping) return;
-        
+
         let timeout: ReturnType<typeof setTimeout>;
         let currentIndex = 0;
 
@@ -51,7 +51,7 @@ export function DigitalArtistry() {
     const sectionRef = useRef<HTMLElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const { theme } = useRipple();
-    
+
     // Use useInView for reliable entrance detection
     const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
@@ -67,9 +67,9 @@ export function DigitalArtistry() {
     // Simplified animation variants for mobile
     const containerVariants = {
         hidden: { opacity: 0 },
-        visible: { 
+        visible: {
             opacity: 1,
-            transition: { 
+            transition: {
                 duration: isMobile ? 0.3 : 0.6,
                 staggerChildren: isMobile ? 0.08 : 0.15,
                 delayChildren: 0.1
@@ -79,8 +79,8 @@ export function DigitalArtistry() {
 
     const itemVariants = {
         hidden: { opacity: 0, y: isMobile ? 20 : 60 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             y: 0,
             transition: { duration: isMobile ? 0.4 : 0.7, ease: "easeOut" as const }
         }
@@ -88,8 +88,8 @@ export function DigitalArtistry() {
 
     const statusVariants = {
         hidden: { opacity: 0, x: -20 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             x: 0,
             transition: { duration: 0.4, delay: 0.1 }
         }
@@ -97,8 +97,8 @@ export function DigitalArtistry() {
 
     const filterVariants = {
         hidden: { opacity: 0, y: 20 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             y: 0,
             transition: { duration: 0.4, delay: 0.2 }
         }
@@ -112,14 +112,13 @@ export function DigitalArtistry() {
         <section
             id="artistry"
             ref={sectionRef}
-            className="relative min-h-screen py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-[#0a0a0a] overflow-hidden font-mono md:-mt-16"
+            className="relative min-h-screen py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-black overflow-hidden font-mono md:-mt-16"
         >
-            {/* Gradient overlay at the top - #3A3A3A fading downwards */}
-            <div className="absolute top-0 left-0 right-0 h-80 bg-gradient-to-b from-[#1A1A1A] via-[#1A1A1A]/70 via-60% to-transparent pointer-events-none z-100" />
-            
+
+
             {/* -- TECH BACKGROUND GRID with Parallax -- */}
             {!isMobile && (
-                <motion.div 
+                <motion.div
                     className="absolute inset-0 pointer-events-none opacity-20"
                     style={{ y: gridY }}
                 >
@@ -134,27 +133,27 @@ export function DigitalArtistry() {
             )}
 
             {/* Main content with entrance animation */}
-            <motion.div 
+            <motion.div
                 className="relative w-full max-w-[95%] mx-auto"
                 variants={containerVariants}
                 initial="hidden"
                 animate={isInView ? "visible" : "hidden"}
             >
                 {/* -- HEADER -- */}
-                <motion.div 
+                <motion.div
                     ref={headerRef}
                     className="mb-8 sm:mb-12 flex flex-col md:flex-row justify-between md:items-end gap-4 border-b border-[var(--art-accent)]/30 pb-4 sm:pb-6"
                     variants={itemVariants}
                 >
                     <div className="w-full md:w-auto">
-                        <motion.div 
+                        <motion.div
                             className="flex items-center gap-2 sm:gap-3 mb-2"
                             variants={statusVariants}
                         >
                             <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[var(--art-accent)] animate-pulse" />
                             <span className="text-[8px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] text-[var(--art-accent)]">SYS.STATUS: ONLINE</span>
                         </motion.div>
-                        <motion.h2 
+                        <motion.h2
                             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#e5e5e5] tracking-tighter uppercase font-sans leading-tight"
                             variants={itemVariants}
                         >
@@ -163,9 +162,9 @@ export function DigitalArtistry() {
                     </div>
 
                     <motion.div variants={filterVariants} className="w-full md:w-auto">
-                        <CategoryFilter 
-                            selectedCategory={selectedCategory} 
-                            onCategoryChange={setSelectedCategory} 
+                        <CategoryFilter
+                            selectedCategory={selectedCategory}
+                            onCategoryChange={setSelectedCategory}
                         />
                     </motion.div>
                 </motion.div>
@@ -176,7 +175,7 @@ export function DigitalArtistry() {
                 </motion.div>
 
                 {/* Footer Data */}
-                <motion.div 
+                <motion.div
                     className="mt-8 flex flex-col sm:flex-row justify-between gap-2 sm:gap-0 text-[8px] sm:text-[10px] border-t border-[var(--art-accent)]/20 pt-4 uppercase tracking-wider sm:tracking-widest"
                     variants={itemVariants}
                 >
