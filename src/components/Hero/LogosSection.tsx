@@ -6,16 +6,16 @@ export interface LogosSectionProps {
 
 export function LogosSection({ isLoadingComplete = false }: LogosSectionProps) {
   const logos = [
-    { name: 'React', src: '/hero/otherLogos/react.png' },
-    { name: 'Vue', src: '/hero/otherLogos/vue.png' },
-    { name: 'Laravel', src: '/hero/otherLogos/laravel.png' },
-    { name: 'Python', src: '/hero/otherLogos/python.png' },
-    { name: 'Astro', src: '/hero/otherLogos/astro.png' },
-    { name: 'CSS', src: '/hero/otherLogos/css.png' },
-    { name: 'Git', src: '/hero/otherLogos/git.png' },
-    { name: 'HTML', src: '/hero/otherLogos/HTML.png' },
-    { name: 'Tailwind', src: '/hero/otherLogos/Tailwind.png' },
-    { name: 'Clip Studio', src: '/hero/otherLogos/clipstudio.png' }
+    { name: 'React', src: '/assets/hero/otherLogos/react.png' },
+    { name: 'Vue', src: '/assets/hero/otherLogos/vue.png' },
+    { name: 'Laravel', src: '/assets/hero/otherLogos/laravel.png' },
+    { name: 'Python', src: '/assets/hero/otherLogos/python.png' },
+    { name: 'Astro', src: '/assets/hero/otherLogos/astro.png' },
+    { name: 'CSS', src: '/assets/hero/otherLogos/css.png' },
+    { name: 'Git', src: '/assets/hero/otherLogos/git.png' },
+    { name: 'HTML', src: '/assets/hero/otherLogos/HTML.png' },
+    { name: 'Tailwind', src: '/assets/hero/otherLogos/Tailwind.png' },
+    { name: 'Clip Studio', src: '/assets/hero/otherLogos/clipstudio.png' }
   ];
 
   return (

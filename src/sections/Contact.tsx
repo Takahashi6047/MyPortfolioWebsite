@@ -26,7 +26,7 @@ export function Contact() {
         <section
             id="contact"
             ref={containerRef}
-            className={`relative min-h-screen py-24 px-4 sm:px-8 lg:px-8 overflow-hidden flex flex-col justify-between ${isArtMode ? 'bg-[#050505] text-white' : 'bg-[#fafafa] text-black'} transition-colors duration-500`}
+            className={`relative min-h-screen py-16 sm:py-24 px-4 sm:px-8 lg:px-8 flex flex-col justify-between ${isArtMode ? 'bg-[#050505] text-white' : 'bg-[#fafafa] text-black'} transition-colors duration-500`}
         >
             {/* Simple Background */}
             <div className="absolute inset-0 pointer-events-none z-0">
@@ -42,10 +42,10 @@ export function Contact() {
                     {/* ACTION DASHBOARD BAR */}
                     <div className={`mt-4 w-full border-t border-b overflow-hidden flex flex-col md:flex-row ${isArtMode ? 'border-white/20' : 'border-black/20'}`}>
                         {/* Description / Context */}
-                        <div className={`flex-1 py-6 md:py-8 md:pr-12 flex items-center ${isArtMode ? 'border-white/20' : 'border-black/20'} border-b md:border-b-0 md:border-r`}>
-                            <p className={`max-w-md text-sm font-sans opacity-70 leading-relaxed pl-2 ${isArtMode ? 'text-white' : 'text-black'}`}>
+                        <div className={`flex-1 py-4 sm:py-6 md:py-8 md:pr-12 flex items-center ${isArtMode ? 'border-white/20' : 'border-black/20'} border-b md:border-b-0 md:border-r`}>
+                            <p className={`max-w-md text-xs sm:text-sm font-sans opacity-70 leading-relaxed pl-1 sm:pl-2 ${isArtMode ? 'text-white' : 'text-black'}`}>
                                 have an idea? let's discuss how we can bring it to life with precision and style.
-                                <span className="block mt-2 opacity-50 text-xs font-mono uppercase">/// AWAITING INPUT</span>
+                                <span className="block mt-2 opacity-50 text-[10px] sm:text-xs font-mono uppercase">/// AWAITING INPUT</span>
                             </p>
                         </div>
 
@@ -59,15 +59,15 @@ export function Contact() {
                                 setCursorText("");
                                 setCursorVariant("default");
                             }}
-                            className={`group relative flex-none w-full md:w-[400px] flex items-center justify-between px-8 py-6 md:py-0
+                            className={`group relative flex-none w-full md:w-[400px] flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6 md:py-0
                             ${isArtMode ? 'text-white hover:text-black' : 'text-black hover:text-white'}`}
                         >
                             {/* Fill Effect */}
                             <div className={`absolute inset-0 translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[0.22,1,0.36,1] z-0
                                 ${isArtMode ? 'bg-white' : 'bg-black'}`} />
 
-                            <span className="relative z-10 text-xl md:text-2xl font-mono tracking-widest uppercase font-bold">Start Project</span>
-                            <ArrowRight className="w-6 h-6 md:w-8 md:h-8 relative z-10 transition-transform duration-500 group-hover:-rotate-45" />
+                            <span className="relative z-10 text-base sm:text-xl md:text-2xl font-mono tracking-wider sm:tracking-widest uppercase font-bold">Start Project</span>
+                            <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 relative z-10 transition-transform duration-500 group-hover:-rotate-45" />
                         </motion.button>
                     </div>
 
@@ -75,7 +75,7 @@ export function Contact() {
                     {/* THE PORTAL - Positioned cleanly on the right */}
                     <motion.div
                         style={{ y: typeof window !== 'undefined' && window.innerWidth >= 768 ? portalY : 0 }}
-                        className="relative md:absolute w-[60vw] mx-auto md:w-[320px] lg:w-[380px] mt-12 md:mt-0 md:top-[10%] md:right-[5%] z-20"
+                        className="relative md:absolute w-[50vw] xs:w-[55vw] sm:w-[60vw] mx-auto md:w-[320px] lg:w-[380px] mt-8 sm:mt-12 md:mt-0 md:top-[10%] md:right-[5%] z-20"
                     >
                         <AboutPortal />
                     </motion.div>
@@ -89,7 +89,7 @@ export function Contact() {
                     <div className="w-full">
                         <ContactInfo />
 
-                        <div className={`mt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono font-bold uppercase tracking-widest text-center md:text-left gap-4 md:gap-0 ${isArtMode ? 'text-white/20' : 'text-black/20'}`}>
+                        <div className={`mt-6 sm:mt-8 flex flex-col md:flex-row justify-between items-center text-[8px] sm:text-[10px] font-mono font-bold uppercase tracking-wider sm:tracking-widest text-center md:text-left gap-3 sm:gap-4 md:gap-0 ${isArtMode ? 'text-white/20' : 'text-black/20'}`}>
                             <span>© 2025 ARTCODED INC.</span>
                             <span className="hidden md:block">///</span>
                             <span>ALL SYSTEMS OPERATIONAL</span>

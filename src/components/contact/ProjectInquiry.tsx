@@ -28,51 +28,49 @@ export function ProjectInquiry() {
                     </span>
                 </div>
 
-                {/* TEXT LINE 1 */}
-                <div className="overflow-hidden leading-[0.8]">
+                {/* TEXT LINE 1 - "LET'S" */}
+                <div className="leading-[0.9]">
                     <motion.h2
                         custom={0}
                         variants={textVariants}
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className={`text-[16vw] font-bold tracking-tighter uppercase ${isArtMode ? 'text-white' : 'text-black'}`}
+                        className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-white' : 'text-black'}`}
                     >
                         LET'S
                     </motion.h2>
                 </div>
             </div>
 
-            {/* TEXT LINE 2 */}
-            <div className="overflow-hidden leading-[0.8] relative">
+            {/* TEXT LINE 2 - "BUILD" */}
+            <div className="leading-[0.9] relative">
                 <motion.h2
                     custom={1}
                     variants={textVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className={`text-[16vw] font-bold tracking-tighter uppercase italic text-transparent`}
+                    className={`hero-text-responsive font-bold tracking-tighter uppercase italic ${isArtMode ? 'text-white/30' : 'text-black/20'}`}
                     style={{
                         WebkitTextStroke: isArtMode
                             ? '1px rgba(255,255,255,0.3)'
-                            : typeof window !== 'undefined' && window.innerWidth < 768
-                                ? '1px rgba(0,0,0,0.8)'
-                                : '3px rgba(0,0,0,0.8)'
+                            : '2px rgba(0,0,0,0.7)',
                     }}
                 >
                     BUILD
                 </motion.h2>
             </div>
 
-            {/* TEXT LINE 3 */}
-            <div className="overflow-hidden leading-[0.8] relative z-10">
+            {/* TEXT LINE 3 - "FUTURE" */}
+            <div className="leading-[0.9] relative z-10">
                 <motion.h2
                     custom={2}
                     variants={textVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className={`text-[16vw] font-bold tracking-tighter uppercase ${isArtMode ? 'text-[var(--art-accent)]' : 'text-blue-600'}`}
+                    className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-[var(--art-accent)]' : 'text-blue-600'}`}
                 >
                     FUTURE
                 </motion.h2>

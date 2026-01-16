@@ -56,7 +56,7 @@ export function HeroCard() {
           : 'h-0 opacity-0 scale-y-0'
           }`}
         style={{
-          backgroundImage: 'url(/hero/HeroCard2.png)',
+          backgroundImage: 'url(/assets/hero/HeroCard2.png)',
           transformOrigin: 'top'
         }}
       >

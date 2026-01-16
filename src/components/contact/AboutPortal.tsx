@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { ArrowUpRight, Scan } from 'lucide-react';
 import { useTheme } from '../../global/overlay/themeOverlay/RippleContext';
@@ -41,16 +40,16 @@ export function AboutPortal() {
     return (
         <div className="h-full w-full flex flex-col justify-end perspective-1000">
             {/* Header / Label */}
-            <div className="flex justify-between items-end mb-6 px-2">
-                <div className="flex flex-col gap-1">
-                    <span className={`text-[10px] font-mono uppercase tracking-[0.2em] ${isArtMode ? 'text-white/40' : 'text-black/40'}`}>
+            <div className="flex justify-between items-end mb-4 sm:mb-6 px-1 sm:px-2">
+                <div className="flex flex-col gap-0.5 sm:gap-1">
+                    <span className={`text-[8px] sm:text-[10px] font-mono uppercase tracking-[0.15em] sm:tracking-[0.2em] ${isArtMode ? 'text-white/40' : 'text-black/40'}`}>
                         Operator ID
                     </span>
-                    <span className={`text-xs font-bold font-mono uppercase tracking-widest ${isArtMode ? 'text-[var(--art-accent)]' : 'text-blue-600'}`}>
+                    <span className={`text-[10px] sm:text-xs font-bold font-mono uppercase tracking-wider sm:tracking-widest ${isArtMode ? 'text-[var(--art-accent)]' : 'text-blue-600'}`}>
                         #808-999
                     </span>
                 </div>
-                <Scan className={`w-4 h-4 ${isArtMode ? 'text-white/30' : 'text-black/30'}`} />
+                <Scan className={`w-3 h-3 sm:w-4 sm:h-4 ${isArtMode ? 'text-white/30' : 'text-black/30'}`} />
             </div>
 
             {/* The Portal Card with 3D Tilt */}
@@ -86,20 +85,20 @@ export function AboutPortal() {
                     </div>
 
                     {/* HUD Elements Overlay */}
-                    <div className="absolute inset-4 pointer-events-none z-20 flex flex-col justify-between" style={{ transform: "translateZ(30px)" }}>
+                    <div className="absolute inset-2 sm:inset-4 pointer-events-none z-20 flex flex-col justify-between" style={{ transform: "translateZ(30px)" }}>
                         <div className="flex justify-between items-start">
-                            <div className={`w-2 h-2 border ${isArtMode ? 'border-[var(--art-accent)] bg-[var(--art-accent)]' : 'border-blue-600 bg-blue-600'}`} />
-                            <ArrowUpRight className={`w-8 h-8 ${isArtMode ? 'text-white opacity-0 group-hover:opacity-100' : 'text-black opacity-0 group-hover:opacity-100'} transition-opacity duration-300`} />
+                            <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 border ${isArtMode ? 'border-[var(--art-accent)] bg-[var(--art-accent)]' : 'border-blue-600 bg-blue-600'}`} />
+                            <ArrowUpRight className={`w-6 h-6 sm:w-8 sm:h-8 ${isArtMode ? 'text-white opacity-0 group-hover:opacity-100' : 'text-black opacity-0 group-hover:opacity-100'} transition-opacity duration-300`} />
                         </div>
 
                         <div className="space-y-1 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                            <h3 className={`text-4xl font-bold font-sans tracking-tight leading-none ${isArtMode ? 'text-white' : 'text-white mix-blend-difference'}`}>
+                            <h3 className={`text-2xl sm:text-4xl font-bold font-sans tracking-tight leading-none ${isArtMode ? 'text-white' : 'text-white mix-blend-difference'}`}>
                                 JOHN
                                 <br />
                                 ROBERT
                             </h3>
                             <div className={`h-[1px] w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 delay-100 ${isArtMode ? 'bg-[var(--art-accent)]' : 'bg-white'}`} />
-                            <p className={`text-[10px] font-mono font-bold tracking-[0.2em] uppercase pt-2 ${isArtMode ? 'text-[var(--art-accent)]' : 'text-white'}`}>
+                            <p className={`text-[8px] sm:text-[10px] font-mono font-bold tracking-[0.15em] sm:tracking-[0.2em] uppercase pt-1 sm:pt-2 ${isArtMode ? 'text-[var(--art-accent)]' : 'text-white'}`}>
                                 Full Stack Engineer
                             </p>
                         </div>
@@ -108,11 +107,11 @@ export function AboutPortal() {
                     {/* Animated Corners */}
                     <div className="absolute inset-0 pointer-events-none z-30">
                         {/* Top Left */}
-                        <div className={`absolute top-0 left-0 w-16 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
-                        <div className={`absolute top-0 left-0 w-[1px] h-16 ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
+                        <div className={`absolute top-0 left-0 w-10 sm:w-16 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
+                        <div className={`absolute top-0 left-0 w-[1px] h-10 sm:h-16 ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
                         {/* Bottom Right */}
-                        <div className={`absolute bottom-0 right-0 w-16 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
-                        <div className={`absolute bottom-0 right-0 w-[1px] h-16 ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
+                        <div className={`absolute bottom-0 right-0 w-10 sm:w-16 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
+                        <div className={`absolute bottom-0 right-0 w-[1px] h-10 sm:h-16 ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
                     </div>
                 </div>
             </motion.div>
