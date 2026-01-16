@@ -1,15 +1,11 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useTime, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useTheme } from '../global/overlay/themeOverlay/RippleContext';
 
 export function Statement() {
     const { theme } = useTheme();
     const isArtMode = theme === 'dark';
     const containerRef = useRef<HTMLDivElement>(null);
-    const time = useTime();
-
-    // Smooth rotation for background blobs
-    const rotate = useTransform(time, [0, 20000], [0, 360], { clamp: false });
 
     // Scroll progress
     const { scrollYProgress } = useScroll({
@@ -17,7 +13,7 @@ export function Statement() {
         offset: ["start end", "end start"]
     });
 
-    // Parallax effects
+    // Parallax effects with GPU acceleration hints
     const yText = useTransform(scrollYProgress, [0, 1], [50, -50]);
     const yImage = useSpring(useTransform(scrollYProgress, [0, 1], [100, -100]), { stiffness: 100, damping: 20 });
     const scaleImage = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0.95, 1, 0.95]);
@@ -47,9 +43,9 @@ export function Statement() {
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className={`absolute inset-0 opacity-[0.03] ${isArtMode ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert'}`} />
 
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] opacity-20 blur-[100px] rounded-full mix-blend-multiply transition-colors duration-700">
-                    <motion.div
-                        style={{ rotate }}
+                {/* Optimized background blob - removed rotation animation and expensive blend mode */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] opacity-20 blur-[100px] rounded-full transition-colors duration-700">
+                    <div
                         className={`w-full h-full rounded-full bg-gradient-to-tr ${isArtMode ? 'from-amber-900 via-amber-700 to-transparent' : 'from-blue-200 via-indigo-200 to-transparent'}`}
                     />
                 </div>
@@ -92,8 +88,8 @@ export function Statement() {
 
                 {/* LEFT TYPOGRAPHY */}
                 <motion.div
-                    style={{ y: yText }}
-                    className="flex md:col-span-4 flex-col items-center md:items-end text-center md:text-right justify-center relative z-20 mix-blend-exclusion mb-8 md:mb-0"
+                    style={{ y: yText, willChange: 'transform' }}
+                    className="flex md:col-span-4 flex-col items-center md:items-end text-center md:text-right justify-center relative z-20 mb-8 md:mb-0"
                 >
                     <span className={`block text-[15vw] md:text-[8vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
                          ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
@@ -115,6 +111,7 @@ export function Statement() {
                         style={{
                             y: yImage,
                             scale: scaleImage,
+                            willChange: 'transform'
                         }}
                         className="relative w-[75vw] md:w-full max-w-[280px] md:max-w-[340px] h-full rounded-full overflow-hidden shadow-2xl"
                     >
@@ -146,8 +143,8 @@ export function Statement() {
 
                 {/* RIGHT TYPOGRAPHY */}
                 <motion.div
-                    style={{ y: yText }}
-                    className="flex md:col-span-4 flex-col items-center md:items-start text-center md:text-left justify-center relative z-20 mix-blend-exclusion mt-8 md:mt-0"
+                    style={{ y: yText, willChange: 'transform' }}
+                    className="flex md:col-span-4 flex-col items-center md:items-start text-center md:text-left justify-center relative z-20 mt-8 md:mt-0"
                 >
                     <span className={`block text-[15vw] md:text-[8vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
                          ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
