@@ -103,7 +103,15 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
     const RIPPLE_DISPLACEMENT = 35;
     const RIPPLE_BOUNCE_AMPLITUDE = 0.7;
 
-    const PARTICLE_SIZE = 1.2;
+    // Mobile detection and responsive scaling
+    const isMobileRef = useRef(false);
+    const getIsMobile = () => window.innerWidth <= 768;
+    
+    const getParticleSize = () => isMobileRef.current ? 0.8 : 1.2;
+    const getParticleDensity = () => isMobileRef.current ? 6000 : 2500; // Higher = fewer particles
+    const getShapeParticleMultiplier = () => isMobileRef.current ? 0.5 : 1;
+    const getDPRCap = () => isMobileRef.current ? 1.5 : (window.devicePixelRatio || 1);
+
     const EXCLUSION_RADIUS = 150;
     const MOUSE_RADIUS = 150;
 
@@ -116,6 +124,8 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const size = Math.min(width, height) * 0.35;
         const strokeWidth = size * 0.18;
 
+        const PARTICLE_SIZE = getParticleSize();
+        const shapeMultiplier = getShapeParticleMultiplier();
 
         landingDistanceRef.current = strokeWidth * 0.6;
 
@@ -247,32 +257,33 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const leftTipX = leftCenterX - bracketWidth;
         const leftBackX = leftCenterX + bracketWidth * 0.3;
 
-        addThickLine(leftBackX, centerY - bracketHeight, leftTipX, centerY, 100, 30);
-        addThickLine(leftTipX, centerY, leftBackX, centerY + bracketHeight, 100, 30);
-        addRoundedCorner(leftTipX, centerY, Math.PI * 0.5, Math.PI * 1.5, 30, 10);
-        addRoundedCorner(leftBackX, centerY - bracketHeight, -Math.PI * 0.5, Math.PI * 0.5, 20, 8);
-        addRoundedCorner(leftBackX, centerY + bracketHeight, -Math.PI * 0.5, Math.PI * 0.5, 20, 8);
+        addThickLine(leftBackX, centerY - bracketHeight, leftTipX, centerY, Math.floor(100 * shapeMultiplier), Math.floor(30 * shapeMultiplier));
+        addThickLine(leftTipX, centerY, leftBackX, centerY + bracketHeight, Math.floor(100 * shapeMultiplier), Math.floor(30 * shapeMultiplier));
+        addRoundedCorner(leftTipX, centerY, Math.PI * 0.5, Math.PI * 1.5, Math.floor(30 * shapeMultiplier), Math.floor(10 * shapeMultiplier));
+        addRoundedCorner(leftBackX, centerY - bracketHeight, -Math.PI * 0.5, Math.PI * 0.5, Math.floor(20 * shapeMultiplier), Math.floor(8 * shapeMultiplier));
+        addRoundedCorner(leftBackX, centerY + bracketHeight, -Math.PI * 0.5, Math.PI * 0.5, Math.floor(20 * shapeMultiplier), Math.floor(8 * shapeMultiplier));
 
         const slashWidth = size * 0.12;
         const slashHeight = size * 0.55;
-        addThickLine(centerX + slashWidth, centerY - slashHeight, centerX - slashWidth, centerY + slashHeight, 80, 25);
-        addRoundedCorner(centerX + slashWidth, centerY - slashHeight, 0, Math.PI * 2, 18, 6);
-        addRoundedCorner(centerX - slashWidth, centerY + slashHeight, 0, Math.PI * 2, 18, 6);
+        addThickLine(centerX + slashWidth, centerY - slashHeight, centerX - slashWidth, centerY + slashHeight, Math.floor(80 * shapeMultiplier), Math.floor(25 * shapeMultiplier));
+        addRoundedCorner(centerX + slashWidth, centerY - slashHeight, 0, Math.PI * 2, Math.floor(18 * shapeMultiplier), Math.floor(6 * shapeMultiplier));
+        addRoundedCorner(centerX - slashWidth, centerY + slashHeight, 0, Math.PI * 2, Math.floor(18 * shapeMultiplier), Math.floor(6 * shapeMultiplier));
 
         const rightCenterX = centerX + spacing;
         const rightTipX = rightCenterX + bracketWidth;
         const rightBackX = rightCenterX - bracketWidth * 0.3;
 
-        addThickLine(rightBackX, centerY - bracketHeight, rightTipX, centerY, 100, 30);
-        addThickLine(rightTipX, centerY, rightBackX, centerY + bracketHeight, 100, 30);
-        addRoundedCorner(rightTipX, centerY, -Math.PI * 0.5, Math.PI * 0.5, 30, 10);
-        addRoundedCorner(rightBackX, centerY - bracketHeight, Math.PI * 0.5, Math.PI * 1.5, 20, 8);
-        addRoundedCorner(rightBackX, centerY + bracketHeight, Math.PI * 0.5, Math.PI * 1.5, 20, 8);
+        addThickLine(rightBackX, centerY - bracketHeight, rightTipX, centerY, Math.floor(100 * shapeMultiplier), Math.floor(30 * shapeMultiplier));
+        addThickLine(rightTipX, centerY, rightBackX, centerY + bracketHeight, Math.floor(100 * shapeMultiplier), Math.floor(30 * shapeMultiplier));
+        addRoundedCorner(rightTipX, centerY, -Math.PI * 0.5, Math.PI * 0.5, Math.floor(30 * shapeMultiplier), Math.floor(10 * shapeMultiplier));
+        addRoundedCorner(rightBackX, centerY - bracketHeight, Math.PI * 0.5, Math.PI * 1.5, Math.floor(20 * shapeMultiplier), Math.floor(8 * shapeMultiplier));
+        addRoundedCorner(rightBackX, centerY + bracketHeight, Math.PI * 0.5, Math.PI * 1.5, Math.floor(20 * shapeMultiplier), Math.floor(8 * shapeMultiplier));
 
         attractorsRef.current = newAttractors;
 
-        // AMBIENT PARTICLES 
-        const particleCount = Math.floor((width * height) / 2500);
+        // AMBIENT PARTICLES - use responsive density
+        const particleDensity = getParticleDensity();
+        const particleCount = Math.floor((width * height) / particleDensity);
 
         for (let i = 0; i < particleCount; i++) {
             let x = 0, y = 0;
@@ -333,12 +344,16 @@ export function ParticleBackground({ isVisible }: ParticleBackgroundProps) {
         const rect = parent.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) return false;
 
+        // Update mobile detection
+        isMobileRef.current = getIsMobile();
+
         if (Math.abs(dimensionsRef.current.width - rect.width) < 1 &&
             Math.abs(dimensionsRef.current.height - rect.height) < 1) {
             return true;
         }
 
-        const dpr = window.devicePixelRatio || 1;
+        // Cap DPR on mobile for performance
+        const dpr = getDPRCap();
         const width = rect.width;
         const height = rect.height;
 
