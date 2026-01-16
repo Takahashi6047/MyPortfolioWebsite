@@ -36,6 +36,23 @@ export function MobileNavOverlay() {
     };
   }, [isOpen, setCursorText, setCursorVariant]);
 
+  // Lock body scroll when overlay is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
+    } else if (!isClosing) {
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+  }, [isOpen, isClosing]);
+
   const scrollToSection = (sectionId: string) => {
     if (sectionId === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -102,8 +119,8 @@ export function MobileNavOverlay() {
             mass: isClosing ? 1.5 : 1.2,
             delay: isClosing ? 0.6 : 0
           }}
-          className="fixed top-0 left-0 w-screen h-screen z-[9999999] bg-background"
-          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100vw', height: '100vh' }}
+          className="fixed top-0 left-0 w-screen z-[9999999] bg-background"
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, width: '100vw', height: '100dvh', minHeight: '-webkit-fill-available' }}
         >
           {/* Header */}
           <motion.div
