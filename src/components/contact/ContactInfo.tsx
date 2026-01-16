@@ -9,10 +9,10 @@ export function ContactInfo() {
     const isArtMode = theme === 'dark';
 
     const socials = [
-        { label: 'GITHUB', value: '@johnrobert', href: 'https://github.com/johnrobert' },
-        { label: 'LINKEDIN', value: 'in/johnrobert', href: 'https://linkedin.com/in/johnrobert' },
-        { label: 'TWITTER', value: '@johnrobert', href: 'https://twitter.com/johnrobert' },
-        { label: 'EMAIL', value: 'hello@example.com', href: 'mailto:hello@example.com' }
+        { label: 'GITHUB', value: '@Takahashi6047', href: 'https://github.com/Takahashi6047' },
+        { label: 'LINKEDIN', value: 'in/artcoded', href: 'https://linkedin.com/in/your-profile' },
+        { label: 'INSTAGRAM', value: '@artcodedddd', href: 'https://www.instagram.com/artcodedddd/' },
+        { label: 'EMAIL', value: 'hello@artcoded.com', href: 'mailto:hello@artcoded.com' }
     ];
 
     return (

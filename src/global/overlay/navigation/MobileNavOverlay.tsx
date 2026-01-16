@@ -263,6 +263,24 @@ export function MobileNavOverlay() {
               transition={{ delay: isClosing ? 0 : 0.7, duration: 0.3 }}
             >
               <motion.a
+                href="https://github.com/Takahashi6047"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground/60 hover:text-foreground transition-colors"
+                whileHover={{ y: -2 }}
+              >
+                GITHUB ↗
+              </motion.a>
+              <motion.a
+                href="https://linkedin.com/in/your-profile"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground/60 hover:text-foreground transition-colors"
+                whileHover={{ y: -2 }}
+              >
+                LINKEDIN ↗
+              </motion.a>
+              <motion.a
                 href="https://www.instagram.com/artcodedddd/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -272,20 +290,13 @@ export function MobileNavOverlay() {
                 INSTAGRAM ↗
               </motion.a>
               <motion.a
-                href="#"
-                className="text-foreground/60 hover:text-foreground transition-colors"
-                whileHover={{ y: -2 }}
-              >
-                LINKEDIN ↗
-              </motion.a>
-              <motion.a
-                href="https://www.facebook.com/profile.php?id=61583906544347"
+                href="mailto:hello@artcoded.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-foreground transition-colors"
                 whileHover={{ y: -2 }}
               >
-                FACEBOOK ↗
+                EMAIL ↗
               </motion.a>
             </motion.div>
           </motion.div>
