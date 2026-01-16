@@ -83,8 +83,8 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
                 animate={visibleElements.subtitle ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors duration-500 ${isArtMode ? 'bg-[var(--art-accent)] animate-pulse' : 'bg-neutral-500'}`} />
-                <span className={`text-[8px] sm:text-[10px] tracking-[0.2em] uppercase font-mono transition-colors duration-500 ${isArtMode ? 'text-[var(--art-accent)]' : 'text-neutral-500'}`}>
+                <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors duration-500 ${isArtMode ? 'bg-[var(--art-accent)] animate-pulse' : 'bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.6)]'}`} />
+                <span className={`text-[8px] sm:text-[10px] tracking-[0.2em] uppercase font-mono transition-colors duration-500 ${isArtMode ? 'text-[var(--art-accent)]' : 'text-blue-600 font-bold'}`}>
                   {isArtMode ? 'SYS.MODE: ARTISTRY' : 'SYS.MODE: DEVELOPMENT'}
                 </span>
               </motion.div>
@@ -104,7 +104,9 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
                     ART<span className="text-[var(--art-accent)]">CODED</span>
                   </>
                 ) : (
-                  'ARTCODED'
+                  <>
+                    ART<span className="text-transparent" style={{ WebkitTextStroke: '1px #E5E5E5' }}>CODED</span>
+                  </>
                 )}
               </motion.h1>
             </AnimatePresence>

@@ -97,8 +97,10 @@ export function Statement() {
                     </span>
                     <div className="flex flex-col gap-0 mt-2">
                         {content.leftSub.map((word, i) => (
-                            <span key={i} className={`block text-[4vw] md:text-[2vw] leading-[1] font-serif italic font-light tracking-wide opacity-60
-                                  ${isArtMode ? 'text-white' : 'text-neutral-800'}`}>
+                            <span key={i} className={`block leading-[1] tracking-wide opacity-60
+                                  ${isArtMode
+                                    ? 'text-[4vw] md:text-[2vw] font-serif italic font-light text-white'
+                                    : 'font-mono text-[3vw] md:text-[1.5vw] uppercase font-bold text-neutral-800 tracking-wider'}`}>
                                 {word}
                             </span>
                         ))}
@@ -152,8 +154,10 @@ export function Statement() {
                     </span>
                     <div className="flex flex-col gap-0 mt-2">
                         {content.rightSub.map((word, i) => (
-                            <span key={i} className={`block text-[4vw] md:text-[2vw] leading-[1] font-serif italic font-light tracking-wide opacity-60
-                                  ${isArtMode ? 'text-white' : 'text-neutral-800'}`}>
+                            <span key={i} className={`block leading-[1] tracking-wide opacity-60
+                                  ${isArtMode
+                                    ? 'text-[4vw] md:text-[2vw] font-serif italic font-light text-white'
+                                    : 'font-mono text-[3vw] md:text-[1.5vw] uppercase font-bold text-neutral-800 tracking-wider'}`}>
                                 {word}
                             </span>
                         ))}
