@@ -22,7 +22,29 @@ export function CustomCursor() {
   /* State to track if cursor is near the right edge */
   const [isNearRightEdge, setIsNearRightEdge] = useState(false);
 
+  /* Detect if device has a fine pointer (mouse) - disable cursor on touchscreens */
+  const [hasFinePointer, setHasFinePointer] = useState(true);
+
+  // Detect if the device has a fine pointer (mouse) vs coarse pointer (touch)
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(pointer: fine)');
+
+    // Set initial value
+    setHasFinePointer(mediaQuery.matches);
+
+    // Listen for changes (e.g., connecting/disconnecting mouse)
+    const handleChange = (e: MediaQueryListEvent) => {
+      setHasFinePointer(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  useEffect(() => {
+    // Don't add mouse listeners on touchscreen devices
+    if (!hasFinePointer) return;
+
     const updateMousePosition = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
@@ -43,7 +65,12 @@ export function CustomCursor() {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [cursorX, cursorY]);
+  }, [cursorX, cursorY, hasFinePointer]);
+
+  // Don't render custom cursor on touchscreen devices
+  if (!hasFinePointer) {
+    return null;
+  }
 
   return (
     <>
