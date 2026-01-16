@@ -35,9 +35,23 @@ export function Contact() {
 
             <div className="w-full relative z-10 flex-1 flex flex-col">
 
-                {/* TOP HEADER: Label */}
+                {/* TOP SECTION: Text + Portal side by side on tablet/desktop */}
                 <div className="relative pt-8 pb-0">
-                    <ProjectInquiry />
+                    {/* Grid layout for tablet+ */}
+                    <div className="flex flex-col tablet:flex-row tablet:items-start tablet:gap-8 lg:block">
+                        {/* Left side: LET'S BUILD FUTURE text */}
+                        <div className="tablet:flex-1 tablet:max-w-[55%] lg:max-w-none">
+                            <ProjectInquiry />
+                        </div>
+
+                        {/* Right side: THE PORTAL - Side by side on tablet, absolute on desktop */}
+                        <motion.div
+                            style={{ y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? portalY : 0 }}
+                            className="relative lg:absolute w-[50vw] xs:w-[55vw] tablet:w-[280px] mx-auto tablet:mx-0 lg:w-[320px] xl:w-[380px] mt-8 sm:mt-12 tablet:mt-0 lg:mt-0 lg:top-[10%] lg:right-[5%] z-20"
+                        >
+                            <AboutPortal />
+                        </motion.div>
+                    </div>
 
                     {/* ACTION DASHBOARD BAR */}
                     <div className={`mt-4 w-full border-t border-b overflow-hidden flex flex-col md:flex-row ${isArtMode ? 'border-white/20' : 'border-black/20'}`}>
@@ -70,15 +84,6 @@ export function Contact() {
                             <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 relative z-10 transition-transform duration-500 group-hover:-rotate-45" />
                         </motion.button>
                     </div>
-
-
-                    {/* THE PORTAL - Positioned cleanly on the right */}
-                    <motion.div
-                        style={{ y: typeof window !== 'undefined' && window.innerWidth >= 768 ? portalY : 0 }}
-                        className="relative md:absolute w-[50vw] xs:w-[55vw] sm:w-[60vw] mx-auto md:w-[320px] lg:w-[380px] mt-8 sm:mt-12 md:mt-0 md:top-[10%] md:right-[5%] z-20"
-                    >
-                        <AboutPortal />
-                    </motion.div>
                 </div>
 
                 {/* BOTTOM SECTION */}

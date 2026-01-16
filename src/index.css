@@ -241,3 +241,13 @@ a:focus-visible {
     font-size: 12vw !important;
   }
 }
+
+/* ============================================
+   TABLETS: 700px - 1023px
+   Text needs to be smaller since portal is beside it
+   ============================================ */
+@media screen and (min-width: 700px) and (max-width: 1023px) {
+  .hero-text-responsive {
+    font-size: 10vw !important;
+  }
+}
