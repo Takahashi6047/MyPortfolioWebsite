@@ -105,14 +105,14 @@ export function Contact() {
         <section
             id="contact"
             ref={containerRef}
-            className={`relative min-h-screen py-16 sm:py-24 px-4 sm:px-8 lg:px-8 flex flex-col justify-between ${isArtMode ? 'bg-[#050505] text-white' : 'bg-[#fafafa] text-black'} transition-colors duration-500 overflow-hidden`}
+            className={`relative min-h-screen py-16 sm:py-24 px-4 sm:px-8 lg:px-8 flex flex-col justify-between ${isArtMode ? 'bg-white text-black' : 'bg-black text-white'} transition-colors duration-500 overflow-hidden`}
         >
             {/* Animated Background */}
             <motion.div 
                 style={{ y: backgroundY }}
                 className="absolute inset-0 pointer-events-none z-0"
             >
-                <div className={`absolute inset-0 opacity-[0.03] ${isArtMode ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert'} mix-blend-overlay`} />
+                <div className={`absolute inset-0 opacity-[0.03] ${isArtMode ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]'} mix-blend-overlay`} />
             </motion.div>
 
             <motion.div 
@@ -147,12 +147,12 @@ export function Contact() {
 
                     {/* ACTION DASHBOARD BAR */}
                     <motion.div 
-                        className={`mt-4 w-full border-t border-b overflow-hidden flex flex-col md:flex-row ${isArtMode ? 'border-white/20' : 'border-black/20'}`}
+                        className={`mt-4 w-full border-t border-b overflow-hidden flex flex-col md:flex-row ${isArtMode ? 'border-black/30' : 'border-white/30'}`}
                         variants={itemVariants}
                     >
                         {/* Description / Context */}
-                        <div className={`flex-1 py-4 sm:py-6 md:py-8 md:pr-12 flex items-center ${isArtMode ? 'border-white/20' : 'border-black/20'} border-b md:border-b-0 md:border-r`}>
-                            <p className={`max-w-md text-xs sm:text-sm font-sans opacity-70 leading-relaxed pl-1 sm:pl-2 ${isArtMode ? 'text-white' : 'text-black'}`}>
+                        <div className={`flex-1 py-4 sm:py-6 md:py-8 md:pr-12 flex items-center ${isArtMode ? 'border-black/30' : 'border-white/30'} border-b md:border-b-0 md:border-r`}>
+                            <p className={`max-w-md text-xs sm:text-sm font-sans opacity-70 leading-relaxed pl-1 sm:pl-2 ${isArtMode ? 'text-black' : 'text-white'}`}>
                                 have an idea? let's discuss how we can bring it to life with precision and style.
                                 <span className="block mt-2 opacity-50 text-[10px] sm:text-xs font-mono uppercase">/// AWAITING INPUT</span>
                             </p>
@@ -169,11 +169,11 @@ export function Contact() {
                                 setCursorVariant("default");
                             }}
                             className={`group relative flex-none w-full md:w-[400px] flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6 md:py-0
-                            ${isArtMode ? 'text-white hover:text-black' : 'text-black hover:text-white'}`}
+                            ${isArtMode ? 'text-black hover:text-white' : 'text-white hover:text-black'}`}
                         >
                             {/* Fill Effect */}
                             <div className={`absolute inset-0 translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[0.22,1,0.36,1] z-0
-                                ${isArtMode ? 'bg-white' : 'bg-black'}`} />
+                                ${isArtMode ? 'bg-black' : 'bg-white'}`} />
 
                             <span className="relative z-10 text-base sm:text-xl md:text-2xl font-mono tracking-wider sm:tracking-widest uppercase font-bold">Start Project</span>
                             <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 relative z-10 transition-transform duration-500 group-hover:-rotate-45" />
@@ -190,7 +190,7 @@ export function Contact() {
                     <div className="w-full">
                         <ContactInfo />
 
-                        <div className={`mt-6 sm:mt-8 flex flex-col md:flex-row justify-between items-center text-[8px] sm:text-[10px] font-mono font-bold uppercase tracking-wider sm:tracking-widest text-center md:text-left gap-3 sm:gap-4 md:gap-0 ${isArtMode ? 'text-white/20' : 'text-black/20'}`}>
+                        <div className={`mt-6 sm:mt-8 flex flex-col md:flex-row justify-between items-center text-[8px] sm:text-[10px] font-mono font-bold uppercase tracking-wider sm:tracking-widest text-center md:text-left gap-3 sm:gap-4 md:gap-0 ${isArtMode ? 'text-black/30' : 'text-white/30'}`}>
                             <span>© 2025 ARTCODED INC.</span>
                             <span className="hidden md:block">///</span>
                             <span>ALL SYSTEMS OPERATIONAL</span>

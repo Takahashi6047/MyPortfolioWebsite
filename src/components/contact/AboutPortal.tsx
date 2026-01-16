@@ -42,14 +42,14 @@ export function AboutPortal() {
             {/* Header / Label */}
             <div className="flex justify-between items-end mb-4 sm:mb-6 px-1 sm:px-2">
                 <div className="flex flex-col gap-0.5 sm:gap-1">
-                    <span className={`text-[8px] sm:text-[10px] font-mono uppercase tracking-[0.15em] sm:tracking-[0.2em] ${isArtMode ? 'text-white/40' : 'text-black/40'}`}>
+                    <span className={`text-[8px] sm:text-[10px] font-mono uppercase tracking-[0.15em] sm:tracking-[0.2em] ${isArtMode ? 'text-black/40' : 'text-white/40'}`}>
                         Operator ID
                     </span>
                     <span className={`text-[10px] sm:text-xs font-bold font-mono uppercase tracking-wider sm:tracking-widest ${isArtMode ? 'text-[var(--art-accent)]' : 'text-blue-600'}`}>
                         #808-999
                     </span>
                 </div>
-                <Scan className={`w-3 h-3 sm:w-4 sm:h-4 ${isArtMode ? 'text-white/30' : 'text-black/30'}`} />
+                <Scan className={`w-3 h-3 sm:w-4 sm:h-4 ${isArtMode ? 'text-black/30' : 'text-white/30'}`} />
             </div>
 
             {/* The Portal Card with 3D Tilt */}
@@ -64,8 +64,8 @@ export function AboutPortal() {
                 className="relative w-full aspect-[4/5] md:aspect-[3/4] group cursor-none"
             >
                 {/* Card Container */}
-                <div className={`absolute inset-0 border border-t transition-colors duration-500 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 
-                    ${isArtMode ? 'border-white/10 bg-white/5' : 'border-black/10 bg-black/5'}`}>
+                <div className="absolute inset-0 border border-t transition-colors duration-500 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 
+                    border-white/10 bg-white/5">
 
                     {/* The Image (Placeholder) */}
                     <div className="absolute inset-[1px] overflow-hidden">
@@ -87,11 +87,11 @@ export function AboutPortal() {
                     <div className="absolute inset-2 sm:inset-4 pointer-events-none z-20 flex flex-col justify-between" style={{ transform: "translateZ(30px)" }}>
                         <div className="flex justify-between items-start">
                             <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 border ${isArtMode ? 'border-[var(--art-accent)] bg-[var(--art-accent)]' : 'border-blue-600 bg-blue-600'}`} />
-                            <ArrowUpRight className={`w-6 h-6 sm:w-8 sm:h-8 ${isArtMode ? 'text-white opacity-0 group-hover:opacity-100' : 'text-black opacity-0 group-hover:opacity-100'} transition-opacity duration-300`} />
+                            <ArrowUpRight className={`w-6 h-6 sm:w-8 sm:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                         </div>
 
                         <div className="space-y-1 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                            <h3 className={`text-2xl sm:text-4xl font-bold font-sans tracking-tight leading-none ${isArtMode ? 'text-white' : 'text-white mix-blend-difference'}`}>
+                            <h3 className="text-2xl sm:text-4xl font-bold font-sans tracking-tight leading-none text-white">
                                 JOHN
                                 <br />
                                 ROBERT
@@ -106,11 +106,11 @@ export function AboutPortal() {
                     {/* Animated Corners */}
                     <div className="absolute inset-0 pointer-events-none z-30">
                         {/* Top Left */}
-                        <div className={`absolute top-0 left-0 w-10 sm:w-16 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
-                        <div className={`absolute top-0 left-0 w-[1px] h-10 sm:h-16 ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
+                        <div className="absolute top-0 left-0 w-10 sm:w-16 h-[1px] bg-white/30" />
+                        <div className="absolute top-0 left-0 w-[1px] h-10 sm:h-16 bg-white/30" />
                         {/* Bottom Right */}
-                        <div className={`absolute bottom-0 right-0 w-10 sm:w-16 h-[1px] ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
-                        <div className={`absolute bottom-0 right-0 w-[1px] h-10 sm:h-16 ${isArtMode ? 'bg-white/30' : 'bg-black/30'}`} />
+                        <div className="absolute bottom-0 right-0 w-10 sm:w-16 h-[1px] bg-white/30" />
+                        <div className="absolute bottom-0 right-0 w-[1px] h-10 sm:h-16 bg-white/30" />
                     </div>
                 </div>
             </motion.div>

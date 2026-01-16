@@ -98,7 +98,7 @@ export function ArtModal({ isOpen, onClose, artPiece }: ArtModalProps) {
                         initial="hidden"
                         animate="visible"
                         exit="exit"
-                        className="relative w-full max-w-5xl max-h-[90vh] bg-[#1a1a1a]/95 border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+                        className="relative w-full max-w-5xl lg:max-w-6xl xl:max-w-7xl max-h-[90vh] bg-[#1a1a1a]/95 border border-white/10 shadow-2xl overflow-hidden flex flex-col"
                         style={{ maxHeight: 'calc(100vh - 2rem)' }}
                     >
                         {/* Decorative elements - hidden on mobile for performance */}
@@ -128,7 +128,7 @@ export function ArtModal({ isOpen, onClose, artPiece }: ArtModalProps) {
                                 <img
                                     src={artPiece.image}
                                     alt={artPiece.title}
-                                    className="max-w-full max-h-[40vh] lg:max-h-[70vh] w-auto h-auto object-contain select-none"
+                                    className="max-w-full max-h-[40vh] lg:max-h-[80vh] w-auto h-auto object-contain select-none"
                                     loading="eager"
                                 />
 

@@ -81,11 +81,11 @@ export function TransitionMarquee() {
     const { theme } = useTheme();
 
     return (
-        <section className={`py-20 sm:py-32 md:py-48 overflow-hidden w-full relative flex items-center justify-center
-            ${theme === 'dark' ? 'bg-[#050505]' : 'bg-[#fafafa]'}`}>
+        <section className={`pt-8 sm:pt-12 md:pt-16 pb-16 sm:pb-24 md:pb-32 overflow-hidden w-full relative flex items-center justify-center
+            ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fafafa]'}`}>
 
-            <div className={`absolute inset-0 opacity-[0.03] pointer-events-none 
-                ${theme === 'dark' ? 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")]' : 'bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert'}`}
+            <div className={`absolute inset-0 pointer-events-none 
+                ${theme === 'dark' ? 'hidden' : 'opacity-[0.03] bg-[url("https://grainy-gradients.vercel.app/noise.svg")] invert'}`}
             />
 
             <div className="relative w-full flex flex-col items-center justify-center">

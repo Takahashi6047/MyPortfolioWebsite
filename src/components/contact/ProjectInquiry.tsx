@@ -1,9 +1,18 @@
 import { motion } from 'framer-motion';
 import { useTheme } from '../../global/overlay/themeOverlay/RippleContext';
+import { useState, useEffect } from 'react';
 
 export function ProjectInquiry() {
     const { theme } = useTheme();
     const isArtMode = theme === 'dark';
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // Massive Text Stagger
     const textVariants = {
@@ -17,7 +26,7 @@ export function ProjectInquiry() {
     return (
         <div className="w-full flex flex-col justify-center relative z-0 pointer-events-none select-none">
             {/* Row 1 - Top Decorative Line */}
-            <div className={`w-full h-[1px] ${isArtMode ? 'bg-white/10' : 'bg-black/10'} mb-8`} />
+            <div className={`w-full h-[1px] ${isArtMode ? 'bg-black/10' : 'bg-white/10'} mb-8`} />
 
             <div className="relative w-full">
                 {/* Decorative Label */}
@@ -36,7 +45,7 @@ export function ProjectInquiry() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-white' : 'text-black'}`}
+                        className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-black' : 'text-white'}`}
                     >
                         LET'S
                     </motion.h2>
@@ -54,8 +63,8 @@ export function ProjectInquiry() {
                     className="hero-text-responsive font-bold tracking-tighter uppercase italic text-transparent"
                     style={{
                         WebkitTextStroke: isArtMode
-                            ? '1px rgba(255,255,255,0.3)'
-                            : '2px rgba(0,0,0,0.7)',
+                            ? `${isMobile ? '1.5px' : '3px'} rgba(0,0,0,0.8)`
+                            : `${isMobile ? '1.5px' : '3px'} rgba(255,255,255,0.6)`,
                     }}
                 >
                     BUILD

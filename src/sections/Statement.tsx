@@ -84,14 +84,14 @@ export function Statement() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="relative w-full max-w-[1600px] px-4 md:px-12 grid grid-cols-1 md:grid-cols-12 items-center z-10">
+            <div className="relative w-full max-w-[1600px] px-4 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-y-4 tablet:gap-x-8 md:gap-x-0 items-center z-10">
 
                 {/* LEFT TYPOGRAPHY */}
                 <motion.div
                     style={{ y: yText, willChange: 'transform' }}
-                    className="flex md:col-span-4 flex-col items-center md:items-end text-center md:text-right justify-center relative z-20 mb-8 md:mb-0"
+                    className="flex md:col-span-4 flex-col items-center md:items-end text-center md:text-right justify-center relative z-20 mb-8 md:mb-0 md:pr-4 lg:pr-0"
                 >
-                    <span className={`block text-[15vw] md:text-[8vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
+                    <span className={`block text-[15vw] md:text-[7vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
                          ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
                         {content.leftMain}
                     </span>
@@ -113,7 +113,7 @@ export function Statement() {
                             scale: scaleImage,
                             willChange: 'transform'
                         }}
-                        className="relative w-[75vw] md:w-full max-w-[280px] md:max-w-[340px] h-full rounded-full overflow-hidden shadow-2xl"
+                        className="relative w-[75vw] md:w-[220px] lg:w-full max-w-[280px] md:max-w-[220px] lg:max-w-[340px] h-full rounded-full overflow-hidden shadow-2xl"
                     >
                         {/* Image */}
                         <div className="absolute inset-0 bg-neutral-200">
@@ -144,9 +144,9 @@ export function Statement() {
                 {/* RIGHT TYPOGRAPHY */}
                 <motion.div
                     style={{ y: yText, willChange: 'transform' }}
-                    className="flex md:col-span-4 flex-col items-center md:items-start text-center md:text-left justify-center relative z-20 mt-8 md:mt-0"
+                    className="flex md:col-span-4 flex-col items-center md:items-start text-center md:text-left justify-center relative z-20 mt-8 md:mt-0 md:pl-4 lg:pl-0"
                 >
-                    <span className={`block text-[15vw] md:text-[8vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
+                    <span className={`block text-[15vw] md:text-[7vw] lg:text-[7vw] leading-[0.8] font-black tracking-[-0.05em] uppercase 
                          ${isArtMode ? 'text-white' : 'text-neutral-900'}`}>
                         {content.rightMain}
                     </span>
@@ -162,12 +162,12 @@ export function Statement() {
             </div>
 
             {/* Side Vertical Decor */}
-            <div className={`hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
+            <div className={`hidden md:block absolute left-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
                 <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
                     System Architecture
                 </span>
             </div>
-            <div className={`hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
+            <div className={`hidden md:block absolute right-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'mix-blend-overlay opacity-100' : 'opacity-40'}`}>
                 <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
                     Visual Narrative
                 </span>
