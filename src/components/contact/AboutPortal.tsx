@@ -72,8 +72,7 @@ export function AboutPortal() {
                         <img
                             src="/assets/Formalphoto.jpg"
                             alt="Profile"
-                            className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 
-                                ${isArtMode ? 'grayscale contrast-125 brightness-90 group-hover:grayscale-0' : 'grayscale transition-all hover:grayscale-0'}`}
+                            className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110`}
                         />
 
                         {/* Digital Scanline / Glitch Overlay (Art Mode) */}

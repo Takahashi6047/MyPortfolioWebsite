@@ -123,8 +123,7 @@ export function Statement() {
                             <img
                                 src="/assets/Formalphoto.jpg"
                                 alt="Profile"
-                                className={`w-full h-full object-cover transition-all duration-700
-                                    ${isArtMode ? 'grayscale contrast-125 brightness-75' : 'grayscale-0'}`}
+                                className="w-full h-full object-cover transition-all duration-700"
                             />
                         </div>
 

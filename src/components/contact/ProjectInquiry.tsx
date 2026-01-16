@@ -51,7 +51,7 @@ export function ProjectInquiry() {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className={`hero-text-responsive font-bold tracking-tighter uppercase italic ${isArtMode ? 'text-white/30' : 'text-black/20'}`}
+                    className="hero-text-responsive font-bold tracking-tighter uppercase italic text-transparent"
                     style={{
                         WebkitTextStroke: isArtMode
                             ? '1px rgba(255,255,255,0.3)'
