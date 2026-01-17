@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Layout } from './components/Layout'
 import { Hero } from './sections/Hero'
+import { Services } from './sections/Services'
 import { Works } from './sections/Works'
 import { DigitalArtistry } from './sections/DigitalArtistry'
 import { Contact } from './sections/Contact'
@@ -21,6 +22,7 @@ function Content() {
       <Layout>
         <Hero isLoadingComplete={isLoadingComplete} />
         <Statement />
+        <Services />
         {theme === 'light' ? <Works /> : <DigitalArtistry />}
         <TransitionMarquee />
         <Contact />
