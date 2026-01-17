@@ -10,8 +10,7 @@ import {
 } from "framer-motion";
 import { useTheme } from "../global/overlay/themeOverlay/RippleContext";
 
-// Check if device is mobile
-const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+
 
 const wrap = (min: number, max: number, v: number) => {
     const rangeSize = max - min;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTheme } from '../global/overlay/themeOverlay/RippleContext';
 import { ArrowUpRight } from 'lucide-react';
 
