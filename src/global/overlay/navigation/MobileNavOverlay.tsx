@@ -298,6 +298,15 @@ export function MobileNavOverlay() {
               >
                 EMAIL ↗
               </motion.a>
+              <motion.a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground/60 hover:text-foreground transition-colors"
+                whileHover={{ y: -2 }}
+              >
+                RESUME ⬇
+              </motion.a>
             </motion.div>
           </motion.div>
         </motion.div>

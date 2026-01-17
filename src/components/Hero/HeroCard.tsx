@@ -27,7 +27,7 @@ export function HeroCard() {
             </div>
             <span className={`text-[6px] sm:text-[8px] transition-colors duration-500 ${isArtMode ? 'text-black/50' : 'text-white/50'}`}>FE</span>
           </div>
-          
+
           {/* Backend skill */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
@@ -35,7 +35,7 @@ export function HeroCard() {
             </div>
             <span className={`text-[6px] sm:text-[8px] transition-colors duration-500 ${isArtMode ? 'text-black/50' : 'text-white/50'}`}>BE</span>
           </div>
-          
+
           {/* Design skill */}
           <div className="flex flex-col items-center gap-0.5">
             <div className="w-1 sm:w-1.5 h-3 sm:h-4 bg-white/20 rounded-full overflow-hidden">
@@ -45,7 +45,7 @@ export function HeroCard() {
           </div>
         </div>
         <span className={`text-[8px] sm:text-xs transition-colors duration-500 ${isArtMode ? 'text-black/70' : 'text-white/70'}`}>
-          {isArtMode ? 'Digital artist' : 'Passionate developer'}
+          {isArtMode ? 'Digital artist' : 'Full-Stack Engineer'}
         </span>
       </div>
 
