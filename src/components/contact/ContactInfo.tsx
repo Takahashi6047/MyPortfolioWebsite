@@ -10,9 +10,9 @@ export function ContactInfo() {
 
     const socials = [
         { label: 'GITHUB', value: '@Takahashi6047', href: 'https://github.com/Takahashi6047' },
-        { label: 'LINKEDIN', value: 'in/artcoded', href: 'https://linkedin.com/in/your-profile' },
+        { label: 'LINKEDIN', value: 'in/artcoded', href: 'https://www.linkedin.com/in/john-robert-adlawan-6187443a6' },
         { label: 'INSTAGRAM', value: '@artcodedddd', href: 'https://www.instagram.com/artcodedddd/' },
-        { label: 'EMAIL', value: 'hello@artcoded.com', href: 'mailto:hello@artcoded.com' }
+        { label: 'EMAIL', value: 'hello.artcoded@gmail.com', href: 'mailto:hello.artcoded@gmail.com' }
     ];
 
     return (

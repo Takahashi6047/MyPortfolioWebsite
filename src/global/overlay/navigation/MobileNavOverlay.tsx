@@ -272,7 +272,7 @@ export function MobileNavOverlay() {
                 GITHUB ↗
               </motion.a>
               <motion.a
-                href="https://linkedin.com/in/your-profile"
+                href="https://www.linkedin.com/in/john-robert-adlawan-6187443a6"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-foreground transition-colors"
@@ -290,7 +290,7 @@ export function MobileNavOverlay() {
                 INSTAGRAM ↗
               </motion.a>
               <motion.a
-                href="mailto:hello@artcoded.com"
+                href="mailto:hello.artcoded@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-foreground/60 hover:text-foreground transition-colors"

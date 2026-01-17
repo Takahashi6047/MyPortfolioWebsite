@@ -166,13 +166,13 @@ export function Statement() {
             </div>
 
             {/* Side Vertical Decor */}
-            <div className={`hidden md:block absolute left-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'opacity-80' : 'opacity-40'}`}>
-                <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
+            <div className={`hidden lg:block absolute left-4 xl:left-8 top-1/2 -translate-y-1/2 z-30 ${isArtMode ? 'opacity-60' : 'opacity-50'}`}>
+                <span className={`block text-[10px] font-mono tracking-[0.3em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
                     System Architecture
                 </span>
             </div>
-            <div className={`hidden md:block absolute right-8 top-1/2 -translate-y-1/2 ${isArtMode ? 'opacity-80' : 'opacity-40'}`}>
-                <span className={`block text-[10px] font-mono tracking-[0.5em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl' }}>
+            <div className={`hidden lg:block absolute right-4 xl:right-8 top-1/2 -translate-y-1/2 z-30 ${isArtMode ? 'opacity-60' : 'opacity-50'}`}>
+                <span className={`block text-[10px] font-mono tracking-[0.3em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
                     Visual Narrative
                 </span>
             </div>
