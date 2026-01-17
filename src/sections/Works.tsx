@@ -60,7 +60,7 @@ export function Works() {
             onMouseMove={handleMouseMove}
             className="relative bg-background text-foreground"
         >
-            <div className="block lg:hidden py-10 px-4 relative overflow-hidden">
+            <div className="block lg:hidden py-10 px-4 sm:px-8 relative overflow-hidden">
 
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div
@@ -153,7 +153,7 @@ export function Works() {
                     <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
                 </div>
 
-                <div className="w-1/2 h-screen sticky top-0 flex flex-col justify-center px-12 md:px-20 py-20 bg-transparent z-10">
+                <div className="w-1/2 h-screen sticky top-0 flex flex-col justify-center px-8 lg:px-8 py-20 bg-transparent z-10">
 
                     <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
                         <div

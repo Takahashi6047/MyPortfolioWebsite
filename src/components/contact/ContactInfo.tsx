@@ -3,6 +3,9 @@ import { ArrowUpRight } from 'lucide-react';
 import { useTheme } from '../../global/overlay/themeOverlay/RippleContext';
 import { useCursor } from '../../global/cursor';
 
+// Check if device is mobile
+const isMobile = typeof window !== 'undefined' && (window.innerWidth < 768 || 'ontouchstart' in window);
+
 export function ContactInfo() {
     const { theme } = useTheme();
     const { setCursorText, setCursorVariant } = useCursor();
@@ -15,6 +18,20 @@ export function ContactInfo() {
         { label: 'EMAIL', value: 'hello.artcoded@gmail.com', href: 'mailto:hello.artcoded@gmail.com' }
     ];
 
+    const handleMouseEnter = () => {
+        if (!isMobile) {
+            setCursorText("VISIT");
+            setCursorVariant("text");
+        }
+    };
+
+    const handleMouseLeave = () => {
+        if (!isMobile) {
+            setCursorText("");
+            setCursorVariant("default");
+        }
+    };
+
     return (
         <div className={`grid grid-cols-2 md:grid-cols-4 w-full border-t border-b ${isArtMode ? 'border-white/30' : 'border-black/30'}`}>
             {socials.map((item, index) => (
@@ -23,35 +40,39 @@ export function ContactInfo() {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onMouseEnter={() => {
-                        setCursorText("VISIT");
-                        setCursorVariant("text");
-                    }}
-                    onMouseLeave={() => {
-                        setCursorText("");
-                        setCursorVariant("default");
-                    }}
-                    className={`group relative flex flex-col justify-between p-4 sm:p-6 md:p-8 md:border-r md:last:border-r-0 overflow-hidden transition-colors duration-300
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    className={`group relative flex flex-col justify-between p-4 sm:p-6 md:p-8 md:border-r md:last:border-r-0 overflow-hidden will-change-transform
                     ${index < 2 ? 'border-b md:border-b-0' : ''}
-                    ${isArtMode ? 'border-white/30 text-white' : 'border-black/30 text-black'}`}
+                    ${isArtMode ? 'border-white/30 text-white' : 'border-black/30 text-black'}
+                    ${isMobile ? 'active:scale-95' : 'transition-colors duration-300'}`}
                 >
-                    {/* Hover Fill Effect */}
-                    <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.22,1,0.36,1] z-0
-                        ${isArtMode ? 'bg-white' : 'bg-black'}`} />
+                    {/* Hover Fill Effect - Disabled on mobile for performance */}
+                    {!isMobile && (
+                        <div className={`absolute inset-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.22,1,0.36,1] z-0
+                            ${isArtMode ? 'bg-white' : 'bg-black'}`} />
+                    )}
 
                     <div className="relative z-10 flex justify-between items-start mb-3 sm:mb-4">
-                        <span className={`text-[9px] sm:text-[10px] font-mono opacity-50 transition-colors duration-300 ${isArtMode ? 'group-hover:text-black' : 'group-hover:text-white'}`}>
+                        <span className={`text-[9px] sm:text-[10px] font-mono opacity-50 
+                            ${isMobile ? '' : 'transition-colors duration-300'}
+                            ${isArtMode ? (isMobile ? '' : 'group-hover:text-black') : (isMobile ? '' : 'group-hover:text-white')}`}>
                             0{index + 1}
                         </span>
-                        <ArrowUpRight className={`w-3 h-3 sm:w-4 sm:h-4 transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 
-                            ${isArtMode ? 'group-hover:text-black' : 'group-hover:text-white'}`} />
+                        <ArrowUpRight className={`w-3 h-3 sm:w-4 sm:h-4 
+                            ${isMobile ? '' : 'transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1'}
+                            ${isArtMode ? (isMobile ? '' : 'group-hover:text-black') : (isMobile ? '' : 'group-hover:text-white')}`} />
                     </div>
 
                     <div className="relative z-10">
-                        <span className={`block text-[10px] sm:text-xs font-bold tracking-wider sm:tracking-widest uppercase transition-colors duration-300 ${isArtMode ? 'group-hover:text-black' : 'group-hover:text-white'}`}>
+                        <span className={`block text-[10px] sm:text-xs font-bold tracking-wider sm:tracking-widest uppercase 
+                            ${isMobile ? '' : 'transition-colors duration-300'}
+                            ${isArtMode ? (isMobile ? '' : 'group-hover:text-black') : (isMobile ? '' : 'group-hover:text-white')}`}>
                             {item.label}
                         </span>
-                        <span className={`block text-[8px] sm:text-[10px] font-mono mt-1 opacity-50 transition-colors duration-300 truncate ${isArtMode ? 'group-hover:text-black' : 'group-hover:text-white'}`}>
+                        <span className={`block text-[8px] sm:text-[10px] font-mono mt-1 opacity-50 truncate 
+                            ${isMobile ? '' : 'transition-colors duration-300'}
+                            ${isArtMode ? (isMobile ? '' : 'group-hover:text-black') : (isMobile ? '' : 'group-hover:text-white')}`}>
                             {item.value}
                         </span>
                     </div>

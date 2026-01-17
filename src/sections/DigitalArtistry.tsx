@@ -112,7 +112,7 @@ export function DigitalArtistry() {
         <section
             id="artistry"
             ref={sectionRef}
-            className="relative min-h-screen py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 bg-black overflow-hidden font-mono md:-mt-16"
+            className="relative min-h-screen py-16 sm:py-24 lg:py-32 px-4 sm:px-8 lg:px-8 bg-black overflow-hidden font-mono md:-mt-16"
         >
 
 
