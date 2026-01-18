@@ -75,7 +75,7 @@ export function Contact() {
         <section
             id="contact"
             ref={containerRef}
-            className={`relative w-full py-12 sm:pt-20 px-4 sm:px-8 lg:px-12 flex flex-col ${isArtMode ? 'bg-white text-black' : 'bg-black text-white'} transition-colors duration-500 overflow-hidden`}
+            className={`relative w-full py-8 sm:py-12 sm:pt-20 px-4 sm:px-8 lg:px-12 flex flex-col ${isArtMode ? 'bg-white text-black' : 'bg-black text-white'} transition-colors duration-500 overflow-hidden`}
         >
             {/* Animated Background */}
             <motion.div
@@ -94,7 +94,7 @@ export function Contact() {
                 animate={isInView ? "visible" : "exit"}
             >
                 {/* Main Content Container */}
-                <div className="relative w-full max-w-[1800px] mx-auto flex flex-col gap-8 md:gap-12">
+                <div className="relative w-full max-w-[1800px] mx-auto flex flex-col gap-6 sm:gap-8 md:gap-12">
 
                     {/* TOP: BRANDING TEXT (Full Width) */}
                     <motion.div
@@ -106,7 +106,7 @@ export function Contact() {
 
                     {/* MIDDLE: CTA (Minimal and Editorial) */}
                     <motion.div
-                        className="w-full flex justify-center mt-12 md:mt-16"
+                        className="w-full flex justify-center mt-8 sm:mt-12 md:mt-16"
                         variants={itemVariants}
                     >
                         <button
@@ -119,20 +119,20 @@ export function Contact() {
                                 setCursorText("");
                                 setCursorVariant("default");
                             }}
-                            className={`group relative flex items-center gap-4 text-sm sm:text-base font-mono tracking-[0.3em] uppercase transition-all duration-300 ${isArtMode ? 'text-black' : 'text-white'}`}
+                            className={`group relative flex items-center gap-3 sm:gap-4 text-xs sm:text-sm md:text-base font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase transition-all duration-300 ${isArtMode ? 'text-black' : 'text-white'}`}
                         >
                             {/* Animated line before text */}
-                            <div className={`h-[1px] w-12 transition-all duration-500 ease-out group-hover:w-24 ${isArtMode ? 'bg-yellow-600' : 'bg-blue-400'}`} />
+                            <div className={`h-[1px] w-8 sm:w-12 transition-all duration-500 ease-out group-hover:w-16 sm:group-hover:w-24 ${isArtMode ? 'bg-yellow-600' : 'bg-blue-400'}`} />
                             
-                            <span className={`transition-colors duration-300 ${isArtMode ? 'group-hover:text-yellow-600' : 'group-hover:text-blue-400'}`}>
+                            <span className={`transition-colors duration-300 whitespace-nowrap ${isArtMode ? 'group-hover:text-yellow-600' : 'group-hover:text-blue-400'}`}>
                                 Start a Project
                             </span>
                             
                             {/* Arrow with slide animation */}
-                            <ArrowRight className={`w-5 h-5 transition-all duration-300 group-hover:translate-x-2 ${isArtMode ? 'group-hover:text-yellow-600' : 'group-hover:text-blue-400'}`} />
+                            <ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300 group-hover:translate-x-2 ${isArtMode ? 'group-hover:text-yellow-600' : 'group-hover:text-blue-400'}`} />
                             
                             {/* Animated line after text */}
-                            <div className={`h-[1px] w-12 transition-all duration-500 ease-out group-hover:w-24 ${isArtMode ? 'bg-yellow-600' : 'bg-blue-400'}`} />
+                            <div className={`h-[1px] w-8 sm:w-12 transition-all duration-500 ease-out group-hover:w-16 sm:group-hover:w-24 ${isArtMode ? 'bg-yellow-600' : 'bg-blue-400'}`} />
                         </button>
                     </motion.div>
                 </div>
@@ -141,20 +141,20 @@ export function Contact() {
             {/* BOTTOM SECTION: Footer Data (Socials & Copyright) */}
             <motion.div
                 style={{ y }}
-                className="w-full relative z-10 mt-16 md:mt-24 pb-4 max-w-[1800px] mx-auto"
+                className="w-full relative z-10 mt-12 sm:mt-16 md:mt-24 pb-4 sm:pb-6 max-w-[1800px] mx-auto"
                 variants={itemVariants}
             >
                 <div className="w-full">
                     <ContactInfo />
 
-                    <div className={`mt-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-mono font-bold uppercase tracking-widest gap-4 md:gap-0 ${isArtMode ? 'text-black/40' : 'text-white/40'}`}>
-                        <div className="flex flex-col md:flex-row gap-2 md:gap-8 text-center md:text-left">
+                    <div className={`mt-6 sm:mt-8 flex flex-col md:flex-row justify-between items-center text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-wider sm:tracking-widest gap-3 sm:gap-4 md:gap-0 ${isArtMode ? 'text-black/40' : 'text-white/40'}`}>
+                        <div className="flex flex-row items-center gap-2 md:gap-8 text-center md:text-left whitespace-nowrap">
                             <span>© 2026 ARTCODED INC.</span>
-                            <span className={`hidden md:block ${isArtMode ? 'text-yellow-600/50' : 'text-blue-400/50'}`}>///</span>
+                            <span className={`${isArtMode ? 'text-yellow-600/50' : 'text-blue-400/50'}`}>///</span>
                             <span>ALL RIGHTS RESERVED</span>
                         </div>
 
-                        <span className={`${isArtMode ? 'text-yellow-600/60' : 'text-blue-400/60'}`}>/// SYSTEM OPERATIONAL</span>
+                        <span className={`${isArtMode ? 'text-yellow-600/60' : 'text-blue-400/60'} whitespace-nowrap`}>/// SYSTEM OPERATIONAL</span>
                     </div>
                 </div>
             </motion.div>
