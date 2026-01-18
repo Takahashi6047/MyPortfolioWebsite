@@ -63,9 +63,22 @@ export function TransitionMarquee() {
         };
 
         const resize = () => {
-            canvas.width = container.offsetWidth;
-            canvas.height = container.offsetHeight;
-            initParticles(canvas.width);
+            const dpr = window.devicePixelRatio || 1;
+            const rect = container.getBoundingClientRect();
+
+            // Set canvas size accounting for device pixel ratio
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+
+            // Set CSS size to actual display size
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+
+            // Scale context to match DPR
+            ctx.scale(dpr, dpr);
+
+            // Initialize particles using CSS width (not scaled width)
+            initParticles(rect.width);
         };
 
         window.addEventListener("resize", resize);
@@ -74,8 +87,9 @@ export function TransitionMarquee() {
         const render = () => {
             time += 0.02;
 
-            const width = canvas.width;
-            const height = canvas.height;
+            // Use CSS dimensions for calculations, not canvas dimensions
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
             const centerY = height / 2;
 
             ctx.clearRect(0, 0, width, height);
