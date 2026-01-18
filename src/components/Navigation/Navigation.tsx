@@ -54,7 +54,7 @@ export function Navigation() {
       setShowSideNav(window.scrollY > 50);
 
       // Track active section
-      const sections = ['home', isArtMode ? 'artistry' : 'works', 'contact'];
+      const sections = ['home', 'services', isArtMode ? 'artistry' : 'works', 'contact'];
       const scrollPosition = window.scrollY + window.innerHeight / 3;
 
       for (const sectionId of sections) {
@@ -128,6 +128,7 @@ export function Navigation() {
           >
             {[
               { label: 'Home', href: '#home', id: 'home' },
+              { label: 'Services', href: '#services', id: 'services' },
               { label: isArtMode ? 'Artistry' : 'Works', href: isArtMode ? '#artistry' : '#works', id: isArtMode ? 'artistry' : 'works' },
               { label: 'Contact Me', href: '#contact', id: 'contact' }
             ].map((item, index) => {

@@ -60,7 +60,7 @@ export function MobileNavOverlay() {
     }
     const element = document.getElementById(sectionId);
     if (element) {
-      const navHeight = -70; // approximate nav height
+      const navHeight = -60; // approximate nav height
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
         top: elementPosition - navHeight,
@@ -78,6 +78,12 @@ export function MobileNavOverlay() {
       cursorText: 'Take me home! '
     },
     {
+      label: 'SERVICES',
+      href: '#services',
+      sectionId: 'services',
+      cursorText: 'Check out my services',
+    },
+    {
       label: 'WORKS',
       href: isArtistryMode ? '#artistry' : '#works',
       sectionId: isArtistryMode ? 'artistry' : 'works',
@@ -87,7 +93,7 @@ export function MobileNavOverlay() {
       label: 'CONTACT',
       href: '#contact',
       sectionId: 'contact',
-      cursorText: 'Let\'s chat! '
+      cursorText: "Let's chat! "
     }
   ];
 
