@@ -35,7 +35,7 @@ export function Services() {
     return (
         <section id="services" className={`relative py-20 px-4 sm:px-8 lg:px-8 transition-colors duration-500 overflow-hidden ${isArtMode ? 'bg-black text-white' : 'bg-neutral-50 text-neutral-900'}`}>
 
-            <div className="max-w-[1600px] mx-auto relative z-10">
+            <div className="w-full mx-auto relative z-10">
                 {/* Section Header - Editorial Style */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}

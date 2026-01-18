@@ -65,8 +65,8 @@ export function Contact() {
         },
         exit: {
             opacity: 0,
-            y: -30,
-            scale: 0.98,
+            y: 60, // Reset to bottom position so it slides up again on re-entry
+            scale: 0.95,
             transition: {
                 duration: 0.4,
                 ease: [0.4, 0, 1, 1] as const
@@ -92,8 +92,8 @@ export function Contact() {
         },
         exit: {
             opacity: 0,
-            x: 50,
-            rotateY: 10,
+            x: 100,
+            rotateY: -15,
             transition: {
                 duration: 0.5,
                 ease: [0.4, 0, 1, 1] as const

@@ -14,12 +14,17 @@ export function ProjectInquiry() {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Massive Text Stagger
+    // Standard Entrance Animation (Masked Reveal)
+    // Runs once when entering viewport
     const textVariants = {
         hidden: { y: '100%' },
         visible: (i: number) => ({
             y: 0,
-            transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as const, delay: i * 0.1 }
+            transition: {
+                duration: 1.2,
+                ease: [0.22, 1, 0.36, 1] as const,
+                delay: i * 0.15
+            }
         })
     };
 
@@ -38,13 +43,13 @@ export function ProjectInquiry() {
                 </div>
 
                 {/* TEXT LINE 1 - "LET'S" */}
-                <div className="leading-[0.9]">
+                <div className="leading-[0.9] overflow-hidden">
                     <motion.h2
                         custom={0}
                         variants={textVariants}
                         initial="hidden"
                         whileInView="visible"
-                        viewport={{ once: true }}
+                        viewport={{ once: true, margin: "-10%" }}
                         className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-white' : 'text-black'}`}
                     >
                         LET'S
@@ -53,32 +58,34 @@ export function ProjectInquiry() {
             </div>
 
             {/* TEXT LINE 2 - "BUILD" */}
-            <div className="leading-[0.9] relative">
+            <div className="leading-[0.9] relative overflow-hidden">
                 <motion.h2
                     custom={1}
                     variants={textVariants}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true }}
+                    viewport={{ once: true, margin: "-10%" }}
                     className="hero-text-responsive font-bold tracking-tighter uppercase italic text-transparent"
-                    style={{
+                >
+                    <span style={{
                         WebkitTextStroke: isArtMode
                             ? `${isMobile ? '1.5px' : '3px'} rgba(255,255,255,0.6)`
                             : `${isMobile ? '1.5px' : '3px'} rgba(0,0,0,0.8)`,
-                    }}
-                >
-                    BUILD
+                        color: 'transparent'
+                    }}>
+                        BUILD
+                    </span>
                 </motion.h2>
             </div>
 
             {/* TEXT LINE 3 - "FUTURE" */}
-            <div className="leading-[0.9] relative z-10">
+            <div className="leading-[0.9] relative z-10 overflow-hidden">
                 <motion.h2
                     custom={2}
                     variants={textVariants}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true }}
+                    viewport={{ once: true, margin: "-10%" }}
                     className={`hero-text-responsive font-bold tracking-tighter uppercase ${isArtMode ? 'text-[var(--art-accent)]' : 'text-blue-600'}`}
                 >
                     FUTURE
