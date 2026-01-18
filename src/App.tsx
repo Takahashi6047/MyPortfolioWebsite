@@ -10,23 +10,39 @@ import { RippleProvider, useRipple } from './global/overlay/themeOverlay/RippleC
 import { CustomCursor, CursorProvider } from './global/cursor'
 import { LoaderOverlay } from './global/overlay/loaderOverlay'
 import { Statement } from './sections/Statement'
+import { ViewProvider, useView } from './global/ViewContext'
+import { Inquiry } from './pages/Inquiry'
+import { InquiryTransitionOverlay } from './global/overlay/InquiryTransitionOverlay'
 
-function Content() {
+function AppContent() {
   const [isLoadingComplete, setIsLoadingComplete] = useState(false)
   const { theme } = useRipple()
+  const { currentView, isTransitioning, transitionTo } = useView()
 
   return (
     <>
+      {/* Initial Loader - only shows once on mount basically */}
       <LoaderOverlay onLoadingComplete={() => setIsLoadingComplete(true)} />
+
+      {/* Global Cursor */}
       <CustomCursor />
-      <Layout>
-        <Hero isLoadingComplete={isLoadingComplete} />
-        <Statement />
-        <Services />
-        {theme === 'light' ? <Works /> : <DigitalArtistry />}
-        <TransitionMarquee />
-        <Contact />
-      </Layout>
+
+      {/* Page Transition Overlay */}
+      <InquiryTransitionOverlay isActive={isTransitioning} onTransitionComplete={() => { }} />
+
+      {/* Main Content Render */}
+      {currentView === 'home' ? (
+        <Layout>
+          <Hero isLoadingComplete={isLoadingComplete} />
+          <Statement />
+          <Services />
+          {theme === 'light' ? <Works /> : <DigitalArtistry />}
+          <TransitionMarquee />
+          <Contact />
+        </Layout>
+      ) : (
+        <Inquiry onBack={() => transitionTo('home')} />
+      )}
     </>
   )
 }
@@ -35,7 +51,9 @@ function App() {
   return (
     <CursorProvider>
       <RippleProvider>
-        <Content />
+        <ViewProvider>
+          <AppContent />
+        </ViewProvider>
       </RippleProvider>
     </CursorProvider>
   )

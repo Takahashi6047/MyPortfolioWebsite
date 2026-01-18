@@ -6,12 +6,14 @@ import { ProjectInquiry } from '../components/contact/ProjectInquiry';
 import { AboutPortal } from '../components/contact/AboutPortal';
 import { ArrowRight } from 'lucide-react';
 import { useCursor } from '../global/cursor';
+import { useView } from '../global/ViewContext';
 
 export function Contact() {
     const { theme } = useTheme();
     const isArtMode = theme === 'dark';
     const containerRef = useRef<HTMLElement>(null);
     const { setCursorText, setCursorVariant } = useCursor();
+    const { transitionTo } = useView();
 
     // Viewport detection for enter/exit animations
     const isInView = useInView(containerRef, {
@@ -160,6 +162,7 @@ export function Contact() {
 
                         {/* THE REDESIGNED BUTTON - Huge & Integrated */}
                         <motion.button
+                            onClick={() => transitionTo('inquiry')}
                             onMouseEnter={() => {
                                 setCursorText("SEND");
                                 setCursorVariant("text");
