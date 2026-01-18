@@ -219,9 +219,9 @@ a:focus-visible {
 
 
 /* Mobile responsive text for Contact section "LET'S BUILD FUTURE" */
-/* Desktop default: 16vw */
+/* Desktop default: 10vw (Reduced from 16vw) */
 .hero-text-responsive {
-  font-size: 16vw;
+  font-size: 10vw;
   line-height: 0.9;
 }
 
