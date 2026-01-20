@@ -47,6 +47,12 @@ function AppContent() {
   )
 }
 
+
+
+// ...
+
+// ...
+
 function App() {
   return (
     <CursorProvider>

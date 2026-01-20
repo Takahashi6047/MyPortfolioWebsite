@@ -25,14 +25,14 @@ export function Statement() {
             leftSub: ["Vision", "Soul"],
             rightMain: "CRAFT",
             rightSub: ["Depth", "Feel"],
-            label: "ARTISTRY // 002"
+            label: "JOHN ROBERT // ARTIST"
         }
         : {
             leftMain: "CODE",
             leftSub: ["Logic", "System"],
             rightMain: "SHIP",
             rightSub: ["Build", "Scale"],
-            label: "FULLSTACK // 002"
+            label: "JOHN ROBERT // DEVELOPER"
         };
 
     return (
@@ -77,7 +77,7 @@ export function Statement() {
             </div>
 
             <div className={`absolute top-[6.5rem] left-[16%] text-[9px] font-mono tracking-widest ${isArtMode ? 'text-white opacity-40' : 'text-neutral-900 opacity-70'}`}>
-                FIG. 002
+                IDENTITY // 002
             </div>
             <div className={`absolute bottom-[6.5rem] right-[16%] text-[9px] font-mono tracking-widest ${isArtMode ? 'text-white opacity-40' : 'text-neutral-900 opacity-70'}`}>
                 COORDS: {isArtMode ? '48.8566° N' : '35.6764° N'}
@@ -168,12 +168,12 @@ export function Statement() {
             {/* Side Vertical Decor */}
             <div className={`hidden lg:block absolute left-4 xl:left-8 top-1/2 -translate-y-1/2 z-30 ${isArtMode ? 'opacity-60' : 'opacity-50'}`}>
                 <span className={`block text-[10px] font-mono tracking-[0.3em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
-                    System Architecture
+                    {isArtMode ? 'Visual Identity' : 'System Architecture'}
                 </span>
             </div>
             <div className={`hidden lg:block absolute right-4 xl:right-8 top-1/2 -translate-y-1/2 z-30 ${isArtMode ? 'opacity-60' : 'opacity-50'}`}>
                 <span className={`block text-[10px] font-mono tracking-[0.3em] uppercase ${isArtMode ? 'text-white' : 'text-black'}`} style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
-                    Visual Narrative
+                    {isArtMode ? 'Digital Atmosphere' : 'Product Engineering'}
                 </span>
             </div>
 

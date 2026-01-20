@@ -123,14 +123,14 @@ export function Contact() {
                         >
                             {/* Animated line before text */}
                             <div className={`h-[1px] w-8 sm:w-12 transition-all duration-500 ease-out group-hover:w-16 sm:group-hover:w-24 ${isArtMode ? 'bg-yellow-600' : 'bg-blue-400'}`} />
-                            
+
                             <span className={`transition-colors duration-300 whitespace-nowrap ${isArtMode ? 'group-hover:text-yellow-600' : 'group-hover:text-blue-400'}`}>
                                 Start a Project
                             </span>
-                            
+
                             {/* Arrow with slide animation */}
                             <ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300 group-hover:translate-x-2 ${isArtMode ? 'group-hover:text-yellow-600' : 'group-hover:text-blue-400'}`} />
-                            
+
                             {/* Animated line after text */}
                             <div className={`h-[1px] w-8 sm:w-12 transition-all duration-500 ease-out group-hover:w-16 sm:group-hover:w-24 ${isArtMode ? 'bg-yellow-600' : 'bg-blue-400'}`} />
                         </button>

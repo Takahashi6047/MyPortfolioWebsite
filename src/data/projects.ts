@@ -19,7 +19,7 @@ export const projects: Project[] = [
   {
     title: "ArtCoded Portfolio",
     category: "Portfolio",
-    image: "https://images.unsplash.com/photo-1555421689-492a80695629?q=80&w=2670&auto=format&fit=crop",
+    image: "/assets/projects/artcoded/hero.jpg",
     description: "Modern e-commerce solution featuring 3D product previews and AI-driven recommendations.",
     tags: ["React", "Vite", "Tailwind", "Framer Motion"],
     year: "2026"
@@ -27,7 +27,7 @@ export const projects: Project[] = [
   {
     title: "BarnStone Portfolio",
     category: "Portfolio",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2670&auto=format&fit=crop",
+    image: "/assets/projects/barnstone/hero.jpg",
     description: "Advanced threat detection interface for enterprise networks with automated response systems.",
     tags: ["Vue.js", "Python", "WebSockets", "Docker"],
     year: "2026"
