@@ -19,7 +19,7 @@ export const projects: Project[] = [
   {
     title: "ArtCoded Portfolio",
     category: "Portfolio",
-    image: "/assets/projects/artcoded/hero.jpg",
+    image: "/assets/projects/artcoded/hero.png",
     description: "Modern e-commerce solution featuring 3D product previews and AI-driven recommendations.",
     tags: ["React", "Vite", "Tailwind", "Framer Motion"],
     year: "2026"
@@ -27,7 +27,7 @@ export const projects: Project[] = [
   {
     title: "BarnStone Portfolio",
     category: "Portfolio",
-    image: "/assets/projects/barnstone/hero.jpg",
+    image: "/assets/projects/barnstone/hero.png",
     description: "Advanced threat detection interface for enterprise networks with automated response systems.",
     tags: ["Vue.js", "Python", "WebSockets", "Docker"],
     year: "2026"
