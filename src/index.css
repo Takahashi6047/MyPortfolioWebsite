@@ -53,10 +53,8 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   cursor: none !important;
-  /* Hide default cursor */
 }
 
-/* Hide cursor on all interactive elements */
 a,
 button,
 input,
@@ -66,12 +64,10 @@ select,
   cursor: none !important;
 }
 
-/* Smooth section transitions */
 section {
   position: relative;
 }
 
-/* Enhanced focus states for accessibility */
 button:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--foreground);
