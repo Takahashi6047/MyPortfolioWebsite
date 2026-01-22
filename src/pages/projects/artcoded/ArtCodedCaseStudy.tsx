@@ -103,7 +103,7 @@ export function ArtCodedCaseStudy() {
                     >
                         {/* Overview */}
                         <div>
-                            <h2 className="text-3xl md:text-4xl font-bold mb-6">asdasd</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-6">Overview</h2>
                             <p className="text-lg text-white/70 leading-relaxed mb-4">
                                 The ArtCoded Portfolio represents a unique fusion of technical excellence and artistic expression.
                                 This project was designed to showcase both development skills and creative vision through an

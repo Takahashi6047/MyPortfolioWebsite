@@ -2,10 +2,26 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { projects } from '../../data/projects';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ArtCodedCaseStudy } from './artcoded/ArtCodedCaseStudy';
+
+// Map of custom case study components by slug
+const customCaseStudies: Record<string, React.ComponentType> = {
+    'artcoded-portfolio': ArtCodedCaseStudy,
+    // Add more custom case studies here as you create them
+    // 'barnstone-portfolio': BarnStoneCaseStudy,
+};
 
 export function ProjectCaseStudy() {
     const { slug } = useParams<{ slug: string }>();
     const navigate = useNavigate();
+
+    // Check if there's a custom case study for this slug
+    const CustomComponent = slug ? customCaseStudies[slug] : null;
+    
+    // If custom component exists, render it instead
+    if (CustomComponent) {
+        return <CustomComponent />;
+    }
 
     const project = projects.find(p => p.slug === slug);
 

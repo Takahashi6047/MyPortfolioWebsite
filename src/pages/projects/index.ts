@@ -6,7 +6,7 @@
  */
 
 export { ProjectCaseStudy } from './ProjectCaseStudy';
-export { ArtCodedCaseStudy } from './ArtCodedCaseStudy';
+export { ArtCodedCaseStudy } from './artcoded/ArtCodedCaseStudy';
 
 // Add more project case studies here as you create them:
 // export { AssessmentSystemCaseStudy } from './AssessmentSystemCaseStudy';
