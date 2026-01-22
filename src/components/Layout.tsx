@@ -15,7 +15,6 @@ export function Layout({ children }: LayoutProps) {
       className="min-h-screen bg-background text-foreground transition-colors"
     >
       <Navigation />
-
       <main>
         {children}
       </main>

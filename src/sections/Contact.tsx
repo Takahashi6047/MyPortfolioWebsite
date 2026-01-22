@@ -1,17 +1,18 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { useTheme } from '../global/overlay/themeOverlay/RippleContext';
 import { ContactInfo } from '../components/contact/ContactInfo';
 import { ProjectInquiry } from '../components/contact/ProjectInquiry';
 import { ArrowRight } from 'lucide-react';
 import { useCursor } from '../global/cursor';
+import { useView } from '../global/ViewContext';
 
 export function Contact() {
     const { theme } = useTheme();
     const isArtMode = theme === 'dark';
     const containerRef = useRef<HTMLElement>(null);
     const { setCursorText, setCursorVariant } = useCursor();
+    const { navigateWithTransition } = useView();
 
     // Viewport detection for enter/exit animations
     const isInView = useInView(containerRef, {
@@ -108,8 +109,8 @@ export function Contact() {
                         className="w-full flex justify-center mt-8 sm:mt-12 md:mt-16"
                         variants={itemVariants}
                     >
-                        <Link
-                            to="/inquiry"
+                        <button
+                            onClick={() => navigateWithTransition('/inquiry')}
                             onMouseEnter={() => {
                                 setCursorText("GO");
                                 setCursorVariant("text");
@@ -132,7 +133,7 @@ export function Contact() {
 
                             {/* Animated line after text */}
                             <div className={`h-[1px] w-8 sm:w-12 transition-all duration-500 ease-out group-hover:w-16 sm:group-hover:w-24 ${isArtMode ? 'bg-yellow-600' : 'bg-blue-400'}`} />
-                        </Link>
+                        </button>
                     </motion.div>
                 </div>
             </motion.div>

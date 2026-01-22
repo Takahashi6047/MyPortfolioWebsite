@@ -3,15 +3,13 @@ import { ArrowLeft, Send } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '../global/overlay/themeOverlay/RippleContext';
 import { useCursor } from '../global/cursor';
+import { useView } from '../global/ViewContext';
 
-interface InquiryProps {
-    onBack: () => void;
-}
-
-export function Inquiry({ onBack }: InquiryProps) {
+export function Inquiry() {
     const { theme } = useTheme();
     const isArtMode = theme === 'dark'; // Inherit theme from context
     const { setCursorText, setCursorVariant } = useCursor();
+    const { goBackWithTransition } = useView();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -85,7 +83,7 @@ export function Inquiry({ onBack }: InquiryProps) {
                 {/* Top Bar / Mobile Header */}
                 <div className={`p-6 md:p-12 flex items-center justify-between border-b ${isArtMode ? 'border-white/10' : 'border-black/10'}`}>
                     <button
-                        onClick={onBack}
+                        onClick={goBackWithTransition}
                         onMouseEnter={() => { setCursorText("RETURN"); setCursorVariant("text"); }}
                         onMouseLeave={() => { setCursorText(""); setCursorVariant("default"); }}
                         className={`group flex items-center gap-3 text-sm font-mono uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity`}
