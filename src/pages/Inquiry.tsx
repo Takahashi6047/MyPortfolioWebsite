@@ -20,13 +20,44 @@ export function Inquiry() {
 
 
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const { name, subject, message } = formData;
-        const subjectLine = encodeURIComponent(subject || `Project Inquiry from ${name}`);
-        const body = encodeURIComponent(`Name: ${name}\n\nMessage:\n${message}`);
-        window.location.href = `mailto:hello.artcoded@gmail.com?subject=${subjectLine}&body=${body}`;
-        // Optionally go back after send? Or just stay.
+        setIsSubmitting(true);
+        setSubmitStatus('idle');
+
+        try {
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
+                    name: formData.name,
+                    email: formData.email,
+                    subject: formData.subject || `Project Inquiry from ${formData.name}`,
+                    message: formData.message,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setSubmitStatus('success');
+                setFormData({ name: '', email: '', subject: '', message: '' });
+                setTimeout(() => goBackWithTransition(), 2000);
+            } else {
+                setSubmitStatus('error');
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            setSubmitStatus('error');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const inputClasses = `w-full bg-transparent border-b py-4 outline-none transition-colors duration-300 rounded-none font-mono
@@ -168,21 +199,42 @@ export function Inquiry() {
                             </div>
 
                             {/* Submit Area */}
-                            <div className="pt-8">
+                            <div className="pt-8 space-y-4">
                                 <motion.button
-                                    whileHover={{ scale: 1.01 }}
-                                    whileTap={{ scale: 0.99 }}
+                                    whileHover={{ scale: isSubmitting ? 1 : 1.01 }}
+                                    whileTap={{ scale: isSubmitting ? 1 : 0.99 }}
                                     onMouseEnter={() => { setCursorText("TRANSMIT"); setCursorVariant("text"); }}
                                     onMouseLeave={() => { setCursorText(""); setCursorVariant("default"); }}
                                     type="submit"
-                                    className={`w-full md:w-auto px-12 py-6 flex items-center justify-center gap-4 font-bold uppercase tracking-widest transition-all
+                                    disabled={isSubmitting}
+                                    className={`w-full md:w-auto px-12 py-6 flex items-center justify-center gap-4 font-bold uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed
                                         ${isArtMode
                                             ? 'bg-white text-black hover:bg-[var(--art-accent)] hover:text-white'
                                             : 'bg-black text-white hover:bg-blue-600'}`}
                                 >
-                                    <span>Execute Transmission</span>
-                                    <Send size={18} />
+                                    <span>{isSubmitting ? 'TRANSMITTING...' : 'Execute Transmission'}</span>
+                                    <Send size={18} className={isSubmitting ? 'animate-pulse' : ''} />
                                 </motion.button>
+
+                                {/* Status Messages */}
+                                {submitStatus === 'success' && (
+                                    <motion.p
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="text-green-500 font-mono text-sm"
+                                    >
+                                        ✓ TRANSMISSION SUCCESSFUL - REDIRECTING...
+                                    </motion.p>
+                                )}
+                                {submitStatus === 'error' && (
+                                    <motion.p
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="text-red-500 font-mono text-sm"
+                                    >
+                                        ✗ TRANSMISSION FAILED - PLEASE TRY AGAIN
+                                    </motion.p>
+                                )}
                             </div>
                         </form>
                     </div>
