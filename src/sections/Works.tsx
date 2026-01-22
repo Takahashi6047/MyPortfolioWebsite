@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { projects } from '../data/projects';
 import { useCursor } from '../global/cursor/CursorContext';
 import { ArrowUpRight } from 'lucide-react';
@@ -17,6 +18,7 @@ export function Works() {
 function ProjectSection({ project, index }: { project: typeof projects[0]; index: number }) {
     const containerRef = useRef<HTMLDivElement>(null);
     const { setCursorText, setCursorVariant } = useCursor();
+    const navigate = useNavigate();
 
     // Parallax Logic
     const { scrollYProgress } = useScroll({
@@ -26,9 +28,16 @@ function ProjectSection({ project, index }: { project: typeof projects[0]; index
 
     const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
+    const hasCaseStudy = !!project.slug;
+
     const handleMouseEnter = () => {
-        setCursorText("VIEW");
-        setCursorVariant("text");
+        if (hasCaseStudy) {
+            setCursorText("VIEW");
+            setCursorVariant("text");
+        } else {
+            setCursorText("COMING SOON");
+            setCursorVariant("text");
+        }
     };
 
     const handleMouseLeave = () => {
@@ -36,12 +45,19 @@ function ProjectSection({ project, index }: { project: typeof projects[0]; index
         setCursorVariant("default");
     };
 
+    const handleClick = () => {
+        if (hasCaseStudy && project.slug) {
+            navigate(`/projects/${project.slug}`);
+        }
+    };
+
     return (
         <div
             ref={containerRef}
-            className="h-screen w-full relative flex flex-col items-center justify-center overflow-hidden group border-b border-white/5"
+            className={`h-screen w-full relative flex flex-col items-center justify-center overflow-hidden group border-b border-white/5 ${hasCaseStudy ? 'cursor-pointer' : ''}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={handleClick}
         >
             {/* Full Screen Parallax Background */}
             <div className="absolute inset-0 z-0">

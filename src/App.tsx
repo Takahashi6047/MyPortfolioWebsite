@@ -1,57 +1,33 @@
-import { useState } from 'react'
-import { Layout } from './components/Layout'
-import { Hero } from './sections/Hero'
-import { Services } from './sections/Services'
-import { Works } from './sections/Works'
-import { DigitalArtistry } from './sections/DigitalArtistry'
-import { Contact } from './sections/Contact'
-import { TransitionMarquee } from './sections/TransitionMarquee'
-import { RippleProvider, useRipple } from './global/overlay/themeOverlay/RippleContext'
-import { CustomCursor, CursorProvider } from './global/cursor'
-import { LoaderOverlay } from './global/overlay/loaderOverlay'
-import { Statement } from './sections/Statement'
-import { ViewProvider, useView } from './global/ViewContext'
-import { Inquiry } from './pages/Inquiry'
-import { InquiryTransitionOverlay } from './global/overlay/InquiryTransitionOverlay'
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { RippleProvider } from './global/overlay/themeOverlay/RippleContext';
+import { CustomCursor, CursorProvider } from './global/cursor';
+import { LoaderOverlay } from './global/overlay/loaderOverlay';
+import { Home } from './pages/Home';
+import { Inquiry } from './pages/Inquiry';
+import { ProjectCaseStudy } from './pages/projects/ProjectCaseStudy';
+import { ViewProvider, useView } from './global/ViewContext';
+import { InquiryTransitionOverlay } from './global/overlay/InquiryTransitionOverlay';
 
 function AppContent() {
-  const [isLoadingComplete, setIsLoadingComplete] = useState(false)
-  const { theme } = useRipple()
-  const { currentView, isTransitioning, transitionTo } = useView()
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const { isTransitioning } = useView();
 
   return (
     <>
-      {/* Initial Loader - only shows once on mount basically */}
       <LoaderOverlay onLoadingComplete={() => setIsLoadingComplete(true)} />
-
-      {/* Global Cursor */}
       <CustomCursor />
-
-      {/* Page Transition Overlay */}
       <InquiryTransitionOverlay isActive={isTransitioning} onTransitionComplete={() => { }} />
-
-      {/* Main Content Render */}
-      {currentView === 'home' ? (
-        <Layout>
-          <Hero isLoadingComplete={isLoadingComplete} />
-          <Statement />
-          <Services />
-          {theme === 'light' ? <Works /> : <DigitalArtistry />}
-          <TransitionMarquee />
-          <Contact />
-        </Layout>
-      ) : (
-        <Inquiry onBack={() => transitionTo('home')} />
-      )}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home isLoadingComplete={isLoadingComplete} />} />
+          <Route path="/inquiry" element={<Inquiry onBack={() => window.history.back()} />} />
+          <Route path="/projects/:slug" element={<ProjectCaseStudy />} />
+        </Routes>
+      </BrowserRouter>
     </>
-  )
+  );
 }
-
-
-
-// ...
-
-// ...
 
 function App() {
   return (
@@ -62,7 +38,7 @@ function App() {
         </ViewProvider>
       </RippleProvider>
     </CursorProvider>
-  )
+  );
 }
 
-export default App
+export default App;
