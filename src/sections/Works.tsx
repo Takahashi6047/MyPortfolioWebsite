@@ -35,7 +35,7 @@ function ProjectSection({ project, index }: { project: typeof projects[0]; index
             setCursorText("VIEW");
             setCursorVariant("text");
         } else {
-            setCursorText("COMING SOON");
+            setCursorText("PAGE COMING SOON");
             setCursorVariant("text");
         }
     };

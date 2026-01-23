@@ -60,7 +60,7 @@ export function MobileNavOverlay() {
     }
     const element = document.getElementById(sectionId);
     if (element) {
-      const navHeight = -60; // approximate nav height
+      const navHeight = -1; // approximate nav height
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
         top: elementPosition - navHeight,
@@ -212,7 +212,7 @@ export function MobileNavOverlay() {
                   <span
                     className="absolute -left-8 sm:-left-12 md:-left-16 text-foreground font-black opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:-translate-x-2"
                     style={{
-                      filter: 'drop-shadow(0 0 8px currentColor) drop-shadow(0 0 12px currentColor)',
+                      textShadow: '0 0 8px currentColor, 0 0 12px currentColor',
                     }}
                   >
                     [
@@ -227,7 +227,7 @@ export function MobileNavOverlay() {
                   <span
                     className="absolute -right-8 sm:-right-12 md:-right-16 text-foreground font-black opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:translate-x-2"
                     style={{
-                      filter: 'drop-shadow(0 0 8px currentColor) drop-shadow(0 0 12px currentColor)',
+                      textShadow: '0 0 8px currentColor, 0 0 12px currentColor',
                     }}
                   >
                     ]
@@ -237,7 +237,7 @@ export function MobileNavOverlay() {
                   <span
                     className="absolute -right-4 sm:-right-6 md:-right-8 text-foreground font-black opacity-0 group-hover:opacity-100 group-hover:animate-pulse"
                     style={{
-                      filter: 'drop-shadow(0 0 6px currentColor)',
+                      textShadow: '0 0 6px currentColor',
                     }}
                   >
                     |
@@ -304,7 +304,7 @@ export function MobileNavOverlay() {
               >
                 EMAIL ↗
               </motion.a>
-              <motion.a
+              {/* <motion.a
                 href="/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -312,7 +312,7 @@ export function MobileNavOverlay() {
                 whileHover={{ y: -2 }}
               >
                 RESUME ⬇
-              </motion.a>
+              </motion.a> */}
             </motion.div>
           </motion.div>
         </motion.div>

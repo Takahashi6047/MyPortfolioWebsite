@@ -40,7 +40,7 @@ export function Navigation() {
     }
     const element = document.getElementById(sectionId);
     if (element) {
-      const navHeight = -50; // approximate nav height
+      const navHeight = -1; // approximate nav height
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       window.scrollTo({
         top: elementPosition - navHeight,
