@@ -66,18 +66,14 @@ export function TransitionMarquee() {
             const dpr = window.devicePixelRatio || 1;
             const rect = container.getBoundingClientRect();
 
-            // Set canvas size accounting for device pixel ratio
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
 
-            // Set CSS size to actual display size
             canvas.style.width = `${rect.width}px`;
             canvas.style.height = `${rect.height}px`;
 
-            // Scale context to match DPR
             ctx.scale(dpr, dpr);
 
-            // Initialize particles using CSS width (not scaled width)
             initParticles(rect.width);
         };
 

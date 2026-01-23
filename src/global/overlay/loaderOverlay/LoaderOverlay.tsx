@@ -128,7 +128,63 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
               transition: { duration: 0.4 }
             }}
           >
-            {/* Empty Center - Content is now in the panels */}
+            {/* Center Subject - Animated Branding */}
+            <div className="relative z-50 flex flex-col items-center">
+              <div className="relative text-5xl sm:text-7xl md:text-9xl font-bold tracking-wider uppercase font-orbitron overflow-hidden py-4 px-12">
+                {/* Base Layer (Ghost/Stroke) */}
+                <div
+                  className={`absolute inset-0 flex items-center justify-center select-none opacity-20 ${isArtMode ? 'text-black' : 'text-white'
+                    }`}
+                  style={{ transform: 'translateZ(0)' }}
+                >
+                  ARTCODED
+                </div>
+
+                {/* Animated Fill Layer */}
+                <motion.div
+                  className={`relative flex items-center justify-center ${isArtMode ? 'text-black' : 'text-neutral-200'
+                    }`}
+                  initial={{ clipPath: "inset(0 100% 0 0)" }}
+                  animate={{ clipPath: "inset(0 0% 0 0)" }}
+                  transition={{
+                    duration: 3.2,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: 0.2
+                  }}
+                >
+                  {isArtMode ? (
+                    <>
+                      ART<span className="text-[#C5A059]">CODED</span>
+                    </>
+                  ) : (
+                    <>
+                      ART<span className="text-transparent" style={{ WebkitTextStroke: '1px #E5E5E5' }}>CODED</span>
+                    </>
+                  )}
+                </motion.div>
+
+                {/* Scanline Effect */}
+                <motion.div
+                  className={`absolute top-0 bottom-0 w-1 ${isArtMode ? 'bg-[#C5A059]' : 'bg-blue-500'
+                    } blur-[2px]`}
+                  initial={{ left: "0%", opacity: 0 }}
+                  animate={{ left: ["0%", "100%"], opacity: [0, 1, 0] }}
+                  transition={{
+                    duration: 3.2,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: 0.2
+                  }}
+                />
+              </div>
+
+              {/* Loading Bar under text */}
+              <motion.div
+                className={`h-1 mt-4 rounded-full ${isArtMode ? 'bg-[#C5A059]' : 'bg-blue-500'}`}
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 100, opacity: 1 }}
+                transition={{ duration: 3.2, ease: "easeInOut", delay: 0.2 }}
+              />
+            </div>
 
             {/* Micro-Typography Corner Data */}
             <div className="absolute bottom-12 right-12 text-right hidden sm:block">

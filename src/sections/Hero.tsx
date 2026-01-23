@@ -46,11 +46,11 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
   }, [isLoadingComplete]);
 
   return (
-    <section id="home" className="relative px-4 sm:px-6 md:px-8 flex flex-col pt-2 sm:pt-4 md:min-h-screen md:justify-center md:pt-0 md:-mt-8">
+    <section id="home" className="relative px-4 sm:px-6 md:px-8 flex flex-col pt-2 sm:pt-4 min-h-[100dvh] md:justify-center md:pt-0 md:-mt-8">
       <div
-        className={`relative w-full rounded-2xl sm:rounded-3xl bg-black dark:bg-white overflow-hidden transition-all duration-700 ease-out transform-gpu ${isContainerVisible
-          ? 'h-[500px] sm:h-[75svh] md:h-[80vh] opacity-100 scale-y-100'
-          : 'h-0 opacity-0 scale-y-0'
+        className={`relative w-full rounded-2xl sm:rounded-3xl bg-black dark:bg-white overflow-hidden transition-all duration-700 ease-out transform-gpu h-[500px] sm:h-[75svh] md:h-[80vh] ${isContainerVisible
+          ? 'opacity-100 scale-y-100'
+          : 'opacity-0 scale-y-0'
           }`}
         style={{ transformOrigin: 'top' }}
       >
@@ -94,7 +94,7 @@ export function Hero({ isLoadingComplete = false }: HeroProps) {
             <AnimatePresence mode="wait">
               <motion.h1
                 key={`title-${theme}`}
-                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tighter uppercase transition-colors duration-500 ${isArtMode ? 'text-black font-sans' : 'text-neutral-200 font-sans'}`}
+                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wider uppercase transition-colors duration-500 ${isArtMode ? 'text-black font-orbitron' : 'text-neutral-200 font-orbitron'}`}
                 initial={{ opacity: 0, y: 30 }}
                 animate={visibleElements.title ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}

@@ -11,51 +11,57 @@ export function InquiryTransitionOverlay({ isActive, onTransitionComplete }: Inq
     const { theme } = useTheme();
     const isArtMode = theme === 'dark';
 
+    // Consistent branding colors
+    const bgClass = isArtMode ? 'bg-[#F2F2F2]' : 'bg-[#050505]';
+    const accentClass = isArtMode ? 'bg-[#C5A059]' : 'bg-blue-500';
+
     const overlay = (
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
             {isActive && (
                 <motion.div
-                    className="fixed inset-0 z-[9999999] pointer-events-none"
-                    initial="inactive"
-                    animate="active"
-                    exit="inactive"
+                    className="fixed inset-0 z-[9999999] flex flex-col pointer-events-none"
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
                 >
-                    {/* Multiple panels for a shutter effect */}
-                    {[0, 1, 2, 3].map((index) => (
+                    {[...Array(6)].map((_, i) => (
                         <motion.div
-                            key={index}
-                            className={`absolute top-0 bottom-0 ${isArtMode ? 'bg-white' : 'bg-black'}`}
-                            style={{
-                                left: `${index * 25}%`,
-                                width: '25%',
-                            }}
+                            key={i}
+                            className={`relative flex-1 w-full ${bgClass} overflow-hidden -mb-px last:mb-0`}
+                            custom={i}
                             variants={{
-                                inactive: {
-                                    scaleY: 0,
-                                    transformOrigin: 'top',
+                                hidden: {
+                                    x: i % 2 === 0 ? '-100%' : '100%',
                                     transition: {
                                         duration: 0.5,
                                         ease: [0.76, 0, 0.24, 1],
-                                        delay: (3 - index) * 0.05 // Reverse delay for exit
+                                        delay: i * 0.05
                                     }
                                 },
-                                active: {
-                                    scaleY: 1,
-                                    transformOrigin: 'bottom',
+                                visible: {
+                                    x: '0%',
                                     transition: {
                                         duration: 0.5,
                                         ease: [0.76, 0, 0.24, 1],
-                                        delay: index * 0.05
+                                        delay: i * 0.05
                                     }
                                 }
                             }}
                             onAnimationComplete={(definition) => {
-                                // If we just finished activating (covering screen), notify parent
-                                if (definition === 'active' && index === 3) {
+                                if (definition === 'visible' && i === 5) {
                                     onTransitionComplete();
                                 }
                             }}
-                        />
+                        >
+                            {/* Decorative Accent Line on the edge */}
+                            <motion.div
+                                className={`absolute top-0 bottom-0 w-1 ${accentClass}`}
+                                style={{
+                                    left: i % 2 === 0 ? '0' : 'auto',
+                                    right: i % 2 === 0 ? 'auto' : '0',
+                                }}
+                            />
+                        </motion.div>
                     ))}
                 </motion.div>
             )}
