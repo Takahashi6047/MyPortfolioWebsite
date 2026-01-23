@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../../global/overlay/themeOverlay/RippleContext';
+import { useCursor } from '../../global/cursor';
+import { useView } from '../../global/ViewContext';
 
 export function HeroCard() {
   const [isVisible, setIsVisible] = useState(false);
   const { theme } = useTheme();
   const isArtMode = theme === 'dark';
+  const { setCursorText, setCursorVariant } = useCursor();
+  const { navigateWithTransition } = useView();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -69,8 +73,26 @@ export function HeroCard() {
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
             <span className="text-[10px] sm:text-sm text-white/80">© 2025</span>
-            <button className="text-[10px] sm:text-sm bg-white text-black px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full hover:opacity-90 transition whitespace-nowrap">
-              Let's talk
+            <button
+              onClick={() => navigateWithTransition('/inquiry')}
+              onMouseEnter={() => {
+                setCursorText("GO");
+                setCursorVariant("text");
+              }}
+              onMouseLeave={() => {
+                setCursorText("");
+                setCursorVariant("default");
+              }}
+              className="group relative text-[10px] sm:text-sm bg-white text-black px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] whitespace-nowrap"
+            >
+              {/* Shimmer effect */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 ease-in-out"></span>
+
+              {/* Button text */}
+              <span className="relative z-10 font-medium">Let's talk</span>
+
+              {/* Subtle pulse ring on hover */}
+              <span className="absolute inset-0 rounded-full bg-white/20 scale-100 group-hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
             </button>
           </div>
         </div>

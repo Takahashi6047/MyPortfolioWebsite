@@ -4,14 +4,15 @@ import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { useCursor } from '../../cursor';
 import { useTheme } from '../themeOverlay/RippleContext';
+import { useView } from '../../ViewContext';
 
 export function MobileNavOverlay() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const { setCursorText, setCursorVariant } = useCursor();
   const { theme } = useTheme();
+  const { navigateWithTransition } = useView();
 
-  // Determine if we're in artistry mode (dark) or dev mode (light)
   const isArtistryMode = theme === 'dark';
 
   const handleMouseEnter = (text: string) => {
@@ -24,7 +25,6 @@ export function MobileNavOverlay() {
     setCursorVariant('default');
   };
 
-  // Reset cursor on unmount or when overlay closes
   useEffect(() => {
     if (!isOpen) {
       setCursorText('');
@@ -36,7 +36,6 @@ export function MobileNavOverlay() {
     };
   }, [isOpen, setCursorText, setCursorVariant]);
 
-  // Lock body scroll when overlay is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -69,7 +68,6 @@ export function MobileNavOverlay() {
     }
   };
 
-  // Dynamic nav items based on mode
   const navItems = [
     {
       label: 'HOME',
@@ -168,13 +166,25 @@ export function MobileNavOverlay() {
 
             {/* Let's Talk - Hidden on mobile */}
             <motion.button
-              className="hidden md:flex px-6 py-2 border border-foreground/20 rounded-full text-sm text-foreground hover:bg-foreground/10 transition-colors items-center gap-2"
+              onClick={() => navigateWithTransition('/inquiry')}
+              onMouseEnter={() => handleMouseEnter('GO')}
+              onMouseLeave={handleMouseLeave}
+              className="group relative hidden md:flex px-6 py-2 border border-foreground/20 rounded-full text-sm text-foreground overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(var(--foreground-rgb),0.3)] hover:border-foreground/40 items-center gap-2"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: isClosing ? 0 : 1, x: isClosing ? 20 : 0 }}
               transition={{ delay: isClosing ? 0.25 : 0.3, duration: 0.3 }}
             >
-              LET'S TALK
-              <span>→</span>
+              {/* Shimmer effect */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 ease-in-out"></span>
+
+              {/* Background pulse on hover */}
+              <span className="absolute inset-0 rounded-full bg-foreground/5 scale-100 group-hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-300"></span>
+
+              {/* Button text */}
+              <span className="relative z-10 font-medium tracking-wider">LET'S TALK</span>
+
+              {/* Animated arrow */}
+              <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">→</span>
             </motion.button>
           </motion.div>
 
@@ -322,7 +332,6 @@ export function MobileNavOverlay() {
 
   return (
     <>
-      {/* Menu Button - 4 dots */}
       <motion.button
         onClick={() => setIsOpen(true)}
         onMouseEnter={() => handleMouseEnter('Menu')}
@@ -340,7 +349,6 @@ export function MobileNavOverlay() {
         </svg>
       </motion.button>
 
-      {/* Render overlay at document body level using Portal */}
       {createPortal(overlay, document.body)}
     </>
   );
