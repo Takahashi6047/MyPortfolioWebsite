@@ -88,9 +88,9 @@ function ProjectSection({ project, index }: { project: typeof projects[0]; index
             </div>
 
             {/* Centered Content - Scaled Down for Modern Look */}
-            <div className="relative z-20 container mx-auto px-6 h-full flex flex-col items-center justify-center gap-6 md:gap-8">
+            <div className="relative z-20 container mx-auto px-6 h-full flex flex-col items-center justify-center gap-4 md:gap-8">
                 {/* Title */}
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase text-center text-white drop-shadow-lg max-w-4xl leading-tight opacity-0 translate-y-8 animate-[fadeInUp_0.8s_ease-out_forwards]">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase text-center text-white drop-shadow-lg max-w-4xl leading-tight opacity-0 translate-y-8 animate-[fadeInUp_0.8s_ease-out_forwards]">
                     {project.title}
                 </h2>
 
@@ -107,17 +107,39 @@ function ProjectSection({ project, index }: { project: typeof projects[0]; index
                 </div>
 
                 {/* Description */}
-                <p className="text-white/70 text-sm md:text-base max-w-lg text-center font-light leading-relaxed drop-shadow opacity-0 translate-y-8 animate-[fadeInUp_0.8s_ease-out_0.4s_forwards]">
+                <p className="text-white/70 text-sm md:text-base max-w-lg text-center font-light leading-relaxed drop-shadow opacity-0 translate-y-8 animate-[fadeInUp_0.8s_ease-out_0.4s_forwards] px-4">
                     {project.description}
                 </p>
+
+                {/* Page Coming Soon Badge - Visible on Mobile */}
+                {!hasCaseStudy && (
+                    <div className="opacity-0 translate-y-8 animate-[fadeInUp_0.8s_ease-out_0.6s_forwards]">
+                        <span className="inline-block px-4 py-2 bg-black/60 backdrop-blur-md border border-white/20 rounded-full text-[10px] md:text-xs uppercase font-mono tracking-widest text-white/90">
+                            Page Coming Soon
+                        </span>
+                    </div>
+                )}
+
+                {/* View Case Button - Centered on Mobile, Bottom Right on Desktop */}
+                {hasCaseStudy && (
+                    <div className="opacity-0 translate-y-8 animate-[fadeInUp_0.8s_ease-out_0.6s_forwards] md:opacity-0 md:translate-y-0 md:animate-none">
+                        <button className="flex items-center gap-3 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-full border border-white/20 font-medium text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+                            <span>View Case</span>
+                            <ArrowUpRight className="w-4 h-4" />
+                        </button>
+                    </div>
+                )}
             </div>
 
-            <div className="absolute bottom-12 right-12 z-30 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-                <button className="flex items-center gap-3 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-full border border-white/20 font-medium text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-                    <span>View Case</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                </button>
-            </div>
+            {/* Desktop-only View Case Button (bottom-right on hover) */}
+            {hasCaseStudy && (
+                <div className="hidden md:block absolute bottom-12 right-12 z-30 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                    <button className="flex items-center gap-3 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-full border border-white/20 font-medium text-xs uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+                        <span>View Case</span>
+                        <ArrowUpRight className="w-4 h-4" />
+                    </button>
+                </div>
+            )}
 
             <style>{`
                 @keyframes fadeInUp {

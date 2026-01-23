@@ -37,14 +37,14 @@ export function RippleProvider({ children }: RippleProviderProps) {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
-    // Initialize theme from localStorage or system preference
+    // Initialize theme from localStorage, default to 'light' (Dev mode)
     const savedTheme = localStorage.getItem('theme') as Theme;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    if (savedTheme === 'dark') {
       setTheme('dark');
       document.documentElement.classList.add('dark');
     } else {
+      // Default to light mode (Dev mode)
       setTheme('light');
       document.documentElement.classList.remove('dark');
     }

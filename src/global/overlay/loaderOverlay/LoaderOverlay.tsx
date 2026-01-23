@@ -130,7 +130,7 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
           >
             {/* Center Subject - Animated Branding */}
             <div className="relative z-50 flex flex-col items-center">
-              <div className="relative text-5xl sm:text-7xl md:text-9xl font-bold tracking-wider uppercase font-orbitron overflow-hidden py-4 px-12">
+              <div className="relative text-5xl sm:text-6xl md:text-7xl lg:text-9xl font-bold tracking-wider uppercase font-orbitron overflow-hidden py-4 px-8 sm:px-12">
                 {/* Base Layer (Ghost/Stroke) */}
                 <div
                   className={`absolute inset-0 flex items-center justify-center select-none opacity-20 ${isArtMode ? 'text-black' : 'text-white'
@@ -179,28 +179,28 @@ export function LoaderOverlay({ onLoadingComplete }: LoaderOverlayProps) {
 
               {/* Loading Bar under text */}
               <motion.div
-                className={`h-1 mt-4 rounded-full ${isArtMode ? 'bg-[#C5A059]' : 'bg-blue-500'}`}
+                className={`h-1 mt-3 sm:mt-4 rounded-full ${isArtMode ? 'bg-[#C5A059]' : 'bg-blue-500'}`}
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: 100, opacity: 1 }}
                 transition={{ duration: 3.2, ease: "easeInOut", delay: 0.2 }}
               />
             </div>
 
-            {/* Micro-Typography Corner Data */}
-            <div className="absolute bottom-12 right-12 text-right hidden sm:block">
-              <div className={`text-[10px] tracking-[0.2em] font-mono mb-1 ${isArtMode ? 'text-black/60' : 'text-neutral-400'}`}>
+            {/* Micro-Typography Corner Data - Visible on tablets and up */}
+            <div className="absolute bottom-8 sm:bottom-10 md:bottom-12 right-6 sm:right-8 md:right-12 text-right hidden sm:block">
+              <div className={`text-[9px] md:text-[10px] tracking-[0.2em] font-mono mb-1 ${isArtMode ? 'text-black/60' : 'text-neutral-400'}`}>
                 SYSTEM.STATUS
               </div>
-              <div className={`text-xs font-bold tracking-[0.1em] font-mono ${textClass}`}>
+              <div className={`text-[11px] md:text-xs font-bold tracking-[0.1em] font-mono ${textClass}`}>
                 {statusText}
               </div>
             </div>
 
-            <div className="absolute bottom-12 left-12 hidden sm:block">
-              <div className={`text-[10px] tracking-[0.2em] font-mono mb-1 ${isArtMode ? 'text-black/60' : 'text-neutral-400'}`}>
+            <div className="absolute bottom-8 sm:bottom-10 md:bottom-12 left-6 sm:left-8 md:left-12 hidden sm:block">
+              <div className={`text-[9px] md:text-[10px] tracking-[0.2em] font-mono mb-1 ${isArtMode ? 'text-black/60' : 'text-neutral-400'}`}>
                 EST. TIME
               </div>
-              <div className={`text-xs font-bold tracking-[0.1em] font-mono ${textClass}`}>
+              <div className={`text-[11px] md:text-xs font-bold tracking-[0.1em] font-mono ${textClass}`}>
                 00:04:00
               </div>
             </div>
